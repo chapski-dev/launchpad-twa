@@ -6,7 +6,6 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
-    "@ton-and-company/sdk": "git+https://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@github.com/ton-and-company/ton-contracts-sdk",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
