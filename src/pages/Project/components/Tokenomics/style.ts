@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   width: 100%;
   gap: 12px;
-  padding: 12px 0;
+  padding: 24px 0;
 `
 
 export const Title = styled.h3`

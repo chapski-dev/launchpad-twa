@@ -1,14 +1,13 @@
-import { FC } from 'react'
-import { SDKProvider } from '@twa.js/sdk-react'
-import { DisplayGate } from 'features/DisplayGate/DisplayGate'
+import { FC, useEffect } from 'react'
+import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { PagesConfig } from 'pages/PagesConfig'
 
 export const App: FC = () => {
-  return (
-    <SDKProvider initOptions={{ debug: true }}>
-      <DisplayGate>
-        <PagesConfig />
-      </DisplayGate>
-    </SDKProvider>
-  )
+  const { tg } = useTelegram()
+
+  useEffect(() => {
+    tg.ready()
+  }, [tg])
+
+  return <PagesConfig />
 }

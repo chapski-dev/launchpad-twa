@@ -4,15 +4,16 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { getICOProjectById } from 'api'
 import { AppRoutes } from 'constants/app'
 import { useCustomBackButton } from 'hooks/useCustomBackButton/useCustomBackButton'
+import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
 import { InfoBlock, ProjectaInfoHeader, Tokenomics } from './components'
 import * as S from './style'
 
-const tg = (window as any).Telegram.WebApp
-
 export const Project: FC = () => {
   const { id } = useParams()
+
+  const { tg } = useTelegram()
 
   const navigate = useNavigate()
 
@@ -28,7 +29,7 @@ export const Project: FC = () => {
         navigate(AppRoutes.Home)
       })
     }
-  }, [navigate])
+  }, [navigate, tg])
 
   const {
     data: project,
