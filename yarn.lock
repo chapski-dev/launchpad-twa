@@ -1140,7 +1140,7 @@
   resolved "https://registry.yarnpkg.com/@babel/regjsgen/-/regjsgen-0.8.0.tgz#f0ba69b075e1f05fb2825b7fad991e7adbb18310"
   integrity sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==
 
-"@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.16.3", "@babel/runtime@^7.20.7", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.10.1", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.16.3", "@babel/runtime@^7.18.3", "@babel/runtime@^7.20.7", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.22.11"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.11.tgz#7a9ba3bbe406ad6f9e8dd4da2ece453eb23a77a4"
   integrity sha512-ee7jVNlWN09+KftVOu9n7S8gQzD/Z6hN/I8VBRXW4P1+Xe7kJGXMwu8vds4aGIMHZnNbdpSWCfZZtinytpcAvA==
@@ -1944,6 +1944,13 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
+"@ton-and-company/sdk@git+https://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@github.com/ton-and-company/ton-contracts-sdk":
+  version "0.0.13"
+  resolved "git+https://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@github.com/ton-and-company/ton-contracts-sdk#4d4476fc4ce9a9c19390fc6090cd7b6a1566b429"
+  dependencies:
+    ton "^13.5.0"
+    ton-crypto "^3.2.0"
+
 "@tootallnate/once@1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
@@ -1953,42 +1960,6 @@
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.2.0.tgz#cccaab758af56761eb7bf37af6f03f326dd798ad"
   integrity sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==
-
-"@twa.js/bridge@1.1.3":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@twa.js/bridge/-/bridge-1.1.3.tgz#4df598f814c319de3d5c2311f716b1955500eecd"
-  integrity sha512-xH1i+MXwTZQhK2XydsT3oPTeHS/5lt865xN+LMn1HvfKJ5h2+JlQTPQgs/5NWD4EOthTFvbWiJLRFcXuL3+Mmg==
-  dependencies:
-    "@twa.js/utils" "0.5.0"
-
-"@twa.js/init-data@0.2.11":
-  version "0.2.11"
-  resolved "https://registry.yarnpkg.com/@twa.js/init-data/-/init-data-0.2.11.tgz#214fefe2ca3c9347c4123d961dae902a1d392283"
-  integrity sha512-DmR8y10HvYoYsTwFGzmDCAYRkLv+pU6ZfBbCjIIhze5NdkUt3gKKGRJdsbJ2N6WaWja3C5pxk/KRS5Pk+6cThA==
-  dependencies:
-    "@twa.js/utils" "0.5.0"
-
-"@twa.js/sdk-react@0.3.18":
-  version "0.3.18"
-  resolved "https://registry.yarnpkg.com/@twa.js/sdk-react/-/sdk-react-0.3.18.tgz#36029df53228e1f22d807b2f6b1de4eb6aa8284d"
-  integrity sha512-/fZzOpTDTnL86kHqiIEAn3pWuBJ9BP5NU++XgHv5mhbLfZXMuStBjpIGZ13mrtiG24hK5kI3vdUzDr5e7g3wTQ==
-  dependencies:
-    "@twa.js/bridge" "1.1.3"
-    "@twa.js/sdk" "0.9.0"
-
-"@twa.js/sdk@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@twa.js/sdk/-/sdk-0.9.0.tgz#09e4292615ecce2215b6da83c9ceeb4fd07924a2"
-  integrity sha512-X24UxlAUsQvymdSg73LMZYKIIcVaz66gk9w/0Dy0+x0t6IhBh1fFwGHV7yLI0DXGexUqDIJBtAxGzat2op+neg==
-  dependencies:
-    "@twa.js/bridge" "1.1.3"
-    "@twa.js/init-data" "0.2.11"
-    "@twa.js/utils" "0.5.0"
-
-"@twa.js/utils@0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@twa.js/utils/-/utils-0.5.0.tgz#6acadd39c7903b52b328d7ef06332f45524a2a05"
-  integrity sha512-aJm5QV33VGxmwWLdJw2Tq3H9UuU6nzrUgteF7NedhpCRkqSd7l9rvgbwixUF3VNf3lByCwz2Ec7f5exG2nk4gg==
 
 "@types/aria-query@^5.0.1":
   version "5.0.1"
@@ -3427,6 +3398,11 @@ cjs-module-lexer@^1.0.0:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/cjs-module-lexer/-/cjs-module-lexer-1.2.3.tgz#6c370ab19f8a3394e318fe682686ec0ac684d107"
   integrity sha512-0TNiGstbQmCFwt4akjjBg5pLRTSyj/PkWQ1ZoO2zntmg9yLqSRxwEa4iCfQLGjqhiqBfOJa7W/E8wfGrTDmlZQ==
+
+classnames@^2.2.5:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
+  integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
 
 clean-css@^5.2.2:
   version "5.3.2"
@@ -6650,6 +6626,11 @@ jsonpointer@^5.0.0:
   resolved "https://registry.yarnpkg.com/jsonpointer/-/jsonpointer-5.0.1.tgz#2110e0af0900fd37467b5907ecd13a7884a1b559"
   integrity sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==
 
+jssha@3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/jssha/-/jssha-3.2.0.tgz#88ec50b866dd1411deaddbe6b3e3692e4c710f16"
+  integrity sha512-QuruyBENDWdN4tZwJbQq7/eAK85FqrI4oDbXjy5IBhYD+2pTJyBUWZe8ctWaCkrV0gy6AaelgOZZBMeswEa/6Q==
+
 "jsx-ast-utils@^2.4.1 || ^3.0.0", jsx-ast-utils@^3.3.3:
   version "3.3.5"
   resolved "https://registry.yarnpkg.com/jsx-ast-utils/-/jsx-ast-utils-3.3.5.tgz#4766bd05a8e2a11af222becd19e15575e52a853a"
@@ -8650,6 +8631,23 @@ raw-body@2.5.1:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
+rc-slider@^10.2.1:
+  version "10.2.1"
+  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-10.2.1.tgz#9b571d19f740adcacdde271f44901a47717fd8da"
+  integrity sha512-l355C/65iV4UFp7mXq5xBTNX2/tF2g74VWiTVlTpNp+6vjE/xaHHNiQq5Af+Uu28uUiqCuH/QXs5HfADL9KJ/A==
+  dependencies:
+    "@babel/runtime" "^7.10.1"
+    classnames "^2.2.5"
+    rc-util "^5.27.0"
+
+rc-util@^5.27.0:
+  version "5.37.0"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.37.0.tgz#6df9a55cb469b41b6995530a45b5f3dd3219a4ea"
+  integrity sha512-cPMV8DzaHI1KDaS7XPRXAf4J7mtBqjvjikLpQieaeOO7+cEbqY2j7Kso/T0R0OiEZTNcLS/8Zl9YrlXiO9UbjQ==
+  dependencies:
+    "@babel/runtime" "^7.18.3"
+    react-is "^16.12.0"
+
 react-app-polyfill@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/react-app-polyfill/-/react-app-polyfill-3.0.0.tgz#95221e0a9bd259e5ca6b177c7bb1cb6768f68fd7"
@@ -8705,7 +8703,7 @@ react-error-overlay@^6.0.11:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.11.tgz#92835de5841c5cf08ba00ddd2d677b6d17ff9adb"
   integrity sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==
 
-react-is@^16.13.1:
+react-is@^16.12.0, react-is@^16.13.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
@@ -9952,7 +9950,23 @@ ton-core@^0.49.0:
   dependencies:
     symbol.inspect "1.0.1"
 
-ton@^13.4.1:
+ton-crypto-primitives@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ton-crypto-primitives/-/ton-crypto-primitives-2.0.0.tgz#e85cd68c0d523f6bdf3f306201a76e51b7e9312e"
+  integrity sha512-K+qKjpS0h9sPW6oExcpxnzuQ7nEgHEiDKwIqE/jWD25o8iFGe3FWj1gKxFNbKE9wwYKc5IV8FwrU+raF0KO5nQ==
+  dependencies:
+    jssha "3.2.0"
+
+ton-crypto@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/ton-crypto/-/ton-crypto-3.2.0.tgz#cf8cd5410d8f04b04b359f80415b11efb312c60e"
+  integrity sha512-fltdBNQ45gARMuGMEOjPZWPJ5eSql8p3CA0Dj7tPv5lhU5ziT8SxXLAzDraR9HJ8YpjBHLVvYyhMLRiEwxgtMQ==
+  dependencies:
+    jssha "3.2.0"
+    ton-crypto-primitives "2.0.0"
+    tweetnacl "1.0.3"
+
+ton@^13.4.1, ton@^13.5.0:
   version "13.6.1"
   resolved "https://registry.yarnpkg.com/ton/-/ton-13.6.1.tgz#72b8b4da460f67209a1a7594452b28d027abd531"
   integrity sha512-CZlFsmO+l+uPSI2zgnUd8zCS5XuWnUSFRVUjRGl5X5fKXYnjaVba4vMaIyFTJwel+uEMnolGMSlNP8DAa9mfVg==
@@ -10033,6 +10047,11 @@ tsutils@^3.21.0:
   integrity sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==
   dependencies:
     tslib "^1.8.1"
+
+tweetnacl@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
+  integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
 type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"

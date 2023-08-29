@@ -2,7 +2,7 @@ import { FC, useState, useMemo } from 'react'
 import { Container } from 'ui/Container/Container'
 import { Line } from 'ui/Line/Line'
 import { Tabs } from 'ui/Tabs/Tabs'
-import { About } from './components'
+import { About, DealTerms } from './components'
 import * as S from './style'
 
 const tabs = [
@@ -23,8 +23,8 @@ export const InfoBlock: FC = () => {
     switch (activeTab.value) {
       case 'about':
         return <About />
-      //   case 'deal_terms':
-      // return <DealTerms />
+      case 'deal_tearms':
+        return <DealTerms />
     }
   }, [activeTab.value])
 

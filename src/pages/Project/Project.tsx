@@ -19,18 +19,6 @@ export const Project: FC = () => {
 
   useCustomBackButton()
 
-  useEffect(() => {
-    tg.onEvent('backButtonClicked', () => {
-      navigate(AppRoutes.Home)
-    })
-
-    return () => {
-      tg.offEvent('backButtonClicked', () => {
-        navigate(AppRoutes.Home)
-      })
-    }
-  }, [navigate, tg])
-
   const {
     data: project,
     isLoading: isProjectLoading,
@@ -69,6 +57,26 @@ export const Project: FC = () => {
       }
     }, []),
   })
+
+  useEffect(() => {
+    if (project) {
+      tg.MainButton.setText('Buy ' + project.metadata.symbol)
+      tg.MainButton.show()
+      tg.MainButton.onClick(() => navigate(`${AppRoutes.Participate}/${id}`))
+    }
+
+    tg.onEvent('backButtonClicked', () => {
+      navigate(AppRoutes.Home)
+    })
+
+    return () => {
+      tg.offEvent('backButtonClicked', () => {
+        navigate(AppRoutes.Home)
+      })
+
+      tg.MainButton.hide()
+    }
+  }, [id, navigate, project, tg])
 
   const icoParams = useMemo(() => {
     if (!project) {
