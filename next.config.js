@@ -3,7 +3,6 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     appDir: false,
-    swcPlugins: [['typewind/swc', {}]],
   },
   images: {
     remotePatterns: [

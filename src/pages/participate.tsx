@@ -91,26 +91,29 @@ const Participate: FC = () => {
     }
   }, [id, project, router, tgOptions])
 
-  const handleSliderValueChange = useCallback((value: number) => {
-    if (!projectSideInfo) {
-      return
-    }
+  const handleSliderValueChange = useCallback(
+    (value: number) => {
+      if (!projectSideInfo) {
+        return
+      }
 
-    const minBuyAmountPercent =
-      (Number(projectSideInfo.minimumBuyToken) /
-        projectSideInfo.maximumBuyToken) *
-      100
+      const minBuyAmountPercent =
+        (Number(projectSideInfo.minimumBuyToken) /
+          projectSideInfo.maximumBuyToken) *
+        100
 
-    const updatedAmountValue = Math.round(
-      (value / 100) * projectSideInfo.maximumBuyToken
-    )
-
-    if (updatedAmountValue >= minBuyAmountPercent) {
-      setCurrentJettonsBuyAmount(
-        Math.round((value / 100) * projectSideInfo.maximumBuyToken)
+      const updatedAmountValue = Math.round(
+        (value / 100) * projectSideInfo.maximumBuyToken
       )
-    }
-  }, [])
+
+      if (updatedAmountValue >= minBuyAmountPercent) {
+        setCurrentJettonsBuyAmount(
+          Math.round((value / 100) * projectSideInfo.maximumBuyToken)
+        )
+      }
+    },
+    [projectSideInfo]
+  )
 
   const sliderValue = useMemo(() => {
     if (!projectSideInfo) {
