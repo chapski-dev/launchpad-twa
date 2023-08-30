@@ -69,7 +69,12 @@ const Project: FC = () => {
         tgOptions.tg.MainButton.setText('Buy ' + project.metadata.symbol)
         tgOptions.tg.MainButton.show()
         tgOptions.tg.MainButton.onClick(() =>
-          router.push(`${AppRoutes.Participate}/${id}`)
+          router.push({
+            pathname: AppRoutes.Participate,
+            query: {
+              id,
+            },
+          })
         )
       }
 

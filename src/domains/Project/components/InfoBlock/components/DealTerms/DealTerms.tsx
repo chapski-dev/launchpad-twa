@@ -37,8 +37,7 @@ export const DealTerms: FC = () => {
           <Line />
           <S.InfoWrapper>
             <S.Title>
-              {projectSideInfo.fundingGoalTON[0] -
-                projectSideInfo.fundingGoalTON[1]}
+              {`${projectSideInfo.fundingGoalTON[0]} - ${projectSideInfo.fundingGoalTON[1]}`}
             </S.Title>
             <S.Label className="text-gray-light">Funding goal</S.Label>
           </S.InfoWrapper>
