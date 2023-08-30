@@ -1,15 +1,17 @@
 import { useEffect } from 'react'
-
-const tg = (window as any).Telegram.WebApp
+import { useTelegram } from 'hooks/useTelegram/useTelegram'
 
 export const useCustomBackButton = () => {
-  const backButton = tg.BackButton
+  const tgOptions = useTelegram()
 
   useEffect(() => {
-    backButton.show()
+    if (tgOptions?.tg) {
+      const backButton = tgOptions.tg.BackButton
+      backButton.show()
 
-    return () => {
-      backButton.hide()
+      return () => {
+        backButton.hide()
+      }
     }
-  }, [backButton])
+  }, [tgOptions?.tg])
 }

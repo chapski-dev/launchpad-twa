@@ -6,20 +6,22 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
+    "@ton-and-company/sdk": "git+https://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@github.com/ton-and-company/ton-contracts-sdk",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "Buffer": "^0.0.0",
     "axios": "^1.5.0",
+    "buffer": "^6.0.3",
+    "dayjs": "^1.11.9",
     "localtunnel": "^2.0.2",
+    "next": "^13.4.19",
     "rc-slider": "^10.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.15.0",
-    "react-scripts": "5.0.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^3.0.1",
     "styled-components": "^6.0.7",
@@ -42,10 +44,9 @@
     "prettier": "^2.7.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "eslintConfig": {
     "extends": [

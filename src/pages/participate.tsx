@@ -1,0 +1,186 @@
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import 'rc-slider/assets/index.css'
+
+import { TnC } from '@ton-and-company/sdk'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import Slider from 'rc-slider'
+import { useQuery } from 'react-query'
+import { useTheme } from 'styled-components'
+import { getICOProjectById } from 'api'
+import { AppRoutes } from 'constants/app'
+import * as S from 'domains/Participate/style'
+import { useCustomBackButton } from 'hooks/useCustomBackButton/useCustomBackButton'
+import { useTelegram } from 'hooks/useTelegram/useTelegram'
+import { Container } from 'ui/Container/Container'
+import { Input } from 'ui/Input/Input'
+import { Loader } from 'ui/Loader/Loader'
+import { formatNumberWithSeparators } from 'utils/formatNumberWithSeparators'
+
+const heightMarks = {
+  0: '0%',
+  25: '25%',
+  50: '50%',
+  75: '75%',
+  100: '100%',
+}
+
+const Participate: FC = () => {
+  const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
+    useState<number>(0)
+
+  const router = useRouter()
+
+  const { id } = router.query
+
+  const theme = useTheme()
+
+  const tgOptions = useTelegram()
+
+  useCustomBackButton()
+
+  const {
+    data: projectSideInfo,
+    isLoading: isProjectSideLoading,
+    isSuccess: isProjectSideLoaded,
+  } = useQuery(['projectSideInfo'], () => TnC.projectInfo(1), {
+    onSuccess: (data) => {
+      setCurrentJettonsBuyAmount(data.minimumBuyToken)
+    },
+  })
+
+  const {
+    data: project,
+    isLoading: isProjectLoading,
+    isSuccess: isProjectLoaded,
+  } = useQuery(['icoProject'], () => getICOProjectById(id as string), {
+    enabled: Boolean(id),
+  })
+
+  useEffect(() => {
+    if (tgOptions?.tg) {
+      if (project) {
+        tgOptions.tg.MainButton.setText('Buy ' + project.metadata.symbol)
+        tgOptions.tg.MainButton.show()
+        tgOptions.tg.MainButton.onClick(() =>
+          alert('Mock handler to buy jettons!')
+        )
+      }
+
+      tgOptions.tg.onEvent('backButtonClicked', () => {
+        router.push({
+          pathname: AppRoutes.Project,
+          query: {
+            id,
+          },
+        })
+      })
+
+      return () => {
+        tgOptions.tg.offEvent('backButtonClicked', () => {
+          router.push({
+            pathname: AppRoutes.Project,
+            query: {
+              id,
+            },
+          })
+        })
+
+        tgOptions.tg.MainButton.hide()
+      }
+    }
+  }, [id, project, router, tgOptions])
+
+  const handleSliderValueChange = useCallback((value: number) => {
+    if (!projectSideInfo) {
+      return
+    }
+
+    const minBuyAmountPercent =
+      (Number(projectSideInfo.minimumBuyToken) /
+        projectSideInfo.maximumBuyToken) *
+      100
+
+    const updatedAmountValue = Math.round(
+      (value / 100) * projectSideInfo.maximumBuyToken
+    )
+
+    if (updatedAmountValue >= minBuyAmountPercent) {
+      setCurrentJettonsBuyAmount(
+        Math.round((value / 100) * projectSideInfo.maximumBuyToken)
+      )
+    }
+  }, [])
+
+  const sliderValue = useMemo(() => {
+    if (!projectSideInfo) {
+      return
+    }
+
+    return (
+      (Number(currentJettonsBuyAmount) / projectSideInfo.maximumBuyToken) * 100
+    )
+  }, [currentJettonsBuyAmount, projectSideInfo])
+
+  if (isProjectLoading || isProjectSideLoading) {
+    return <Loader />
+  }
+
+  if (isProjectLoaded && isProjectSideLoaded) {
+    return (
+      <>
+        <Head>
+          <title>Project</title>
+        </Head>
+        <Container>
+          <S.Wrapper>
+            <S.Title>Buy {project.metadata.symbol} jettons</S.Title>
+            <S.InfoBlockWrapper>
+              <S.InfoTitle>
+                {formatNumberWithSeparators(projectSideInfo.minimumBuyToken)}
+              </S.InfoTitle>
+              <S.InfoLabel>Minimum investment</S.InfoLabel>
+            </S.InfoBlockWrapper>
+            <S.InfoBlockWrapper>
+              <S.InfoTitle>
+                {formatNumberWithSeparators(projectSideInfo.maximumBuyToken)}
+              </S.InfoTitle>
+              <S.InfoLabel>Maximum investment</S.InfoLabel>
+            </S.InfoBlockWrapper>
+            <S.InputWrapper>
+              <Input
+                onChange={(evt) =>
+                  setCurrentJettonsBuyAmount(Number(evt.target.value))
+                }
+                placeholder={`Enter amount of ${project.metadata.symbol} jettons`}
+                value={currentJettonsBuyAmount}
+              />
+              <Slider
+                activeDotStyle={{
+                  borderColor: theme.color.btn,
+                }}
+                handleStyle={{
+                  border: 'solid 2px ' + theme.color.btn,
+                }}
+                marks={heightMarks}
+                max={100}
+                min={0}
+                onChange={(e) => handleSliderValueChange(Number(e))}
+                step={1}
+                style={{ width: '95%', margin: '0 auto' }}
+                trackStyle={{
+                  backgroundColor: theme.color.btn,
+                }}
+                value={sliderValue}
+              />
+            </S.InputWrapper>
+          </S.Wrapper>
+        </Container>
+      </>
+    )
+  }
+
+  return null
+}
+
+export default Participate

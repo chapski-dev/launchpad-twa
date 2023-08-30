@@ -1,4 +1,4 @@
-import { DefaultTheme } from "styled-components";
+import { DefaultTheme } from 'styled-components'
 
 export const theme: DefaultTheme = {
   color: {
@@ -10,4 +10,4 @@ export const theme: DefaultTheme = {
     btnText: `var(--tg-theme-button-text-color)`,
     bgSecondary: `var(--tg-theme-secondary-bg-color)`,
   },
-};
+}

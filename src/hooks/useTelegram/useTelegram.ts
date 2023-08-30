@@ -1,14 +1,22 @@
-const tg = (window as any).Telegram.WebApp
+import { useEffect, useState } from 'react'
 
 export const useTelegram = () => {
-  const onClose = () => {
-    tg.close()
-  }
+  const [tgOptions, setTgOptions] = useState<any>()
 
-  return {
-    tg,
-    onClose,
-    user: tg.initDataUnsafe?.user,
-    backButton: tg.BackButton,
-  }
+  useEffect(() => {
+    const tg = (window as any).Telegram?.WebApp
+
+    const onClose = () => {
+      tg.close()
+    }
+
+    setTgOptions({
+      tg,
+      onClose,
+      user: tg?.initDataUnsafe?.user,
+      backButton: tg?.BackButton,
+    })
+  }, [])
+
+  return tgOptions
 }
