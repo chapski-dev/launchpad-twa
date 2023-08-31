@@ -63,8 +63,6 @@ const Participate: FC = () => {
     enabled: Boolean(id),
   })
 
-  console.log(project)
-
   const handleBuyJettonsClick = useCallback(async () => {
     if (!project) {
       return
