@@ -105,7 +105,7 @@ const Project: FC = () => {
   }, [project])
 
   if (isProjectLoading) {
-    return <Loader />
+    return <Loader type="projectPage" />
   }
 
   if (isProjectLoaded) {

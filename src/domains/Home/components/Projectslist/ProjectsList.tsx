@@ -13,7 +13,7 @@ export const ProjectList: FC = () => {
   } = useQuery(['icoProjects'], () => getICOJettons())
 
   if (isProjectsLoading) {
-    return <Loader />
+    return <Loader type="projectCard" />
   }
 
   if (isProjectsLoaded) {

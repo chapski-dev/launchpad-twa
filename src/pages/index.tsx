@@ -1,4 +1,5 @@
 import { FC, useState } from 'react'
+import { TonConnectButton } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { ProjectList } from 'domains/Home/components'
@@ -33,6 +34,7 @@ const Home: FC = () => {
         <S.Wrapper>
           <Container>
             <S.HeaderWrapper>
+              <TonConnectButton />
               <Input
                 onChange={(evt) => console.log(evt.target.value)}
                 placeholder="Search"

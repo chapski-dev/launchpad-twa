@@ -2,11 +2,13 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import 'rc-slider/assets/index.css'
 
 import { TnC } from '@ton-and-company/sdk'
+import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Slider from 'rc-slider'
 import { useQuery } from 'react-query'
 import { useTheme } from 'styled-components'
+import { Address } from 'ton-core'
 import { getICOProjectById } from 'api'
 import { AppRoutes } from 'constants/app'
 import * as S from 'domains/Participate/style'
@@ -37,6 +39,10 @@ const Participate: FC = () => {
 
   const tgOptions = useTelegram()
 
+  const userWalletAddress = useTonAddress()
+
+  const [tonConnectUI] = useTonConnectUI()
+
   useCustomBackButton()
 
   const {
@@ -57,14 +63,41 @@ const Participate: FC = () => {
     enabled: Boolean(id),
   })
 
+  const handleBuyJettonsClick = useCallback(async () => {
+    if (!project) {
+      return
+    }
+
+    const icoParams = project.tokenomics.find(
+      (tokenomic: any) => tokenomic.value === 'ico'
+    )
+
+    const trxMessage = await TnC.buyJettons(
+      Address.parse(icoParams.address),
+      Address.parse(userWalletAddress),
+      BigInt(currentJettonsBuyAmount)
+    )
+
+    const deployParams = {
+      validUntil: Date.now() + 100000,
+      messages: [trxMessage],
+    }
+
+    const trx = await tonConnectUI.sendTransaction(deployParams, {
+      modals: 'all',
+    })
+
+    if (trx.boc) {
+      console.log(trx.boc)
+    }
+  }, [currentJettonsBuyAmount, project, tonConnectUI, userWalletAddress])
+
   useEffect(() => {
     if (tgOptions?.tg) {
       if (project) {
         tgOptions.tg.MainButton.setText('Buy ' + project.metadata.symbol)
         tgOptions.tg.MainButton.show()
-        tgOptions.tg.MainButton.onClick(() =>
-          alert('Mock handler to buy jettons!')
-        )
+        tgOptions.tg.MainButton.onClick(() => handleBuyJettonsClick())
       }
 
       tgOptions.tg.onEvent('backButtonClicked', () => {
@@ -89,7 +122,7 @@ const Participate: FC = () => {
         tgOptions.tg.MainButton.hide()
       }
     }
-  }, [id, project, router, tgOptions])
+  }, [handleBuyJettonsClick, id, project, router, tgOptions])
 
   const handleSliderValueChange = useCallback(
     (value: number) => {
