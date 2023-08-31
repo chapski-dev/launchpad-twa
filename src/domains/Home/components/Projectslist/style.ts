@@ -9,5 +9,5 @@ export const Wrapper = styled.div`
 `
 
 export const Loader = styled(UILoader)`
-  padding: 24px 12px;
+  padding: 24px 0;
 `
