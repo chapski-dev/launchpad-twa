@@ -210,7 +210,6 @@ const Participate: FC = () => {
                 value={sliderValue}
               />
             </S.InputWrapper>
-            <button onClick={handleBuyJettonsClick}>asdad</button>
           </S.Wrapper>
         </Container>
       </>
