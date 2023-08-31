@@ -22,7 +22,7 @@ export const Loader: FC<LoaderProps> = (props) => {
               backgroundColor={theme.color.bgSecondary}
               foregroundColor={'#ffffff33'}
               height={80}
-              speed={1}
+              speed={2.5}
               viewBox="0 0 320 80"
               width={320}
             >
@@ -35,7 +35,7 @@ export const Loader: FC<LoaderProps> = (props) => {
               backgroundColor={theme.color.bgSecondary}
               foregroundColor="#ffffff33"
               height={80}
-              speed={1}
+              speed={2.5}
               viewBox="0 0 320 80"
               width={320}
             >
@@ -48,7 +48,7 @@ export const Loader: FC<LoaderProps> = (props) => {
               backgroundColor={theme.color.bgSecondary}
               foregroundColor="#ffffff33"
               height={80}
-              speed={1}
+              speed={2.5}
               viewBox="0 0 320 80"
               width={320}
             >
@@ -66,7 +66,7 @@ export const Loader: FC<LoaderProps> = (props) => {
               backgroundColor={theme.color.bgSecondary}
               foregroundColor="#ffffff33"
               height={546}
-              speed={1}
+              speed={2.5}
               viewBox="0 0 343 546"
               width={343}
             >
