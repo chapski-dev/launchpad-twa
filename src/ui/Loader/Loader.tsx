@@ -5,6 +5,7 @@ import * as S from './style'
 
 type LoaderProps = {
   type?: 'projectCard' | 'projectPage'
+  className?: string
 }
 
 export const Loader: FC<LoaderProps> = (props) => {
@@ -16,12 +17,12 @@ export const Loader: FC<LoaderProps> = (props) => {
     switch (type) {
       case 'projectCard':
         return (
-          <>
+          <S.Wrapper>
             <ContentLoader
               backgroundColor={theme.color.bgSecondary}
               foregroundColor={'#ffffff33'}
               height={80}
-              speed={2}
+              speed={1}
               viewBox="0 0 320 80"
               width={320}
             >
@@ -34,7 +35,7 @@ export const Loader: FC<LoaderProps> = (props) => {
               backgroundColor={theme.color.bgSecondary}
               foregroundColor="#ffffff33"
               height={80}
-              speed={2}
+              speed={1}
               viewBox="0 0 320 80"
               width={320}
             >
@@ -47,7 +48,7 @@ export const Loader: FC<LoaderProps> = (props) => {
               backgroundColor={theme.color.bgSecondary}
               foregroundColor="#ffffff33"
               height={80}
-              speed={2}
+              speed={1}
               viewBox="0 0 320 80"
               width={320}
             >
@@ -56,7 +57,7 @@ export const Loader: FC<LoaderProps> = (props) => {
               <rect height="16" rx="8" width="210" x="92" y="24" />
               <rect height="16" rx="8" width="181" x="92" y="46" />
             </ContentLoader>
-          </>
+          </S.Wrapper>
         )
       case 'projectPage':
         return (
@@ -65,7 +66,7 @@ export const Loader: FC<LoaderProps> = (props) => {
               backgroundColor={theme.color.bgSecondary}
               foregroundColor="#ffffff33"
               height={546}
-              speed={2}
+              speed={1}
               viewBox="0 0 343 546"
               width={343}
             >
