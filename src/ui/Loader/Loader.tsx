@@ -9,7 +9,7 @@ type LoaderProps = {
 }
 
 export const Loader: FC<LoaderProps> = (props) => {
-  const { type } = props
+  const { type, className } = props
 
   const theme = useTheme()
 
@@ -17,7 +17,7 @@ export const Loader: FC<LoaderProps> = (props) => {
     switch (type) {
       case 'projectCard':
         return (
-          <S.Wrapper>
+          <S.Wrapper className={className}>
             <ContentLoader
               backgroundColor={theme.color.bgSecondary}
               foregroundColor={'#ffffff33'}
@@ -61,7 +61,7 @@ export const Loader: FC<LoaderProps> = (props) => {
         )
       case 'projectPage':
         return (
-          <S.Wrapper>
+          <S.Wrapper className={className}>
             <ContentLoader
               backgroundColor={theme.color.bgSecondary}
               foregroundColor="#ffffff33"
@@ -82,7 +82,7 @@ export const Loader: FC<LoaderProps> = (props) => {
       default:
         return <div>Loading ..</div>
     }
-  }, [theme.color.bgSecondary, type])
+  }, [theme.color.bgSecondary, type, className])
 
   return loaderContent
 }

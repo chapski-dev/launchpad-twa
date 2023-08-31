@@ -1,7 +1,6 @@
 import { FC } from 'react'
 import { useQuery } from 'react-query'
 import { getICOJettons } from 'api'
-import { Loader } from 'ui/Loader/Loader'
 import { ProjectCard } from './components'
 import * as S from './style'
 
@@ -13,7 +12,7 @@ export const ProjectList: FC = () => {
   } = useQuery(['icoProjects'], () => getICOJettons())
 
   if (isProjectsLoading) {
-    return <Loader type="projectCard" />
+    return <S.Loader type="projectCard" />
   }
 
   if (isProjectsLoaded) {

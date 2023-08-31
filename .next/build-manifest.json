@@ -27,10 +27,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/project": [
+    "/participate": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/project.js"
+      "static/chunks/pages/participate.js"
     ]
   },
   "ampFirstPages": []

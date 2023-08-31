@@ -63,14 +63,16 @@ const Participate: FC = () => {
     enabled: Boolean(id),
   })
 
+  console.log(project)
+
   const handleBuyJettonsClick = useCallback(async () => {
     if (!project) {
       return
     }
 
     const icoParams = project.tokenomics.find(
-      (tokenomic: any) => tokenomic.value === 'ico'
-    )
+      (tokenomic: any) => tokenomic.name === 'ico'
+    )?.value
 
     const trxMessage = await TnC.buyJettons(
       Address.parse(icoParams.address),
@@ -210,6 +212,7 @@ const Participate: FC = () => {
                 value={sliderValue}
               />
             </S.InputWrapper>
+            <button onClick={handleBuyJettonsClick}>asdad</button>
           </S.Wrapper>
         </Container>
       </>
