@@ -1,4 +1,3 @@
-import ReactMarkdown from 'react-markdown'
 import { styled } from 'styled-components'
 
 export const Wrapper = styled.div`
@@ -39,6 +38,7 @@ export const Link = styled.a`
 export const Image = styled.img`
   margin: 12px 0;
   max-width: 100%;
+  border-radius: 4px;
 `
 
 export const ListItem = styled.li`

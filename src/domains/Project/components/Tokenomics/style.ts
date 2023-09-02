@@ -14,3 +14,12 @@ export const Title = styled.h3`
   line-height: 32px;
   color: ${({ theme }) => theme.color.text};
 `
+
+export const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 12px;
+`

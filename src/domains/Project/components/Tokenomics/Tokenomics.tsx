@@ -1,6 +1,7 @@
-import { FC, useMemo } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { tonAddressExplorerLink } from 'constants/app'
 import { Container } from 'ui/Container/Container'
+import { Tabs } from 'ui/Tabs/Tabs'
 import { ChartBlock, StatBlock } from './components'
 import * as S from './style'
 
@@ -19,8 +20,21 @@ type IDistributionManagmentProps = {
   icoParams?: any
 }
 
+const tabs = [
+  {
+    label: 'Tokenomics',
+    value: 'tokenomics',
+  },
+  {
+    label: 'Sale Fund Distribution',
+    value: 'fund',
+  },
+]
+
 export const Tokenomics: FC<IDistributionManagmentProps> = (props) => {
   const { distributions, totalSupply, icoParams } = props
+
+  const [activeContentTab, setActiveContentTab] = useState(tabs[0])
 
   const chartItems = useMemo(() => {
     const distributionChartItems = distributions.map((distribution, idx) => ({
@@ -76,8 +90,15 @@ export const Tokenomics: FC<IDistributionManagmentProps> = (props) => {
     <Container>
       <S.Wrapper>
         <S.Title>Tokenomics:</S.Title>
-        <ChartBlock chartItems={chartItems} />
-        <StatBlock stats={stats} />
+        <S.ContentWrapper>
+          <Tabs
+            activeTab={activeContentTab}
+            onChange={setActiveContentTab}
+            tabs={tabs}
+          />
+          <ChartBlock chartItems={chartItems} />
+          <StatBlock stats={stats} />
+        </S.ContentWrapper>
       </S.Wrapper>
     </Container>
   )

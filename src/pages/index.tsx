@@ -1,7 +1,8 @@
-import { FC, useState } from 'react'
-import { TonConnectButton } from '@tonconnect/ui-react'
+import { FC, useEffect, useState } from 'react'
+import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
+import { Chains } from 'constants/app'
 import { ProjectList } from 'domains/Home/components'
 import * as S from 'domains/Home/style'
 import { Container } from 'ui/Container/Container'
@@ -24,6 +25,22 @@ const inter = Inter({ subsets: ['latin'] })
 
 const Home: FC = () => {
   const [selectedTab, setSelectedTab] = useState<TabItem>(mockTabs[0])
+
+  const [tonConnectUI] = useTonConnectUI()
+
+  useEffect(() => {
+    tonConnectUI.onStatusChange((wallet) => {
+      if (wallet !== null) {
+        if (Chains[wallet.account.chain] === 'mainnet') {
+          alert('Please, connect testnet wallet')
+
+          tonConnectUI.disconnect()
+
+          return
+        }
+      }
+    })
+  }, [tonConnectUI])
 
   return (
     <>

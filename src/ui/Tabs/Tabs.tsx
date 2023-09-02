@@ -22,8 +22,8 @@ export const Tabs: FC<TabsProps> = (props) => {
 
         return (
           <S.TabItem key={tab.value} onClick={() => onChange(tab)}>
-            <S.TabItemLabel isActive={isActive}>{tab.label}</S.TabItemLabel>
-            <S.TabLine isActive={isActive} />
+            <S.TabItemLabel $isActive={isActive}>{tab.label}</S.TabItemLabel>
+            <S.TabLine $isActive={isActive} />
           </S.TabItem>
         )
       })}

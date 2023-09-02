@@ -1,18 +1,18 @@
-import { ChangeEvent, HTMLInputTypeAttribute, FC } from "react";
-import * as S from "./style";
+import { ChangeEvent, HTMLInputTypeAttribute, FC, useCallback } from 'react'
+import * as S from './style'
 
 export type InputProps = {
-  className?: string;
-  disabled?: boolean;
-  onChange: (evt: ChangeEvent<HTMLInputElement>) => void;
-  value?: string | number;
-  error?: boolean;
-  placeholder?: string;
-  name?: string;
-  type?: HTMLInputTypeAttribute;
-  max?: number;
-  min?: number;
-};
+  className?: string
+  disabled?: boolean
+  onChange: (evt: ChangeEvent<HTMLInputElement>) => void
+  value?: string | number
+  error?: boolean
+  placeholder?: string
+  name?: string
+  type?: HTMLInputTypeAttribute
+  max?: number
+  min?: number
+}
 export const Input: FC<InputProps> = (props) => {
   const {
     className,
@@ -22,10 +22,17 @@ export const Input: FC<InputProps> = (props) => {
     error,
     placeholder,
     name,
-    type,
     max,
     min,
-  } = props;
+  } = props
+
+  const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    if (max && Number(evt.target.value) > max) {
+      evt.target.value = max.toString()
+    }
+
+    onChange?.(evt)
+  }
 
   return (
     <S.Input
@@ -35,10 +42,9 @@ export const Input: FC<InputProps> = (props) => {
       max={max}
       min={min}
       name={name}
-      onChange={(e) => onChange(e)}
+      onChange={handleChange}
       placeholder={placeholder}
-      type={type}
       value={value}
     />
-  );
-};
+  )
+}

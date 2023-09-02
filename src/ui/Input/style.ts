@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 export const Input = styled.input<{ error?: boolean; disabled?: boolean }>`
   color: ${({ theme }) => theme.color.text};
   font-weight: 300;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 14px;
   background-color: ${({ theme }) => theme.color.bgSecondary};
   width: 100%;

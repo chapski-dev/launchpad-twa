@@ -18,6 +18,7 @@ import { Container } from 'ui/Container/Container'
 import { Input } from 'ui/Input/Input'
 import { Loader } from 'ui/Loader/Loader'
 import { formatNumberWithSeparators } from 'utils/formatNumberWithSeparators'
+import { getBalance } from 'utils/getBalance'
 
 const heightMarks = {
   0: '0%',
@@ -51,7 +52,7 @@ const Participate: FC = () => {
     isSuccess: isProjectSideLoaded,
   } = useQuery(['projectSideInfo'], () => TnC.projectInfo(1), {
     onSuccess: (data) => {
-      setCurrentJettonsBuyAmount(data.minimumBuyToken)
+      setCurrentJettonsBuyAmount(data.minimumBuyTON)
     },
   })
 
@@ -63,8 +64,23 @@ const Participate: FC = () => {
     enabled: Boolean(id),
   })
 
+  const {
+    data: balance,
+    isLoading: isBalanceLoading,
+    isSuccess: isBalanceLoaded,
+  } = useQuery([''], () => getBalance(userWalletAddress, 'testnet'), {
+    enabled: !!userWalletAddress,
+  })
+
   const handleBuyJettonsClick = useCallback(async () => {
-    if (!project) {
+    if (!project || !balance || !projectSideInfo) {
+      return
+    }
+
+    if (balance - 0.2 < projectSideInfo.maximumBuyTON) {
+      alert(
+        `You don't have enough TON in your account to purchase ${project.metadata.symbol}`
+      )
       return
     }
 
@@ -90,7 +106,14 @@ const Participate: FC = () => {
     if (trx.boc) {
       console.log(trx.boc)
     }
-  }, [currentJettonsBuyAmount, project, tonConnectUI, userWalletAddress])
+  }, [
+    balance,
+    currentJettonsBuyAmount,
+    project,
+    projectSideInfo,
+    tonConnectUI,
+    userWalletAddress,
+  ])
 
   useEffect(() => {
     if (tgOptions?.tg) {
@@ -131,17 +154,17 @@ const Participate: FC = () => {
       }
 
       const minBuyAmountPercent =
-        (Number(projectSideInfo.minimumBuyToken) /
-          projectSideInfo.maximumBuyToken) *
+        (Number(projectSideInfo.minimumBuyTON) /
+          projectSideInfo.maximumBuyTON) *
         100
 
       const updatedAmountValue = Math.round(
-        (value / 100) * projectSideInfo.maximumBuyToken
+        (value / 100) * projectSideInfo.maximumBuyTON
       )
 
       if (updatedAmountValue >= minBuyAmountPercent) {
         setCurrentJettonsBuyAmount(
-          Math.round((value / 100) * projectSideInfo.maximumBuyToken)
+          Math.round((value / 100) * projectSideInfo.maximumBuyTON)
         )
       }
     },
@@ -154,15 +177,15 @@ const Participate: FC = () => {
     }
 
     return (
-      (Number(currentJettonsBuyAmount) / projectSideInfo.maximumBuyToken) * 100
+      (Number(currentJettonsBuyAmount) / projectSideInfo.maximumBuyTON) * 100
     )
   }, [currentJettonsBuyAmount, projectSideInfo])
 
-  if (isProjectLoading || isProjectSideLoading) {
+  if (isProjectLoading || isProjectSideLoading || isBalanceLoading) {
     return <Loader />
   }
 
-  if (isProjectLoaded && isProjectSideLoaded) {
+  if (isProjectLoaded && isProjectSideLoaded && isBalanceLoaded) {
     return (
       <>
         <Head>
@@ -173,22 +196,25 @@ const Participate: FC = () => {
             <S.Title>Buy {project.metadata.symbol} jettons</S.Title>
             <S.InfoBlockWrapper>
               <S.InfoTitle>
-                {formatNumberWithSeparators(projectSideInfo.minimumBuyToken)}
+                {formatNumberWithSeparators(projectSideInfo.minimumBuyTON)}
               </S.InfoTitle>
               <S.InfoLabel>Minimum investment</S.InfoLabel>
             </S.InfoBlockWrapper>
             <S.InfoBlockWrapper>
               <S.InfoTitle>
-                {formatNumberWithSeparators(projectSideInfo.maximumBuyToken)}
+                {formatNumberWithSeparators(projectSideInfo.maximumBuyTON)}
               </S.InfoTitle>
               <S.InfoLabel>Maximum investment</S.InfoLabel>
             </S.InfoBlockWrapper>
             <S.InputWrapper>
               <Input
+                max={projectSideInfo.maximumBuyTON}
+                min={projectSideInfo.maximumBuyTON}
                 onChange={(evt) =>
                   setCurrentJettonsBuyAmount(Number(evt.target.value))
                 }
                 placeholder={`Enter amount of ${project.metadata.symbol} jettons`}
+                type="number"
                 value={currentJettonsBuyAmount}
               />
               <Slider

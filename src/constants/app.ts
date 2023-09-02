@@ -5,3 +5,8 @@ export const AppRoutes = {
 } as const
 
 export const tonAddressExplorerLink = 'https://testnet.ton.cx/address/'
+
+export const Chains = {
+  '-3': 'testnet',
+  '-239': 'mainnet',
+} as const

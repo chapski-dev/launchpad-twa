@@ -1,4 +1,5 @@
 import { FC, useEffect, useCallback, useMemo } from 'react'
+import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
@@ -14,9 +15,14 @@ import { useCustomBackButton } from 'hooks/useCustomBackButton/useCustomBackButt
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
+import { getBalance } from 'utils/getBalance'
 
 const Project: FC = () => {
   const router = useRouter()
+
+  const userWalletAddress = useTonAddress()
+
+  const [tonConnectUI] = useTonConnectUI()
 
   const { id } = router.query
 
@@ -66,16 +72,26 @@ const Project: FC = () => {
   useEffect(() => {
     if (tgOptions?.tg) {
       if (project) {
-        tgOptions.tg.MainButton.setText('Buy ' + project.metadata.symbol)
-        tgOptions.tg.MainButton.show()
-        tgOptions.tg.MainButton.onClick(() =>
-          router.push({
-            pathname: AppRoutes.Participate,
-            query: {
-              id,
-            },
-          })
+        const handleMainButtonClick = () => {
+          if (userWalletAddress) {
+            router.push({
+              pathname: AppRoutes.Participate,
+              query: {
+                id,
+              },
+            })
+          }
+
+          tonConnectUI.connectWallet()
+        }
+
+        tgOptions.tg.MainButton.setText(
+          userWalletAddress
+            ? 'Buy ' + project.metadata.symbol
+            : 'Connect Wallet'
         )
+        tgOptions.tg.MainButton.show()
+        tgOptions.tg.MainButton.onClick(() => handleMainButtonClick())
       }
 
       tgOptions.tg.onEvent('backButtonClicked', () => {
@@ -90,7 +106,7 @@ const Project: FC = () => {
         tgOptions.tg.MainButton.hide()
       }
     }
-  }, [id, project, router, tgOptions])
+  }, [id, project, router, tgOptions, tonConnectUI, userWalletAddress])
 
   const icoParams = useMemo(() => {
     if (!project) {
