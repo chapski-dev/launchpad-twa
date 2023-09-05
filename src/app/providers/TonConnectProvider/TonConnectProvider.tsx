@@ -12,5 +12,4 @@ export const TonConnectProvider: FCWithChildren = (props) => {
   )
 }
 
-const MANIFEST_URL =
-  'https://launchpad-front-end.vercel.app/tonconnect-manifest.json'
+const MANIFEST_URL = 'https://secret-land.tokenova.fi/tonconnect-manifest.json'
