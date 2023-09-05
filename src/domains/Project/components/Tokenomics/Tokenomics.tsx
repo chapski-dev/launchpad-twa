@@ -18,29 +18,30 @@ type IDistributionManagmentProps = {
   distributions: any[]
   totalSupply: number
   icoParams?: any
+  icoFundDistributions: any[]
 }
 
-const tabs = [
-  {
+export const Tokenomics: FC<IDistributionManagmentProps> = (props) => {
+  const { distributions, totalSupply, icoParams, icoFundDistributions } = props
+
+  const [activeContentTab, setActiveContentTab] = useState({
     label: 'Tokenomics',
     value: 'tokenomics',
-  },
-  {
-    label: 'Sale Fund Distribution',
-    value: 'fund',
-  },
-]
+  })
 
-export const Tokenomics: FC<IDistributionManagmentProps> = (props) => {
-  const { distributions, totalSupply, icoParams } = props
-
-  const [activeContentTab, setActiveContentTab] = useState(tabs[0])
+  const currentDistributions = useMemo(() => {
+    return activeContentTab.value === 'fund'
+      ? icoFundDistributions
+      : distributions
+  }, [activeContentTab.value, distributions, icoFundDistributions])
 
   const chartItems = useMemo(() => {
-    const distributionChartItems = distributions.map((distribution, idx) => ({
-      color: colors[idx],
-      percent: Math.floor((Number(distribution.value) / totalSupply) * 100),
-    }))
+    const distributionChartItems = currentDistributions.map(
+      (distribution, idx) => ({
+        color: colors[idx],
+        percent: Math.floor((Number(distribution.value) / totalSupply) * 100),
+      })
+    )
 
     if (icoParams) {
       const icoChartParam = {
@@ -54,10 +55,10 @@ export const Tokenomics: FC<IDistributionManagmentProps> = (props) => {
     }
 
     return distributionChartItems
-  }, [distributions, icoParams, totalSupply])
+  }, [currentDistributions, icoParams, totalSupply])
 
   const stats = useMemo(() => {
-    const distributionsStats = distributions.map((distribution, idx) => {
+    const distributionsStats = currentDistributions.map((distribution, idx) => {
       return {
         label: distribution.target + ' distribution',
         value: distribution.value,
@@ -84,7 +85,25 @@ export const Tokenomics: FC<IDistributionManagmentProps> = (props) => {
     }
 
     return distributionsStats
-  }, [distributions, icoParams, totalSupply])
+  }, [currentDistributions, icoParams, totalSupply])
+
+  const tabs = useMemo(() => {
+    const initialTabs = [
+      {
+        label: 'Tokenomics',
+        value: 'tokenomics',
+      },
+    ]
+
+    if (icoFundDistributions) {
+      initialTabs.push({
+        label: 'Sale Fund Distribution',
+        value: 'fund',
+      })
+    }
+
+    return initialTabs
+  }, [icoFundDistributions])
 
   return (
     <Container>

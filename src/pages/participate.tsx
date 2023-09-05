@@ -119,8 +119,10 @@ const Participate: FC = () => {
     if (tgOptions?.tg) {
       if (project) {
         tgOptions.tg.MainButton.setText('Buy ' + project.metadata.symbol)
-        tgOptions.tg.MainButton.show()
+
         tgOptions.tg.MainButton.onClick(() => handleBuyJettonsClick())
+
+        tgOptions.tg.MainButton.show()
       }
 
       tgOptions.tg.onEvent('backButtonClicked', () => {
@@ -141,6 +143,8 @@ const Participate: FC = () => {
             },
           })
         })
+
+        tgOptions.tg.MainButton.offClick(() => handleBuyJettonsClick())
 
         tgOptions.tg.MainButton.hide()
       }

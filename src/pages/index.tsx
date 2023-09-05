@@ -51,11 +51,14 @@ const Home: FC = () => {
         <S.Wrapper>
           <Container>
             <S.HeaderWrapper>
-              <TonConnectButton />
-              <Input
-                onChange={(evt) => console.log(evt.target.value)}
-                placeholder="Search"
-              />
+              <S.FlexWrapper>
+                <S.Input
+                  onChange={(evt) => console.log(evt.target.value)}
+                  placeholder="Search"
+                />
+                <S.ConnectButton />
+              </S.FlexWrapper>
+
               <Tabs
                 activeTab={selectedTab}
                 onChange={setSelectedTab}

@@ -71,20 +71,22 @@ const Project: FC = () => {
 
   useEffect(() => {
     if (tgOptions?.tg) {
-      if (project) {
-        const handleMainButtonClick = () => {
-          if (userWalletAddress) {
-            router.push({
-              pathname: AppRoutes.Participate,
-              query: {
-                id,
-              },
-            })
-          }
+      const handleMainButtonClick = () => {
+        if (!userWalletAddress) {
+          tgOptions.tg.MainButton.disable()
 
-          tonConnectUI.connectWallet()
+          return
         }
 
+        router.push({
+          pathname: AppRoutes.Participate,
+          query: {
+            id,
+          },
+        })
+      }
+
+      if (project) {
         tgOptions.tg.MainButton.setText(
           userWalletAddress
             ? 'Buy ' + project.metadata.symbol
@@ -104,6 +106,8 @@ const Project: FC = () => {
         })
 
         tgOptions.tg.MainButton.hide()
+
+        tgOptions.tg.MainButton.offClick(() => handleMainButtonClick())
       }
     }
   }, [id, project, router, tgOptions, tonConnectUI, userWalletAddress])
@@ -125,6 +129,16 @@ const Project: FC = () => {
       ?.value
   }, [project])
 
+  const icoFundDistributions = useMemo(() => {
+    if (!project) {
+      return
+    }
+
+    return project.tokenomics.find(
+      ({ name }: any) => name === 'icoDistribution'
+    )?.value
+  }, [project])
+
   if (isProjectLoading) {
     return <Loader type="projectPage" />
   }
@@ -144,6 +158,7 @@ const Project: FC = () => {
           <Line />
           <Tokenomics
             distributions={distributions}
+            icoFundDistributions={icoFundDistributions}
             icoParams={icoParams}
             totalSupply={project.totalSupply}
           />
