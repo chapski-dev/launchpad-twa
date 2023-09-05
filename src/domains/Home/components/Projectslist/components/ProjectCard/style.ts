@@ -39,4 +39,38 @@ export const Description = styled.p`
   font-weight: 400;
   font-size: 14px;
   color: ${({ theme }) => theme.color.hint};
+
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -ms-line-clamp: 2;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  display: -webkit-box;
+  display: box;
+  word-wrap: break-word;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+`
+
+export const Label = styled.span<{ isBold?: boolean }>`
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  color: ${({ theme }) => theme.color.text};
+  font-weight: ${({ isBold }) => (isBold ? 500 : 400)};
+`
+
+export const FlexWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+export const Dot = styled.div`
+  border-radius: 50%;
+  width: 2px;
+  height: 2px;
+  background-color: ${({ theme }) => theme.color.hint};
 `

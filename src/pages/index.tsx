@@ -1,12 +1,11 @@
 import { FC, useEffect, useState } from 'react'
-import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react'
+import { useTonConnectUI } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { Chains } from 'constants/app'
 import { ProjectList } from 'domains/Home/components'
 import * as S from 'domains/Home/style'
 import { Container } from 'ui/Container/Container'
-import { Input } from 'ui/Input/Input'
 import { Line } from 'ui/Line/Line'
 import { TabItem, Tabs } from 'ui/Tabs/Tabs'
 
