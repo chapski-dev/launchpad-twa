@@ -147,6 +147,8 @@ const Project: FC = () => {
       </>
     )
   }
+
+  return null
 }
 
 export default Project
