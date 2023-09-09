@@ -66,7 +66,9 @@ export const Tokenomics: FC<IDistributionManagmentProps> = (props) => {
           ((Number(distribution.value) / totalSupply) * 100).toFixed(2)
         ),
         color: colors[idx],
-        link: tonAddressExplorerLink + distribution.address,
+        link: distribution.address
+          ? tonAddressExplorerLink + distribution.address
+          : null,
       }
     })
 

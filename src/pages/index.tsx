@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState, ChangeEvent, useCallback } from 'react'
 import { useTonConnectUI } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
@@ -6,6 +6,7 @@ import { Chains } from 'constants/app'
 import { ProjectList } from 'domains/Home/components'
 import { Loader } from 'domains/Home/components/Projectslist/style'
 import * as S from 'domains/Home/style'
+import { useDebounce } from 'hooks/useDebounce/useDebounce'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
 import { Line } from 'ui/Line/Line'
@@ -26,6 +27,10 @@ const inter = Inter({ subsets: ['latin'] })
 
 const Home: FC = () => {
   const [selectedTab, setSelectedTab] = useState<TabItem>(mockTabs[0])
+  const [searchValue, setSearchValue] = useState<string>('')
+  const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false)
+
+  const debaunceSearchValue = useDebounce(searchValue)
 
   const [tonConnectUI] = useTonConnectUI()
 
@@ -45,6 +50,15 @@ const Home: FC = () => {
     })
   }, [tonConnectUI])
 
+  const handleSearchInputChange = useCallback(
+    (evt: ChangeEvent<HTMLInputElement>) => {
+      setSearchValue(evt.target.value)
+    },
+    []
+  )
+
+  console.log(isSearchFocused)
+
   if (!tgOptions) {
     return <Loader type="projectCard" />
   }
@@ -60,10 +74,13 @@ const Home: FC = () => {
             <S.HeaderWrapper>
               <S.FlexWrapper>
                 <S.Input
-                  onChange={(evt) => console.log(evt.target.value)}
+                  isFocused={isSearchFocused}
+                  onBlur={() => setIsSearchFocused(false)}
+                  onChange={handleSearchInputChange}
+                  onFocus={() => setIsSearchFocused(true)}
                   placeholder="Search"
                 />
-                <S.ConnectButton />
+                {!isSearchFocused && <S.ConnectButton />}
               </S.FlexWrapper>
 
               <Tabs
@@ -75,7 +92,7 @@ const Home: FC = () => {
           </Container>
           <Line />
           <Container>
-            <ProjectList />
+            <ProjectList search={debaunceSearchValue} />
           </Container>
         </S.Wrapper>
       </main>

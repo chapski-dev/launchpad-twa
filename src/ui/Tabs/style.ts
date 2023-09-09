@@ -4,6 +4,7 @@ export const Wrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
+  width: 100%;
 `
 
 export const TabItem = styled.div`

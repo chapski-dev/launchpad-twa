@@ -6,7 +6,7 @@ type StatBlockProps = {
   stats: {
     label: string
     value: string
-    link?: string
+    link: string | null
     color: string
     percent: number
   }[]

@@ -1,5 +1,6 @@
-import { FC, useEffect, useCallback, useMemo } from 'react'
+import { FC, useCallback, useMemo } from 'react'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
+import { MainButton, BackButton } from '@twa-dev/sdk/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
@@ -11,7 +12,6 @@ import {
   Tokenomics,
 } from 'domains/Project/components'
 import * as S from 'domains/Project/style'
-import { useCustomBackButton } from 'hooks/useCustomBackButton/useCustomBackButton'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
@@ -23,11 +23,9 @@ const Project: FC = () => {
 
   const [tonConnectUI] = useTonConnectUI()
 
-  const { id } = router.query
-
   const tgOptions = useTelegram()
 
-  useCustomBackButton()
+  const { id } = router.query
 
   const {
     data: project,
@@ -68,52 +66,20 @@ const Project: FC = () => {
     }, []),
   })
 
-  useEffect(() => {
-    if (tgOptions?.tg) {
-      tgOptions.tg.MainButton.enable()
+  const handleMainButtonClick = useCallback(() => {
+    if (!userWalletAddress) {
+      tonConnectUI.connectWallet()
 
-      const handleMainButtonClick = () => {
-        if (!userWalletAddress) {
-          tgOptions.tg.MainButton.disable()
-
-          return
-        }
-
-        tgOptions.tg.MainButton.enable()
-
-        router.push({
-          pathname: AppRoutes.Participate,
-          query: {
-            id,
-          },
-        })
-      }
-
-      if (project) {
-        tgOptions.tg.MainButton.setText(
-          userWalletAddress
-            ? 'Buy ' + project.metadata.symbol
-            : 'Connect Wallet'
-        )
-        tgOptions.tg.MainButton.show()
-        tgOptions.tg.MainButton.onClick(() => handleMainButtonClick())
-      }
-
-      tgOptions.tg.onEvent('backButtonClicked', () => {
-        router.push(AppRoutes.Home)
-      })
-
-      return () => {
-        tgOptions.tg.offEvent('backButtonClicked', () => {
-          router.push(AppRoutes.Home)
-        })
-
-        tgOptions.tg.MainButton.hide()
-
-        tgOptions.tg.MainButton.offClick(() => handleMainButtonClick())
-      }
+      return
     }
-  }, [id, project, router, tgOptions, tonConnectUI, userWalletAddress])
+
+    router.push({
+      pathname: AppRoutes.Participate,
+      query: {
+        id,
+      },
+    })
+  }, [id, router, tonConnectUI, userWalletAddress])
 
   const icoParams = useMemo(() => {
     if (!project) {
@@ -153,6 +119,7 @@ const Project: FC = () => {
           <title>Project</title>
         </Head>
         <S.Wrapper>
+          <BackButton onClick={() => router.back()} />
           <ProjectaInfoHeader
             description={project.metadata.description}
             image={project.metadata.image}
@@ -167,11 +134,19 @@ const Project: FC = () => {
           />
           <InfoBlock />
         </S.Wrapper>
+        {tgOptions && (
+          <MainButton
+            onClick={handleMainButtonClick}
+            text={
+              userWalletAddress
+                ? 'Buy ' + project.metadata.symbol
+                : 'Connect Wallet'
+            }
+          />
+        )}
       </>
     )
   }
-
-  return null
 }
 
 export default Project

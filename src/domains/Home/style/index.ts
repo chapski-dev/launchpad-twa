@@ -19,17 +19,20 @@ export const FlexWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
 `
 
-export const Input = styled(UIInput)`
-  width: fit-content;
+export const Input = styled(UIInput)<{ isFocused?: boolean }>`
+  width: ${({ isFocused }) => (isFocused ? '100%' : 'fit-content')};
   height: fit-content;
 `
 
 export const ConnectButton = styled(TonConnectButton)`
+  width: 100%;
   button {
     border-radius: 10px;
     height: fit-content;
+    padding: 13px 29px;
   }
 
   div {
