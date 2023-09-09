@@ -24,11 +24,18 @@ export const Input: FC<InputProps> = (props) => {
     name,
     max,
     min,
+    type,
   } = props
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     if (max && Number(evt.target.value) > max) {
       evt.target.value = max.toString()
+
+      return
+    }
+
+    if (type === 'number' && min && isNaN(Number(evt.target.value))) {
+      evt.target.value = min.toString()
     }
 
     onChange?.(evt)

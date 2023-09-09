@@ -15,7 +15,6 @@ import { useCustomBackButton } from 'hooks/useCustomBackButton/useCustomBackButt
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
-import { getBalance } from 'utils/getBalance'
 
 const Project: FC = () => {
   const router = useRouter()
@@ -71,12 +70,16 @@ const Project: FC = () => {
 
   useEffect(() => {
     if (tgOptions?.tg) {
+      tgOptions.tg.MainButton.enable()
+
       const handleMainButtonClick = () => {
         if (!userWalletAddress) {
           tgOptions.tg.MainButton.disable()
 
           return
         }
+
+        tgOptions.tg.MainButton.enable()
 
         router.push({
           pathname: AppRoutes.Participate,

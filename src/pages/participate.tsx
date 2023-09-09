@@ -32,6 +32,8 @@ const Participate: FC = () => {
   const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
     useState<number>(0)
 
+  const [isMainButtonClicked, setIsMainButtonClicked] = useState<boolean>(false)
+
   const router = useRouter()
 
   const { id } = router.query
@@ -73,42 +75,45 @@ const Participate: FC = () => {
   })
 
   const handleBuyJettonsClick = useCallback(async () => {
-    if (!project || !balance || !projectSideInfo) {
-      return
-    }
+    if (isMainButtonClicked) {
+      if (!project || !balance || !projectSideInfo) {
+        return
+      }
 
-    if (balance - 0.2 < projectSideInfo.maximumBuyTON) {
-      alert(
-        `You don't have enough TON in your account to purchase ${project.metadata.symbol}`
+      if (balance - 0.2 < projectSideInfo.maximumBuyTON) {
+        alert(
+          `You don't have enough TON in your account to purchase ${project.metadata.symbol}`
+        )
+        return
+      }
+
+      const icoParams = project.tokenomics.find(
+        (tokenomic: any) => tokenomic.name === 'ico'
+      )?.value
+
+      const trxMessage = await TnC.buyJettons(
+        Address.parse(icoParams.address),
+        Address.parse(userWalletAddress),
+        BigInt(currentJettonsBuyAmount)
       )
-      return
-    }
 
-    const icoParams = project.tokenomics.find(
-      (tokenomic: any) => tokenomic.name === 'ico'
-    )?.value
+      const deployParams = {
+        validUntil: Date.now() + 100000,
+        messages: [trxMessage],
+      }
 
-    const trxMessage = await TnC.buyJettons(
-      Address.parse(icoParams.address),
-      Address.parse(userWalletAddress),
-      BigInt(currentJettonsBuyAmount)
-    )
+      const trx = await tonConnectUI.sendTransaction(deployParams, {
+        modals: 'all',
+      })
 
-    const deployParams = {
-      validUntil: Date.now() + 100000,
-      messages: [trxMessage],
-    }
-
-    const trx = await tonConnectUI.sendTransaction(deployParams, {
-      modals: 'all',
-    })
-
-    if (trx.boc) {
-      console.log(trx.boc)
+      if (trx.boc) {
+        console.log(trx.boc)
+      }
     }
   }, [
     balance,
     currentJettonsBuyAmount,
+    isMainButtonClicked,
     project,
     projectSideInfo,
     tonConnectUI,
@@ -118,9 +123,13 @@ const Participate: FC = () => {
   useEffect(() => {
     if (tgOptions?.tg) {
       if (project) {
+        tgOptions.tg.MainButton.enable()
         tgOptions.tg.MainButton.setText('Buy ' + project.metadata.symbol)
 
-        tgOptions.tg.MainButton.onClick(() => handleBuyJettonsClick())
+        tgOptions.tg.MainButton.onClick(() => {
+          setIsMainButtonClicked(true)
+          handleBuyJettonsClick()
+        })
 
         tgOptions.tg.MainButton.show()
       }
@@ -147,6 +156,8 @@ const Participate: FC = () => {
         tgOptions.tg.MainButton.offClick(() => handleBuyJettonsClick())
 
         tgOptions.tg.MainButton.hide()
+
+        tgOptions.tg.MainButton.disable()
       }
     }
   }, [handleBuyJettonsClick, id, project, router, tgOptions])
@@ -166,10 +177,8 @@ const Participate: FC = () => {
         (value / 100) * projectSideInfo.maximumBuyTON
       )
 
-      if (updatedAmountValue >= minBuyAmountPercent) {
-        setCurrentJettonsBuyAmount(
-          Math.round((value / 100) * projectSideInfo.maximumBuyTON)
-        )
+      if (value >= minBuyAmountPercent) {
+        setCurrentJettonsBuyAmount(updatedAmountValue)
       }
     },
     [projectSideInfo]

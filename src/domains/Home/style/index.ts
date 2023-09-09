@@ -31,4 +31,8 @@ export const ConnectButton = styled(TonConnectButton)`
     border-radius: 10px;
     height: fit-content;
   }
+
+  div {
+    word-space: nowrap;
+  }
 `
