@@ -2,7 +2,6 @@ import {
   ChangeEvent,
   HTMLInputTypeAttribute,
   FC,
-  useCallback,
   InputHTMLAttributes,
 } from 'react'
 import * as S from './style'
