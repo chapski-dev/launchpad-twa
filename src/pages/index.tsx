@@ -4,7 +4,9 @@ import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { Chains } from 'constants/app'
 import { ProjectList } from 'domains/Home/components'
+import { Loader } from 'domains/Home/components/Projectslist/style'
 import * as S from 'domains/Home/style'
+import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
 import { Input } from 'ui/Input/Input'
 import { Line } from 'ui/Line/Line'
@@ -28,6 +30,8 @@ const Home: FC = () => {
 
   const [tonConnectUI] = useTonConnectUI()
 
+  const tgOptions = useTelegram()
+
   useEffect(() => {
     tonConnectUI.onStatusChange((wallet) => {
       if (wallet !== null) {
@@ -41,6 +45,10 @@ const Home: FC = () => {
       }
     })
   }, [tonConnectUI])
+
+  if (!tgOptions) {
+    return <Loader type="projectCard" />
+  }
 
   return (
     <>
