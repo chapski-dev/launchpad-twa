@@ -200,7 +200,6 @@ const Participate: FC = () => {
               />
             </S.InputWrapper>
           </S.Wrapper>
-          <button onClick={handleBuyJettonsClick}>buy</button>
           <MainButton
             onClick={handleBuyJettonsClick}
             text={'Buy ' + project?.metadata.symbol}
