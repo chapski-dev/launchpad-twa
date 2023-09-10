@@ -1,6 +1,5 @@
 import { FC, useCallback, useMemo } from 'react'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
-import { MainButton, BackButton } from '@twa-dev/sdk/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
@@ -12,6 +11,8 @@ import {
   Tokenomics,
 } from 'domains/Project/components'
 import * as S from 'domains/Project/style'
+import { BackButton } from 'features/BackButton'
+import { MainButton } from 'features/MainButton'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
