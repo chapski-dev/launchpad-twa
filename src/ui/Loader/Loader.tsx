@@ -76,7 +76,7 @@ export const Loader: FCWithChildren<LoaderProps> = (props) => {
               viewBox="0 0 343 546"
               width={343}
             >
-              <rect height="80" rx="40" width="80" />
+              <rect height="80" rx="16" width="80" />
               <rect height="34" rx="12" width="149" y="90" />
               <rect height="32" rx="12" width="149" y="186" />
               <rect height="43" rx="12" width="343" y="230" />
