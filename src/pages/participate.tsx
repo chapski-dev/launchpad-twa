@@ -68,11 +68,12 @@ const Participate: FC = () => {
   })
 
   const handleBuyJettonsClick = useCallback(async () => {
-    if (!project || !balance || !projectSideInfo) {
+    if (!project || typeof balance !== 'number' || !projectSideInfo) {
+      console.log(project, balance, projectSideInfo)
       return
     }
 
-    if (balance - 0.2 < projectSideInfo.maximumBuyTON) {
+    if (balance - 0.2 < currentJettonsBuyAmount) {
       alert(
         `You don't have enough TON in your account to purchase ${project.metadata.symbol}`
       )
@@ -199,6 +200,7 @@ const Participate: FC = () => {
               />
             </S.InputWrapper>
           </S.Wrapper>
+          <button onClick={handleBuyJettonsClick}>buy</button>
           <MainButton
             onClick={handleBuyJettonsClick}
             text={'Buy ' + project?.metadata.symbol}
