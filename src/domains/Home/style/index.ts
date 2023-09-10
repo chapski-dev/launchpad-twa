@@ -27,12 +27,15 @@ export const Input = styled(UIInput)<{ isFocused?: boolean }>`
   height: fit-content;
 `
 
-export const ConnectButton = styled(TonConnectButton)`
+export const ConnectButton = styled(TonConnectButton)<{
+  isConnected?: boolean
+}>`
   width: 100%;
+
   button {
     border-radius: 10px;
     height: fit-content;
-    padding: 13px 29px;
+    padding: ${({ isConnected }) => (isConnected ? '13px 29px' : '10px 16px')};
   }
 
   div {

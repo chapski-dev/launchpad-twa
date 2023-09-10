@@ -11,7 +11,8 @@ export const Wrapper = styled.div`
 export const Image = styled.img`
   width: 80px;
   heigth: 80px;
-  border-radius: 50%;
+  border-radius: 16px;
+  background-color: ${({ theme }) => theme.color.bgSecondary};
 `
 
 export const InfoWrapper = styled.div`

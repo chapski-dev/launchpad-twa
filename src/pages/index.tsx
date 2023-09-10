@@ -1,5 +1,5 @@
 import { FC, useEffect, useState, ChangeEvent, useCallback } from 'react'
-import { useTonConnectUI } from '@tonconnect/ui-react'
+import { useTonConnectUI, useTonAddress } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { Chains } from 'constants/app'
@@ -34,6 +34,8 @@ const Home: FC = () => {
 
   const [tonConnectUI] = useTonConnectUI()
 
+  const address = useTonAddress()
+
   const tgOptions = useTelegram()
 
   useEffect(() => {
@@ -57,8 +59,6 @@ const Home: FC = () => {
     []
   )
 
-  console.log(isSearchFocused)
-
   if (!tgOptions) {
     return <Loader type="projectCard" />
   }
@@ -80,7 +80,9 @@ const Home: FC = () => {
                   onFocus={() => setIsSearchFocused(true)}
                   placeholder="Search"
                 />
-                {!isSearchFocused && <S.ConnectButton />}
+                {!isSearchFocused && (
+                  <S.ConnectButton isConnected={Boolean(address)} />
+                )}
               </S.FlexWrapper>
 
               <Tabs

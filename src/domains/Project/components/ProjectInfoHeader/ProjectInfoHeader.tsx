@@ -14,7 +14,7 @@ export const ProjectaInfoHeader: FC<ProjectInfoHeaderProps> = (props) => {
   return (
     <Container>
       <S.Wrapper>
-        <S.Image alt="project_image" src={image} />
+        <S.Image alt="project_image" src={image || '/images/mock.svg'} />
         <S.InfoWrapper>
           <S.Title>{title}</S.Title>
           <S.Description>{description}</S.Description>
