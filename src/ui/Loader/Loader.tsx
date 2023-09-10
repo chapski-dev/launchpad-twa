@@ -5,7 +5,12 @@ import { FCWithChildren } from 'types/app'
 import * as S from './style'
 
 type LoaderProps = {
-  type?: 'projectCard' | 'projectPage' | 'participatePage'
+  type?:
+    | 'projectCard'
+    | 'projectPage'
+    | 'participatePage'
+    | 'postCard'
+    | 'postPage'
   className?: string
 }
 
@@ -100,6 +105,49 @@ export const Loader: FCWithChildren<LoaderProps> = (props) => {
               <rect height="20" rx="6" width="127" y="142" />
             </ContentLoader>
           </S.Wrapper>
+        )
+      case 'postCard':
+        return (
+          <S.Wrapper className={className}>
+            <ContentLoader
+              backgroundColor={theme.color.bgSecondary}
+              foregroundColor="#ffffff33"
+              height={270}
+              speed={2.5}
+              viewBox="0 0 389 270"
+              width={389}
+            >
+              <rect height="270" rx="10" width="389" />
+            </ContentLoader>
+            <ContentLoader
+              backgroundColor={theme.color.bgSecondary}
+              foregroundColor="#ffffff33"
+              height={270}
+              speed={2.5}
+              viewBox="0 0 389 270"
+              width={389}
+            >
+              <rect height="270" rx="10" width="389" />
+            </ContentLoader>
+          </S.Wrapper>
+        )
+      case 'postPage':
+        return (
+          <ContentLoader
+            backgroundColor={theme.color.bgSecondary}
+            foregroundColor="#ffffff33"
+            height={499}
+            speed={2.5}
+            viewBox="0 0 410 499"
+            width={410}
+          >
+            <rect height="202" width="410" />
+            <rect height="20" width="352" x="14" y="218" />
+            <rect height="20" width="300" x="14" y="245" />
+            <rect height="20" width="221" x="14" y="301" />
+            <rect height="20" width="331" x="14" y="479" />
+            <rect height="134" width="376" x="14" y="333" />
+          </ContentLoader>
         )
       default:
         return <div>Loading ..</div>

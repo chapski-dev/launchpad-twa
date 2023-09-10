@@ -29,7 +29,7 @@ export const PostsList: FC = () => {
   })
 
   if (isPostsLoading) {
-    return <Loader type="projectCard" />
+    return <Loader type="postCard" />
   }
 
   if (isPostsLoaded) {

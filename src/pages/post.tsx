@@ -42,7 +42,7 @@ const Post = () => {
   )
 
   if (isPostLoading) {
-    return <Loader type="projectPage" />
+    return <Loader type="postPage" />
   }
 
   if (isPostLoaded) {
@@ -69,6 +69,8 @@ const Post = () => {
       </>
     )
   }
+
+  return null
 }
 
 export default Post
