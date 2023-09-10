@@ -1,4 +1,3 @@
-import { TonConnectButton } from '@tonconnect/ui-react'
 import { styled } from 'styled-components'
 import { Input as UIInput } from 'ui/Input/Input'
 
@@ -17,28 +16,19 @@ export const HeaderWrapper = styled.div`
 
 export const FlexWrapper = styled.div`
   display: flex;
-  align-items: center;
   gap: 8px;
   width: 100%;
 `
 
 export const Input = styled(UIInput)<{ isFocused?: boolean }>`
   width: ${({ isFocused }) => (isFocused ? '100%' : 'fit-content')};
-  height: fit-content;
+  height: 46px;
 `
 
-export const ConnectButton = styled(TonConnectButton)<{
-  isConnected?: boolean
-}>`
-  width: 100%;
-
-  button {
-    border-radius: 10px;
-    height: fit-content;
-    padding: ${({ isConnected }) => (isConnected ? '13px 29px' : '10px 16px')};
-  }
-
-  div {
-    word-space: nowrap;
-  }
+export const Title = styled.h2`
+  margin: 0;
+  padding: 0;
+  color: ${({ theme }) => theme.color.text};
+  font-size: 18px;
+  font-weight: 500;
 `

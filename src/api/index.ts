@@ -20,3 +20,18 @@ export const getICOProjectById = async (id: string) => {
 
   return data
 }
+
+export const getPosts = async () => {
+  const { data } = await AXIOS_LAUNCHPAD_INSTANCE.get(ApiRoutes.GetBlogPosts)
+
+  return data
+}
+
+export const getPostByFilename = async (params: { fileName: string }) => {
+  const { data } = await AXIOS_LAUNCHPAD_INSTANCE.get(
+    ApiRoutes.GetBlogPostByFilename,
+    { params }
+  )
+
+  return data
+}

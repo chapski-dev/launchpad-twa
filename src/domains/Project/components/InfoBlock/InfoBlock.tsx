@@ -1,8 +1,10 @@
 import { FC, useState, useMemo } from 'react'
+import { MarkdownRenderer } from 'features/MarkdownRenderer'
 import { Container } from 'ui/Container/Container'
 import { Line } from 'ui/Line/Line'
 import { Tabs } from 'ui/Tabs/Tabs'
-import { About, DealTerms } from './components'
+import { DealTerms } from './components'
+import { mockMDContent } from './mock'
 import * as S from './style'
 
 const tabs = [
@@ -22,7 +24,7 @@ export const InfoBlock: FC = () => {
   const infoContent = useMemo(() => {
     switch (activeTab.value) {
       case 'about':
-        return <About />
+        return <MarkdownRenderer mdContent={mockMDContent} />
       case 'deal_tearms':
         return <DealTerms />
     }

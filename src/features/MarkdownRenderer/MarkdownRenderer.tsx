@@ -1,10 +1,15 @@
 import { FC, useMemo } from 'react'
 import ReactMarkdown, { Components } from 'react-markdown'
 import gfm from 'remark-gfm'
-import { mockMDContent } from './mock'
 import * as S from './style'
 
-export const About: FC = () => {
+type MarkdownRendererProps = {
+  mdContent: string
+}
+
+export const MarkdownRenderer: FC<MarkdownRendererProps> = (props) => {
+  const { mdContent } = props
+
   const components: Components = useMemo(
     () => ({
       h1: ({ node, ...props }) => <S.Heading1 {...props} />,
@@ -23,7 +28,7 @@ export const About: FC = () => {
   return (
     <S.Wrapper>
       <ReactMarkdown
-        children={mockMDContent}
+        children={mdContent}
         components={components}
         remarkPlugins={[gfm]}
       />

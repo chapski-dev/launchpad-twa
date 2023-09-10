@@ -18,6 +18,12 @@ const nextConfig = {
         port: '',
         pathname: '/ipfs/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'launchpad-front-end.vercel.app',
+        port: '',
+        pathname: '/images/**',
+      },
     ],
   },
 }

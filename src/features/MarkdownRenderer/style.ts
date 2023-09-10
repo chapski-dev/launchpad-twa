@@ -7,11 +7,13 @@ export const Wrapper = styled.div`
 export const Heading1 = styled.h1`
   color: ${({ theme }) => theme.color.text};
   margin-bottom: 12px;
+  font-size: 18px;
 `
 
 export const Heading2 = styled.h2`
   color: ${({ theme }) => theme.color.text};
   margin: 12px 0;
+  font-size: 18px;
 `
 
 export const Heading3 = styled.h3`
@@ -27,6 +29,7 @@ export const Heading4 = styled.h4`
 export const Paragraph = styled.p`
   color: ${({ theme }) => theme.color.hint};
   margin: 12px 0;
+  font-size: 14px;
 `
 
 export const Link = styled.a`
