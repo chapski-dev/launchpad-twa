@@ -99,7 +99,7 @@ const Participate: FC = () => {
     })
 
     if (trx.boc) {
-      console.log(trx.boc)
+      alert('You have successfully purchased WETH jettons !')
     }
   }, [
     balance,
