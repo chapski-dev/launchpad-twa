@@ -6,9 +6,12 @@ import {
   useCallback,
   useMemo,
 } from 'react'
-import { useTonConnectUI } from '@tonconnect/ui-react'
+import { useTonConnectUI, useTonAddress } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
+import { useMutation, useQuery } from 'react-query'
+import { getProfile, saveProfile } from 'api'
+import { ProfileInfoType } from 'api/types'
 import { Chains } from 'constants/app'
 import { PostsList, ProjectList } from 'domains/Home/components'
 import { Loader } from 'domains/Home/components/Projectslist/style'
@@ -16,6 +19,7 @@ import * as S from 'domains/Home/style'
 import { ConnectWalletButton } from 'features/ConnectWalletButton'
 import { useDebounce } from 'hooks/useDebounce/useDebounce'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
+import { Button } from 'ui/Button/Button'
 import { Container } from 'ui/Container/Container'
 import { Line } from 'ui/Line/Line'
 import { TabItem, Tabs } from 'ui/Tabs/Tabs'
@@ -40,9 +44,26 @@ const Home: FC = () => {
 
   const debaunceSearchValue = useDebounce(searchValue)
 
+  const { webApp, user } = useTelegram()
+
   const [tonConnectUI] = useTonConnectUI()
 
-  const tgOptions = useTelegram()
+  const userWalletAddress = useTonAddress()
+
+  const { data: profileInfo, refetch: refetchProfileInfo } = useQuery(
+    ['profileInfo'],
+    () => getProfile({ walletAddress: userWalletAddress }),
+    {
+      enabled: Boolean(userWalletAddress),
+    }
+  )
+
+  const { mutate: saveProfileInfo } = useMutation(
+    ['saveProfile'],
+    (profileData: ProfileInfoType) => saveProfile(profileData)
+  )
+
+  // console.log(profileInfo)
 
   useEffect(() => {
     tonConnectUI.onStatusChange((wallet) => {
@@ -54,9 +75,58 @@ const Home: FC = () => {
 
           return
         }
+
+        // const initData = new URLSearchParams(tgOptions.tg.initData)
+
+        // const referrer_id = initData.get('start_param')
+
+        // refetchProfileInfo()
+
+        // console.log(profileInfo)
+
+        // if (!profileInfo || !profileInfo?.referrer_id) {
+        //   console.log(referrer_id)
+        // }
       }
     })
-  }, [tonConnectUI])
+  }, [profileInfo, refetchProfileInfo, tonConnectUI])
+
+  useEffect(() => {
+    if (webApp && user) {
+      if (userWalletAddress && !profileInfo) {
+        const initData = new URLSearchParams(webApp?.initData)
+
+        const referrer_id = initData.get('start_param')
+
+        if (!profileInfo) {
+          // saveProfileInfo({
+          //   email: '',
+          //   name: user.first_name + user.last_name,
+          //   referrer_id: referrer_id || '',
+          //   telegram: user.username,
+          //   walletAddress: userWalletAddress,
+          //   image: '',
+          // })
+        }
+      }
+    }
+  }, [
+    profileInfo,
+    refetchProfileInfo,
+    saveProfileInfo,
+    user,
+    userWalletAddress,
+    webApp,
+    webApp?.initData,
+  ])
+
+  // useEffect(() => {
+  //   if (tgOptions && tgOptions?.tg) {
+  //     const initData = new URLSearchParams(tgOptions.tg.initData)
+
+  //     console.log(initData.get('start_param'))
+  //   }
+  // }, [tgOptions])
 
   const handleSearchInputChange = useCallback(
     (evt: ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +144,7 @@ const Home: FC = () => {
     }
   }, [debaunceSearchValue, selectedTab.value])
 
-  if (!tgOptions) {
+  if (!webApp) {
     return <Loader type="projectCard" />
   }
 
@@ -106,6 +176,20 @@ const Home: FC = () => {
             </S.HeaderWrapper>
           </Container>
           <Line />
+          <Button
+            onClick={() =>
+              saveProfileInfo({
+                email: '',
+                name: 'Test',
+                referrer_id: 'referrer_12314481741' || '',
+                telegram: 'maksimmm',
+                walletAddress: userWalletAddress,
+                image: '',
+              })
+            }
+          >
+            Test save profile
+          </Button>
           <Container>{currentHomeContent}</Container>
         </S.Wrapper>
       </main>

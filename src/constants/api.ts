@@ -5,4 +5,6 @@ export const ApiRoutes = {
   GetICOProjectById: '/api/jettons/getICOJettonById',
   GetBlogPosts: '/api/blog/getPosts',
   GetBlogPostByFilename: '/api/blog/getPostByFilename',
+  GetProfile: '/api/profile/getProfile',
+  SaveProfile: '/api/profile/saveProfile',
 } as const

@@ -9,7 +9,7 @@ export const Wrapper = styled.button`
   outline: none;
   border-radius: 10px;
   padding: 16px 16px;
-  width: 100%;
+  width: 50%;
   height: 46px;
   color: ${({ theme }) => theme.color.btnText};
   background-color: ${({ theme }) => theme.color.btn};
@@ -25,7 +25,7 @@ export const Wrapper = styled.button`
 
 export const AddressContainer = styled.div`
   position: relative;
-  width: 100%;
+  width: 50%;
   height: 44px;
 `
 
@@ -41,6 +41,7 @@ export const AddressBlock = styled.div`
   background-color: ${({ theme }) => theme.color.bgSecondary};
   font-size: 14px;
   cursor: pointer;
+  white-space: nowrap;
 `
 
 export const DropdownButtons = styled.div<{ isDisplayed: boolean | null }>`

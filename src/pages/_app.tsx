@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app'
 import Script from 'next/script'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ThemeProvider } from 'styled-components'
+import { TelegramProvider } from 'app/providers/TelegramProvider'
 import { TonConnectProvider } from 'app/providers/TonConnectProvider'
 import { GlobalStyle } from 'assets/style/GlobalStyle'
 import { theme } from 'assets/style/theme'
@@ -34,22 +35,16 @@ const queryClient = new QueryClient({
 })
 
 export default function App({ Component, pageProps }: AppProps) {
-  const tgOptions = useTelegram()
-
-  useEffect(() => {
-    if (tgOptions?.tg) {
-      tgOptions.tg.ready()
-    }
-  }, [tgOptions])
-
   return (
     <QueryClientProvider client={queryClient}>
-      <TonConnectProvider>
-        <ThemeProvider theme={theme}>
-          <GlobalStyle />
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </TonConnectProvider>
+      <TelegramProvider>
+        <TonConnectProvider>
+          <ThemeProvider theme={theme}>
+            <GlobalStyle />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </TonConnectProvider>
+      </TelegramProvider>
       <Script src="https://telegram.org/js/telegram-web-app.js" />
     </QueryClientProvider>
   )

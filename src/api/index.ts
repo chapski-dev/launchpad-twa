@@ -1,5 +1,7 @@
+import axios from 'axios'
 import { ApiRoutes } from 'constants/api'
 import { AXIOS_LAUNCHPAD_INSTANCE } from 'libs/axios-instance/axios-instance'
+import { ProfileInfoType } from './types'
 
 export const getICOJettons = async (params: { search: string }) => {
   const { data } = await AXIOS_LAUNCHPAD_INSTANCE.get(
@@ -32,6 +34,22 @@ export const getPostByFilename = async (params: { fileName: string }) => {
     ApiRoutes.GetBlogPostByFilename,
     { params }
   )
+
+  return data
+}
+
+export const getProfile = async (params: { walletAddress: string }) => {
+  const { data } = await AXIOS_LAUNCHPAD_INSTANCE.get(ApiRoutes.GetProfile, {
+    params,
+  })
+
+  return data
+}
+
+export const saveProfile = async (profileData: ProfileInfoType) => {
+  const { data } = await AXIOS_LAUNCHPAD_INSTANCE.post(ApiRoutes.SaveProfile, {
+    ...profileData,
+  })
 
   return data
 }
