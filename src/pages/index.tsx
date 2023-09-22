@@ -19,7 +19,6 @@ import * as S from 'domains/Home/style'
 import { ConnectWalletButton } from 'features/ConnectWalletButton'
 import { useDebounce } from 'hooks/useDebounce/useDebounce'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
-import { Button } from 'ui/Button/Button'
 import { Container } from 'ui/Container/Container'
 import { Line } from 'ui/Line/Line'
 import { TabItem, Tabs } from 'ui/Tabs/Tabs'
@@ -58,6 +57,8 @@ const Home: FC = () => {
     }
   )
 
+  console.log(profileInfo)
+
   const { mutate: saveProfileInfo } = useMutation(
     ['saveProfile'],
     (profileData: ProfileInfoType) => saveProfile(profileData)
@@ -75,39 +76,26 @@ const Home: FC = () => {
 
           return
         }
-
-        // const initData = new URLSearchParams(tgOptions.tg.initData)
-
-        // const referrer_id = initData.get('start_param')
-
-        // refetchProfileInfo()
-
-        // console.log(profileInfo)
-
-        // if (!profileInfo || !profileInfo?.referrer_id) {
-        //   console.log(referrer_id)
-        // }
       }
     })
   }, [profileInfo, refetchProfileInfo, tonConnectUI])
 
   useEffect(() => {
     if (webApp && user) {
-      if (userWalletAddress && !profileInfo) {
-        const initData = new URLSearchParams(webApp?.initData)
+      const initData = new URLSearchParams(webApp?.initData)
 
-        const referrer_id = initData.get('start_param')
+      const referrer_id = initData.get('start_param')
 
-        if (!profileInfo) {
-          // saveProfileInfo({
-          //   email: '',
-          //   name: user.first_name + user.last_name,
-          //   referrer_id: referrer_id || '',
-          //   telegram: user.username,
-          //   walletAddress: userWalletAddress,
-          //   image: '',
-          // })
-        }
+      if (userWalletAddress && !profileInfo && referrer_id) {
+        console.log(userWalletAddress, profileInfo, referrer_id)
+        saveProfileInfo({
+          email: '',
+          name: user.first_name + user.last_name,
+          referrer_id: referrer_id,
+          telegram: user.username,
+          walletAddress: userWalletAddress,
+          image: '',
+        })
       }
     }
   }, [
@@ -119,14 +107,6 @@ const Home: FC = () => {
     webApp,
     webApp?.initData,
   ])
-
-  // useEffect(() => {
-  //   if (tgOptions && tgOptions?.tg) {
-  //     const initData = new URLSearchParams(tgOptions.tg.initData)
-
-  //     console.log(initData.get('start_param'))
-  //   }
-  // }, [tgOptions])
 
   const handleSearchInputChange = useCallback(
     (evt: ChangeEvent<HTMLInputElement>) => {
@@ -176,20 +156,6 @@ const Home: FC = () => {
             </S.HeaderWrapper>
           </Container>
           <Line />
-          <Button
-            onClick={() =>
-              saveProfileInfo({
-                email: '',
-                name: 'Test',
-                referrer_id: 'referrer_12314481741' || '',
-                telegram: 'maksimmm',
-                walletAddress: userWalletAddress,
-                image: '',
-              })
-            }
-          >
-            Test save profile
-          </Button>
           <Container>{currentHomeContent}</Container>
         </S.Wrapper>
       </main>

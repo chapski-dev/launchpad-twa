@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useEffect, useMemo, useState } from 'react'
 
 import Script from 'next/script'
 import { FCWithChildren } from 'types/app'
@@ -18,6 +18,7 @@ export const TelegramProvider: FCWithChildren = (props) => {
 
   useEffect(() => {
     const app = (window as any).Telegram?.WebApp
+
     if (app) {
       app.ready()
       setWebApp(app)
