@@ -20,8 +20,8 @@ export const FlexWrapper = styled.div`
   width: 100%;
 `
 
-export const Input = styled(UIInput)<{ isFocused?: boolean }>`
-  width: ${({ isFocused }) => (isFocused ? '100%' : '50%')};
+export const Input = styled(UIInput)<{ $isFocused?: boolean }>`
+  width: ${({ $isFocused }) => ($isFocused ? '100%' : '50%')};
   height: 46px;
 `
 

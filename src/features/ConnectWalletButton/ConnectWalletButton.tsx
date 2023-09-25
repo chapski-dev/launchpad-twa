@@ -35,7 +35,7 @@ export const ConnectWalletButton: FC = () => {
       <S.AddressBlock onClick={toggleDropdown}>
         {shortenAddress(address)}
       </S.AddressBlock>
-      <S.DropdownButtons isDisplayed={isDropdownDisplayed}>
+      <S.DropdownButtons $isDisplayed={isDropdownDisplayed}>
         <S.DropdownButton onClick={handleDisconnectButtonClick}>
           Disconnect
         </S.DropdownButton>

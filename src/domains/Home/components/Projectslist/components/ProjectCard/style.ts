@@ -54,13 +54,13 @@ export const Description = styled.p`
   box-orient: vertical;
 `
 
-export const Label = styled.span<{ isBold?: boolean }>`
+export const Label = styled.span<{ $isBold?: boolean }>`
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
   color: ${({ theme }) => theme.color.text};
-  font-weight: ${({ isBold }) => (isBold ? 500 : 400)};
+  font-weight: ${({ $isBold }) => ($isBold ? 500 : 400)};
 `
 
 export const FlexWrapper = styled.div`

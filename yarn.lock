@@ -1437,8 +1437,8 @@
     "@babel/runtime" "^7.12.5"
 
 "@ton-and-company/sdk@git+https://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@github.com/ton-and-company/ton-contracts-sdk":
-  version "0.0.22"
-  resolved "git+https://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@github.com/ton-and-company/ton-contracts-sdk#058e24414b640f433daeeb89afacc7d9f313f3f7"
+  version "0.0.23"
+  resolved "git+https://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@github.com/ton-and-company/ton-contracts-sdk#403d3c572c83c07daf8b9f3e1ffa3acca401d390"
   dependencies:
     ton "^13.5.0"
     ton-crypto "^3.2.0"

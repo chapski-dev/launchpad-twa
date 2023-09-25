@@ -57,14 +57,10 @@ const Home: FC = () => {
     }
   )
 
-  console.log(profileInfo)
-
   const { mutate: saveProfileInfo } = useMutation(
     ['saveProfile'],
     (profileData: ProfileInfoType) => saveProfile(profileData)
   )
-
-  // console.log(profileInfo)
 
   useEffect(() => {
     tonConnectUI.onStatusChange((wallet) => {
@@ -139,7 +135,7 @@ const Home: FC = () => {
             <S.HeaderWrapper>
               <S.FlexWrapper>
                 <S.Input
-                  isFocused={isSearchFocused}
+                  $isFocused={isSearchFocused}
                   onBlur={() => setIsSearchFocused(false)}
                   onChange={handleSearchInputChange}
                   onFocus={() => setIsSearchFocused(true)}

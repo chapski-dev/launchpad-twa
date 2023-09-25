@@ -1,4 +1,5 @@
 import { FC, useCallback, useMemo } from 'react'
+import { TnC } from '@ton-and-company/sdk'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -13,7 +14,6 @@ import {
 import * as S from 'domains/Project/style'
 import { BackButton } from 'features/BackButton'
 import { MainButton } from 'features/MainButton'
-import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
 
@@ -23,8 +23,6 @@ const Project: FC = () => {
   const userWalletAddress = useTonAddress()
 
   const [tonConnectUI] = useTonConnectUI()
-
-  const tgOptions = useTelegram()
 
   const { id } = router.query
 
@@ -66,6 +64,21 @@ const Project: FC = () => {
       }
     }, []),
   })
+
+  const {
+    data: participantState,
+    isLoading: isParticipantStateLoading,
+    isSuccess: isParticipantStateLoaded,
+  } = useQuery(
+    ['participantState', project?.icoMasterAddress],
+    () =>
+      TnC.participantState(userWalletAddress, project?.icoMasterAddress || 0),
+    // () => TnC.participantState(userWalletAddress, '0'),
+    {
+      // enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
+      enabled: Boolean(userWalletAddress),
+    }
+  )
 
   const handleMainButtonClick = useCallback(() => {
     if (!userWalletAddress) {
@@ -109,11 +122,11 @@ const Project: FC = () => {
     )?.value
   }, [project])
 
-  if (isProjectLoading) {
+  if (isProjectLoading || isParticipantStateLoading) {
     return <Loader type="projectPage" />
   }
 
-  if (isProjectLoaded) {
+  if (isProjectLoaded && isParticipantStateLoaded) {
     return (
       <>
         <Head>
@@ -135,7 +148,7 @@ const Project: FC = () => {
           />
           <InfoBlock />
         </S.Wrapper>
-        {tgOptions && (
+        {!participantState.participated && (
           <MainButton
             onClick={handleMainButtonClick}
             text={

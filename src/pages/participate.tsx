@@ -31,6 +31,8 @@ const Participate: FC = () => {
   const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
     useState<number>(0)
 
+  const [isTrxChecking, setIsTrxChecking] = useState<boolean>(false)
+
   const router = useRouter()
 
   const { id } = router.query
@@ -63,9 +65,13 @@ const Participate: FC = () => {
     data: balance,
     isLoading: isBalanceLoading,
     isSuccess: isBalanceLoaded,
-  } = useQuery([''], () => getBalance(userWalletAddress, 'testnet'), {
-    enabled: !!userWalletAddress,
-  })
+  } = useQuery(
+    ['userBalance'],
+    () => getBalance(userWalletAddress, 'testnet'),
+    {
+      enabled: !!userWalletAddress,
+    }
+  )
 
   const handleBuyJettonsClick = useCallback(async () => {
     if (!project || typeof balance !== 'number' || !projectSideInfo) {
@@ -95,12 +101,38 @@ const Participate: FC = () => {
       messages: [trxMessage],
     }
 
-    const trx = await tonConnectUI.sendTransaction(deployParams, {
-      modals: 'all',
-    })
+    const trx = await tonConnectUI.sendTransaction(deployParams)
 
     if (trx.boc) {
-      alert('You have successfully purchased WETH jettons !')
+      setIsTrxChecking(true)
+
+      let currentAttempts = 0
+
+      const checkTransactionStatus = async () => {
+        if (currentAttempts >= 5) {
+          setIsTrxChecking(false)
+          alert(
+            'Exceeded maximum number of attempts to check your transaction.'
+          )
+          return
+        }
+
+        const result = await TnC.waitForBuyTx(trx.boc, currentAttempts)
+
+        if (result.ready) {
+          setIsTrxChecking(false)
+
+          alert(
+            `You have successfully purchased ${project.metadata.symbol} jettons!`
+          )
+        } else {
+          currentAttempts++
+
+          setTimeout(checkTransactionStatus, 1000)
+        }
+      }
+
+      checkTransactionStatus()
     }
   }, [
     balance,
@@ -202,6 +234,7 @@ const Participate: FC = () => {
           </S.Wrapper>
           <MainButton
             onClick={handleBuyJettonsClick}
+            progress={isTrxChecking}
             text={'Buy ' + project?.metadata.symbol}
           />
         </Container>

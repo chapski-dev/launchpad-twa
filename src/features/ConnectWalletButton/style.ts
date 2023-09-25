@@ -44,7 +44,7 @@ export const AddressBlock = styled.div`
   white-space: nowrap;
 `
 
-export const DropdownButtons = styled.div<{ isDisplayed: boolean | null }>`
+export const DropdownButtons = styled.div<{ $isDisplayed: boolean | null }>`
   display: none;
   padding: 0;
   margin: 0;
@@ -57,10 +57,12 @@ export const DropdownButtons = styled.div<{ isDisplayed: boolean | null }>`
   flex-direction: column;
   border-radius: 10px;
   background-color: ${({ theme }) => theme.color.bgSecondary};
-  opacity: ${({ isDisplayed }) => (isDisplayed ? 1 : 0)};
-  transform: translateY(${({ isDisplayed }) => (isDisplayed ? '0' : '-10px')});
+  opacity: ${({ $isDisplayed }) => ($isDisplayed ? 1 : 0)};
+  transform: translateY(
+    ${({ $isDisplayed }) => ($isDisplayed ? '0' : '-10px')}
+  );
   transition: opacity 0.15s ease, transform 0.15s ease;
-  z-index: ${({ isDisplayed }) => (isDisplayed ? '1' : '-1')};
+  z-index: ${({ $isDisplayed }) => ($isDisplayed ? '1' : '-1')};
 `
 
 export const DropdownButton = styled.button`
