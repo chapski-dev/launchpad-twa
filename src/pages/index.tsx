@@ -51,9 +51,9 @@ const Home: FC = () => {
 
   const { data: profileInfo, refetch: refetchProfileInfo } = useQuery(
     ['profileInfo'],
-    () => getProfile({ walletAddress: userWalletAddress }),
+    () => getProfile({ telegram: user?.username }),
     {
-      enabled: Boolean(userWalletAddress),
+      enabled: Boolean(user?.username),
     }
   )
 
@@ -82,16 +82,17 @@ const Home: FC = () => {
 
       const referrer_id = initData.get('start_param')
 
-      if (userWalletAddress && !profileInfo && referrer_id) {
-        console.log(userWalletAddress, profileInfo, referrer_id)
+      if (!profileInfo) {
         saveProfileInfo({
           email: '',
           name: user.first_name + user.last_name,
-          referrer_id: referrer_id,
+          referrer_id: referrer_id || '',
           telegram: user.username,
-          walletAddress: userWalletAddress,
+          walletAddress: '',
           image: '',
         })
+
+        return
       }
     }
   }, [

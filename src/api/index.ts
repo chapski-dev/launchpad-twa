@@ -38,7 +38,10 @@ export const getPostByFilename = async (params: { fileName: string }) => {
   return data
 }
 
-export const getProfile = async (params: { walletAddress: string }) => {
+export const getProfile = async (params: {
+  telegram?: string
+  walletAddress?: string
+}) => {
   const { data } = await AXIOS_LAUNCHPAD_INSTANCE.get(ApiRoutes.GetProfile, {
     params,
   })
