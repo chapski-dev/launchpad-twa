@@ -49,13 +49,19 @@ const Home: FC = () => {
 
   const userWalletAddress = useTonAddress()
 
-  const { data: profileInfo, refetch: refetchProfileInfo } = useQuery(
+  const {
+    data: profileInfo,
+    isLoading: isProfileInfoLoading,
+    refetch: refetchProfileInfo,
+  } = useQuery(
     ['profileInfo'],
     () => getProfile({ telegram: user?.username }),
     {
       enabled: Boolean(user?.username),
     }
   )
+
+  console.log(profileInfo)
 
   const { mutate: saveProfileInfo } = useMutation(
     ['saveProfile'],
@@ -74,7 +80,7 @@ const Home: FC = () => {
         }
       }
     })
-  }, [profileInfo, refetchProfileInfo, tonConnectUI])
+  }, [profileInfo, tonConnectUI])
 
   useEffect(() => {
     if (webApp && user) {
@@ -82,7 +88,9 @@ const Home: FC = () => {
 
       const referrer_id = initData.get('start_param')
 
-      if (!profileInfo) {
+      console.log(profileInfo)
+
+      if (!isProfileInfoLoading && !profileInfo) {
         saveProfileInfo({
           email: '',
           name: user.first_name + user.last_name,
@@ -95,15 +103,7 @@ const Home: FC = () => {
         return
       }
     }
-  }, [
-    profileInfo,
-    refetchProfileInfo,
-    saveProfileInfo,
-    user,
-    userWalletAddress,
-    webApp,
-    webApp?.initData,
-  ])
+  }, [isProfileInfoLoading, profileInfo, saveProfileInfo, user, webApp])
 
   const handleSearchInputChange = useCallback(
     (evt: ChangeEvent<HTMLInputElement>) => {

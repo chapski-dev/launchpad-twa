@@ -50,6 +50,8 @@ export const getProfile = async (params: {
 }
 
 export const saveProfile = async (profileData: ProfileInfoType) => {
+  console.log(profileData)
+
   const { data } = await AXIOS_LAUNCHPAD_INSTANCE.post(ApiRoutes.SaveProfile, {
     ...profileData,
   })
