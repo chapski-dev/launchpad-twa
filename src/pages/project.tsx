@@ -80,6 +80,8 @@ const Project: FC = () => {
     }
   )
 
+  console.log(participantState, isParticipantStateLoaded)
+
   const handleMainButtonClick = useCallback(() => {
     if (!userWalletAddress) {
       tonConnectUI.connectWallet()
@@ -126,7 +128,7 @@ const Project: FC = () => {
     return <Loader type="projectPage" />
   }
 
-  if (isProjectLoaded && isParticipantStateLoaded) {
+  if (isProjectLoaded) {
     return (
       <>
         <Head>
@@ -148,7 +150,7 @@ const Project: FC = () => {
           />
           <InfoBlock />
         </S.Wrapper>
-        {!participantState.participated && (
+        {!participantState?.participated && (
           <MainButton
             onClick={handleMainButtonClick}
             text={
