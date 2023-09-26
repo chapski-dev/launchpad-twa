@@ -10,4 +10,5 @@ export type ProfileInfoType = {
   walletAddress?: string
   referrer_id: string
   image?: string
+  telegramInitData: string
 }

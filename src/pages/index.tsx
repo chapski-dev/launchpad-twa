@@ -6,7 +6,7 @@ import {
   useCallback,
   useMemo,
 } from 'react'
-import { useTonConnectUI, useTonAddress } from '@tonconnect/ui-react'
+import { useTonConnectUI } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useMutation, useQuery } from 'react-query'
@@ -47,13 +47,7 @@ const Home: FC = () => {
 
   const [tonConnectUI] = useTonConnectUI()
 
-  const userWalletAddress = useTonAddress()
-
-  const {
-    data: profileInfo,
-    isLoading: isProfileInfoLoading,
-    refetch: refetchProfileInfo,
-  } = useQuery(
+  const { data: profileInfo, isLoading: isProfileInfoLoading } = useQuery(
     ['profileInfo'],
     () => getProfile({ telegram: user?.username }),
     {
@@ -84,7 +78,7 @@ const Home: FC = () => {
 
   useEffect(() => {
     if (webApp && user) {
-      const initData = new URLSearchParams(webApp?.initData)
+      const initData = new URLSearchParams(webApp.initData)
 
       const referrer_id = initData.get('start_param')
 
@@ -98,6 +92,7 @@ const Home: FC = () => {
           telegram: user.username,
           walletAddress: '',
           image: '',
+          telegramInitData: webApp.initData,
         })
 
         return
