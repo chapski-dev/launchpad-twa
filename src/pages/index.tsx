@@ -20,13 +20,20 @@ import { ConnectWalletButton } from 'features/ConnectWalletButton'
 import { useDebounce } from 'hooks/useDebounce/useDebounce'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
+import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons'
 import { Line } from 'ui/Line/Line'
 import { TabItem, Tabs } from 'ui/Tabs/Tabs'
 
 const mockTabs = [
   {
-    label: 'Demo',
-    value: 'demo',
+    label: 'Tokenova',
+    value: 'tokenova',
+    icon: <SvgTokenovaIcon />,
+  },
+  {
+    label: 'Tonstarter',
+    value: 'tonstarter',
+    icon: <SvgTonstarterIcon />,
   },
   {
     label: 'Blog',
@@ -55,8 +62,6 @@ const Home: FC = () => {
     }
   )
 
-  console.log(profileInfo)
-
   const { mutate: saveProfileInfo } = useMutation(
     ['saveProfile'],
     (profileData: ProfileInfoType) => saveProfile(profileData)
@@ -81,8 +86,6 @@ const Home: FC = () => {
       const initData = new URLSearchParams(webApp.initData)
 
       const referrer_id = initData.get('start_param')
-
-      console.log(profileInfo)
 
       if (!isProfileInfoLoading && !profileInfo) {
         saveProfileInfo({
@@ -109,7 +112,7 @@ const Home: FC = () => {
 
   const currentHomeContent = useMemo(() => {
     switch (selectedTab.value) {
-      case 'demo':
+      case 'tokenova':
         return <ProjectList search={debaunceSearchValue} />
       case 'blog':
         return <PostsList />

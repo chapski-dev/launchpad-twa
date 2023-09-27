@@ -44,4 +44,5 @@ export type WebApp = {
     isActive: boolean
   }
   HapticFeedback: any
+  expand: () => void
 }

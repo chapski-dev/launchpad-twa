@@ -1,9 +1,11 @@
-import axios from 'axios'
 import { ApiRoutes } from 'constants/api'
 import { AXIOS_LAUNCHPAD_INSTANCE } from 'libs/axios-instance/axios-instance'
 import { ProfileInfoType } from './types'
 
-export const getICOJettons = async (params: { search: string }) => {
+export const getICOJettons = async (params: {
+  search: string
+  isFake?: boolean
+}) => {
   const { data } = await AXIOS_LAUNCHPAD_INSTANCE.get(
     ApiRoutes.GetICOProjects,
     { params }
@@ -50,8 +52,6 @@ export const getProfile = async (params: {
 }
 
 export const saveProfile = async (profileData: ProfileInfoType) => {
-  console.log(profileData)
-
   const { data } = await AXIOS_LAUNCHPAD_INSTANCE.post(ApiRoutes.SaveProfile, {
     ...profileData,
   })

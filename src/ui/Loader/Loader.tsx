@@ -112,22 +112,12 @@ export const Loader: FCWithChildren<LoaderProps> = (props) => {
             <ContentLoader
               backgroundColor={theme.color.bgSecondary}
               foregroundColor="#ffffff33"
-              height={270}
+              height={250}
               speed={2.5}
-              viewBox="0 0 389 270"
-              width={389}
+              viewBox="0 0 359 250"
+              width={359}
             >
-              <rect height="270" rx="10" width="389" />
-            </ContentLoader>
-            <ContentLoader
-              backgroundColor={theme.color.bgSecondary}
-              foregroundColor="#ffffff33"
-              height={270}
-              speed={2.5}
-              viewBox="0 0 389 270"
-              width={389}
-            >
-              <rect height="270" rx="10" width="389" />
+              <rect height="250" rx="10" width="359" />
             </ContentLoader>
           </S.Wrapper>
         )

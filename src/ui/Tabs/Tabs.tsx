@@ -1,9 +1,10 @@
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 import * as S from './style'
 
 export type TabItem = {
   label: string
   value: string
+  icon?: ReactNode
 }
 
 type TabsProps = {
@@ -22,7 +23,11 @@ export const Tabs: FC<TabsProps> = (props) => {
 
         return (
           <S.TabItem key={tab.value} onClick={() => onChange(tab)}>
-            <S.TabItemLabel $isActive={isActive}>{tab.label}</S.TabItemLabel>
+            <S.TabTopWrapper>
+              {tab.icon}
+              <S.TabItemLabel $isActive={isActive}>{tab.label}</S.TabItemLabel>
+            </S.TabTopWrapper>
+
             <S.TabLine $isActive={isActive} />
           </S.TabItem>
         )

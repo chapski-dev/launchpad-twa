@@ -1,4 +1,5 @@
 import { styled } from 'styled-components'
+import { SvgTonConnectIcon } from 'ui/icons'
 
 export const Wrapper = styled.button`
   display: flex;
@@ -15,8 +16,10 @@ export const Wrapper = styled.button`
   background-color: ${({ theme }) => theme.color.btn};
   cursor: pointer;
   transition: opacity 0.3s;
-  font-weight: 700;
-  font-size: 12px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
 
   &:hover {
     opacity: 0.8;
@@ -83,5 +86,11 @@ export const DropdownButton = styled.button`
 
   &:hover {
     opacity: 0.5;
+  }
+`
+
+export const ToncoinIcon = styled(SvgTonConnectIcon)`
+  path {
+    fill: ${({ theme }) => theme.color.btnText};
   }
 `

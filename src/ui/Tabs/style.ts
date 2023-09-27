@@ -21,7 +21,6 @@ export const TabItemLabel = styled.span<{ $isActive?: boolean }>`
     $isActive ? theme.color.btn : theme.color.hint};
   cursor: ${({ $isActive }) => ($isActive ? 'auto' : 'pointer')};
   transition: all 0.3s;
-  padding: 0 12px;
 `
 
 export const TabLine = styled.div<{ $isActive?: boolean }>`
@@ -30,4 +29,11 @@ export const TabLine = styled.div<{ $isActive?: boolean }>`
   background-color: ${({ $isActive, theme }) =>
     $isActive ? theme.color.btn : theme.color.bg};
   transition: all 0.3s;
+`
+
+export const TabTopWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
 `
