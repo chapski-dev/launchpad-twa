@@ -18,17 +18,23 @@ const tabs = [
   },
 ]
 
-export const InfoBlock: FC = () => {
+type InfoBlockProps = {
+  mdContent: string
+}
+
+export const InfoBlock: FC<InfoBlockProps> = (props) => {
+  const { mdContent } = props
+
   const [activeTab, setActiveTab] = useState(tabs[0])
 
   const infoContent = useMemo(() => {
     switch (activeTab.value) {
       case 'about':
-        return <MarkdownRenderer mdContent={mockMDContent} />
+        return <MarkdownRenderer mdContent={mdContent} />
       case 'deal_tearms':
         return <DealTerms />
     }
-  }, [activeTab.value])
+  }, [activeTab.value, mdContent])
 
   return (
     <S.Wrapper>

@@ -129,6 +129,8 @@ const Project: FC = () => {
   }
 
   if (isProjectLoaded) {
+    const markdown = JSON.parse(project?.markdownDocument)
+
     return (
       <>
         <Head>
@@ -148,7 +150,7 @@ const Project: FC = () => {
             icoParams={icoParams}
             totalSupply={project.totalSupply}
           />
-          <InfoBlock />
+          <InfoBlock mdContent={markdown.content} />
         </S.Wrapper>
         {!participantState?.participated && (
           <MainButton
