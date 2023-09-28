@@ -13,6 +13,7 @@ export const Wrapper = styled.div`
 `
 
 export const Image = styled.img`
+  min-width: 80px;
   width: 80px;
   heigth: 80px;
   border-radius: 16px;

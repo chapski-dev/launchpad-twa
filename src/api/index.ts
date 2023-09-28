@@ -18,7 +18,7 @@ export const getICOProjectById = async (id: string) => {
   const { data } = await AXIOS_LAUNCHPAD_INSTANCE.get(
     ApiRoutes.GetICOProjectById,
     {
-      params: { id },
+      params: { id, isFake: true },
     }
   )
 

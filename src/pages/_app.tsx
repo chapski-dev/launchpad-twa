@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { AxiosError } from 'axios'
 import type { AppProps } from 'next/app'
 import Script from 'next/script'
@@ -8,7 +7,6 @@ import { TelegramProvider } from 'app/providers/TelegramProvider'
 import { TonConnectProvider } from 'app/providers/TonConnectProvider'
 import { GlobalStyle } from 'assets/style/GlobalStyle'
 import { theme } from 'assets/style/theme'
-import { useTelegram } from 'hooks/useTelegram/useTelegram'
 
 const queryClient = new QueryClient({
   defaultOptions: {
