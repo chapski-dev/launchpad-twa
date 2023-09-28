@@ -14,6 +14,7 @@ import {
 import * as S from 'domains/Project/style'
 import { BackButton } from 'features/BackButton'
 import { MainButton } from 'features/MainButton'
+import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
 
@@ -23,6 +24,8 @@ const Project: FC = () => {
   const userWalletAddress = useTonAddress()
 
   const [tonConnectUI] = useTonConnectUI()
+
+  const { webApp } = useTelegram()
 
   const { id } = router.query
 
@@ -79,6 +82,12 @@ const Project: FC = () => {
 
   const handleMainButtonClick = useCallback(() => {
     if (!userWalletAddress) {
+      if (!webApp) {
+        return
+      }
+
+      webApp?.expand()
+
       tonConnectUI.connectWallet()
 
       return

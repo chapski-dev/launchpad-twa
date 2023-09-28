@@ -16,6 +16,7 @@ export const Image = styled.img`
   min-width: 80px;
   width: 80px;
   heigth: 80px;
+  max-height: 80px;
   border-radius: 16px;
   background-color: ${({ theme }) => theme.color.bgSecondary};
 `
