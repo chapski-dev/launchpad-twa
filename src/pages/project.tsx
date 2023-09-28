@@ -5,7 +5,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
 import { getICOProjectById } from 'api'
-import { AppRoutes } from 'constants/app'
+// import { AppRoutes } from 'constants/app'
 import {
   InfoBlock,
   ProjectaInfoHeader,
@@ -65,22 +65,17 @@ const Project: FC = () => {
     }, []),
   })
 
-  const {
-    data: participantState,
-    isLoading: isParticipantStateLoading,
-    isSuccess: isParticipantStateLoaded,
-  } = useQuery(
-    ['participantState', project?.icoMasterAddress],
-    () =>
-      TnC.participantState(userWalletAddress, project?.icoMasterAddress || 0),
-    // () => TnC.participantState(userWalletAddress, '0'),
-    {
-      // enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
-      enabled: Boolean(userWalletAddress),
-    }
-  )
-
-  console.log(participantState, isParticipantStateLoaded)
+  const { data: participantState, isLoading: isParticipantStateLoading } =
+    useQuery(
+      ['participantState', project?.icoMasterAddress],
+      () =>
+        TnC.participantState(userWalletAddress, project?.icoMasterAddress || 0),
+      // () => TnC.participantState(userWalletAddress, '0'),
+      {
+        // enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
+        enabled: Boolean(userWalletAddress),
+      }
+    )
 
   const handleMainButtonClick = useCallback(() => {
     if (!userWalletAddress) {
@@ -89,13 +84,15 @@ const Project: FC = () => {
       return
     }
 
-    router.push({
-      pathname: AppRoutes.Participate,
-      query: {
-        id,
-      },
-    })
-  }, [id, router, tonConnectUI, userWalletAddress])
+    alert('Coming soon ..)')
+
+    // router.push({
+    //   pathname: AppRoutes.Participate,
+    //   query: {
+    //     id,
+    //   },
+    // })
+  }, [tonConnectUI, userWalletAddress])
 
   const icoParams = useMemo(() => {
     if (!project) {

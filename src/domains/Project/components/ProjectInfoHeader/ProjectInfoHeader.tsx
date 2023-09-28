@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { Container } from 'ui/Container/Container'
+import { Chip } from './components/Chip/Chip'
 import * as S from './style'
 
 type ProjectInfoHeaderProps = {
@@ -18,6 +19,7 @@ export const ProjectaInfoHeader: FC<ProjectInfoHeaderProps> = (props) => {
         <S.InfoWrapper>
           <S.Title>{title}</S.Title>
           <S.Description>{description}</S.Description>
+          <Chip text="DEMO PROJECT" />
         </S.InfoWrapper>
       </S.Wrapper>
     </Container>

@@ -34,11 +34,12 @@ const mockTabs = [
     label: 'Tonstarter',
     value: 'tonstarter',
     icon: <SvgTonstarterIcon />,
+    disabled: true,
   },
-  {
-    label: 'Blog',
-    value: 'blog',
-  },
+  // {
+  //   label: 'Blog',
+  //   value: 'blog',
+  // },
 ]
 
 const inter = Inter({ subsets: ['latin'] })

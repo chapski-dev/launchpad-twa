@@ -1,3 +1,4 @@
+import { rgba } from 'polished'
 import { styled } from 'styled-components'
 
 export const Wrapper = styled.div`
@@ -7,19 +8,24 @@ export const Wrapper = styled.div`
   width: 100%;
 `
 
-export const TabItem = styled.div`
+export const TabItem = styled.div<{ $isDisabled?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 6px;
+  opacity: ${({ $isDisabled }) => $isDisabled && 0.6};
 `
 
-export const TabItemLabel = styled.span<{ $isActive?: boolean }>`
+export const TabItemLabel = styled.span<{
+  $isActive?: boolean
+  $isDisabled?: boolean
+}>`
   line-height: 22px;
   font-size: 16px;
   font-weight: 500;
   color: ${({ theme, $isActive }) =>
     $isActive ? theme.color.btn : theme.color.hint};
-  cursor: ${({ $isActive }) => ($isActive ? 'auto' : 'pointer')};
+  cursor: ${({ $isActive, $isDisabled }) =>
+    $isActive ? 'auto' : $isDisabled ? 'not-allowed' : 'pointer'};
   transition: all 0.3s;
 `
 
@@ -36,4 +42,16 @@ export const TabTopWrapper = styled.div`
   align-items: center;
   gap: 6px;
   padding: 0 12px;
+`
+
+export const LabelWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+export const DisabledLabel = styled.span`
+  font-size: 9px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.color.hint};
+  transition: all 0.3s;
 `

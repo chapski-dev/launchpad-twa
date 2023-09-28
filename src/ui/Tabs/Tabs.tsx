@@ -5,6 +5,7 @@ export type TabItem = {
   label: string
   value: string
   icon?: ReactNode
+  disabled?: boolean
 }
 
 type TabsProps = {
@@ -22,10 +23,21 @@ export const Tabs: FC<TabsProps> = (props) => {
         const isActive = tab.value === activeTab.value
 
         return (
-          <S.TabItem key={tab.value} onClick={() => onChange(tab)}>
+          <S.TabItem
+            key={tab.value}
+            $isDisabled={tab.disabled}
+            onClick={() => !tab.disabled && onChange(tab)}
+          >
             <S.TabTopWrapper>
               {tab.icon}
-              <S.TabItemLabel $isActive={isActive}>{tab.label}</S.TabItemLabel>
+              <S.LabelWrapper>
+                {tab.disabled && (
+                  <S.DisabledLabel>Coming soon...</S.DisabledLabel>
+                )}
+                <S.TabItemLabel $isActive={isActive} $isDisabled={tab.disabled}>
+                  {tab.label}
+                </S.TabItemLabel>
+              </S.LabelWrapper>
             </S.TabTopWrapper>
 
             <S.TabLine $isActive={isActive} />
