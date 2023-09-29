@@ -7,6 +7,6 @@ export const Wrapper = styled.div`
   font-weight: 500;
   line-height: 16px;
   color: ${({ theme }) => theme.color.text};
-  border: 1px solid #ffffff33;
+  border: 1px solid ${({ theme }) => theme.color.hint};
   width: max-content;
 `

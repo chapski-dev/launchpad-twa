@@ -20,7 +20,7 @@ import { ConnectWalletButton } from 'features/ConnectWalletButton'
 import { useDebounce } from 'hooks/useDebounce/useDebounce'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
-import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons'
+import { SvgTokenovaIcon, SvgTonstarterIcon, SvgTonupIcon } from 'ui/icons'
 import { Line } from 'ui/Line/Line'
 import { TabItem, Tabs } from 'ui/Tabs/Tabs'
 
@@ -34,6 +34,12 @@ const mockTabs = [
     label: 'Tonstarter',
     value: 'tonstarter',
     icon: <SvgTonstarterIcon />,
+    disabled: true,
+  },
+  {
+    label: 'TonUp',
+    value: 'tonup',
+    icon: <SvgTonupIcon />,
     disabled: true,
   },
   // {

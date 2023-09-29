@@ -36,7 +36,7 @@ export const ProjectCard: FC<ProjectCardProps> = (props) => {
           </S.Label>
           <S.Dot />
           <S.Label>
-            Salle Progress <S.Label $isBold>100%</S.Label>
+            Sale Progress <S.Label $isBold>100%</S.Label>
           </S.Label>
         </S.FlexWrapper>
       </S.InfoWrapper>

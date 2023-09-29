@@ -6,7 +6,12 @@ export const TonConnectProvider: FCWithChildren = (props) => {
   const { children } = props
 
   return (
-    <TonConnectUIProvider manifestUrl={MANIFEST_URL}>
+    <TonConnectUIProvider
+      manifestUrl={MANIFEST_URL}
+      uiPreferences={{
+        theme: 'SYSTEM',
+      }}
+    >
       <>{children}</>
     </TonConnectUIProvider>
   )

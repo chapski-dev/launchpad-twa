@@ -6,6 +6,13 @@ export const Wrapper = styled.div`
   align-items: center;
   gap: 16px;
   width: 100%;
+  max-width: 100%;
+  overflox-x: scroll;
+  overflow-y: hidden;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `
 
 export const TabItem = styled.div<{ $isDisabled?: boolean }>`
@@ -54,4 +61,5 @@ export const DisabledLabel = styled.span`
   font-weight: 400;
   color: ${({ theme }) => theme.color.hint};
   transition: all 0.3s;
+  width: max-content;
 `
