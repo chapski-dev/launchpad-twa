@@ -1,4 +1,4 @@
-export const LAUNCHPAD_BASE_API_URL = 'https://launchpad-front-end.vercel.app'
+export const LAUNCHPAD_BASE_API_URL = 'https://front-staging.tokenova.fi/'
 
 export const ApiRoutes = {
   GetICOProjects: '/api/jettons/getICOJettons',
