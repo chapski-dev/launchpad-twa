@@ -4,7 +4,6 @@ import { Container } from 'ui/Container/Container'
 import { Line } from 'ui/Line/Line'
 import { Tabs } from 'ui/Tabs/Tabs'
 import { DealTerms } from './components'
-import { mockMDContent } from './mock'
 import * as S from './style'
 
 const tabs = [

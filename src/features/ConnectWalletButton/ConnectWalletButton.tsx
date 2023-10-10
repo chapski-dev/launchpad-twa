@@ -8,7 +8,13 @@ import { shortenAddress } from 'utils/shortenAddress'
 
 import * as S from './style'
 
-export const ConnectWalletButton: FC = () => {
+type ConnectWalletButtonProps = {
+  className?: string
+}
+
+export const ConnectWalletButton: FC<ConnectWalletButtonProps> = (props) => {
+  const { className } = props
+
   const [isDropdownDisplayed, setIsDropdownDisplayed] = useState<
     boolean | null
   >(null)
@@ -42,12 +48,12 @@ export const ConnectWalletButton: FC = () => {
   useOutsideClick(dropdownRef, () => setIsDropdownDisplayed(false))
 
   return !address ? (
-    <S.Wrapper onClick={handleConnectWalletClick}>
+    <S.Wrapper className={className} onClick={handleConnectWalletClick}>
       <S.ToncoinIcon />
       Connect Wallet
     </S.Wrapper>
   ) : (
-    <S.AddressContainer ref={dropdownRef}>
+    <S.AddressContainer ref={dropdownRef} className={className}>
       <S.AddressBlock onClick={toggleDropdown}>
         {shortenAddress(address)}
       </S.AddressBlock>

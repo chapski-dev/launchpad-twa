@@ -8,9 +8,9 @@ export const Wrapper = styled.button`
   gap: 4px;
   border: none;
   outline: none;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 16px 16px;
-  width: 50%;
+  width: 49%;
   height: 46px;
   color: ${({ theme }) => theme.color.btnText};
   background-color: ${({ theme }) => theme.color.btn};

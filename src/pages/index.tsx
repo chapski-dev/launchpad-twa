@@ -147,7 +147,7 @@ const Home: FC = () => {
                   onFocus={() => setIsSearchFocused(true)}
                   placeholder="Search"
                 />
-                {!isSearchFocused && <ConnectWalletButton />}
+                <S.ConnectWalletButton />
               </S.FlexWrapper>
 
               <Tabs

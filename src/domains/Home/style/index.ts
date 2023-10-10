@@ -1,4 +1,5 @@
 import { styled } from 'styled-components'
+import { ConnectWalletButton as FeatureConnectWalletButton } from 'features/ConnectWalletButton/ConnectWalletButton'
 import { Input as UIInput } from 'ui/Input/Input'
 
 export const Wrapper = styled.div`
@@ -18,11 +19,16 @@ export const FlexWrapper = styled.div`
   display: flex;
   gap: 8px;
   width: 100%;
+  position: relative;
+  height: 46px;
 `
 
 export const Input = styled(UIInput)<{ $isFocused?: boolean }>`
-  width: ${({ $isFocused }) => ($isFocused ? '100%' : '50%')};
-  height: 46px;
+  width: ${({ $isFocused }) => ($isFocused ? '100%' : '49%')};
+  transition: width 0.25s ease;
+  height: 47px;
+  z-index: 10000;
+  position: absolute;
 `
 
 export const Title = styled.h2`
@@ -31,4 +37,9 @@ export const Title = styled.h2`
   color: ${({ theme }) => theme.color.text};
   font-size: 18px;
   font-weight: 500;
+`
+
+export const ConnectWalletButton = styled(FeatureConnectWalletButton)`
+  margin-left: auto;
+  width: 49%;
 `
