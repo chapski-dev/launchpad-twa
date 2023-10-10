@@ -7,8 +7,10 @@ export const Wrapper = styled.div`
   cursor: pointer;
   transition: 0.3s;
 
-  &:hover {
-    opacity: 0.6;
+  @media (min-width: 768px) {
+    &:hover {
+      opacity: 0.6;
+    }
   }
 `
 

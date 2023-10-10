@@ -5,16 +5,17 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
 import { getICOProjectById } from 'api'
-// import { AppRoutes } from 'constants/app'
+import { AppRoutes } from 'constants/app'
 import {
   InfoBlock,
-  ProjectaInfoHeader,
+  ProjectInfoHeader,
   Tokenomics,
 } from 'domains/Project/components'
 import * as S from 'domains/Project/style'
 import { BackButton } from 'features/BackButton'
 import { MainButton } from 'features/MainButton'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
+import { FadeInWrapper } from 'ui/FadeInWrapper/FadeInWrapper'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
 
@@ -93,15 +94,15 @@ const Project: FC = () => {
       return
     }
 
-    alert('Coming soon ..)')
+    // alert('Coming soon ..)')
 
-    // router.push({
-    //   pathname: AppRoutes.Participate,
-    //   query: {
-    //     id,
-    //   },
-    // })
-  }, [tonConnectUI, userWalletAddress])
+    router.push({
+      pathname: AppRoutes.Participate,
+      query: {
+        id,
+      },
+    })
+  }, [id, router, tonConnectUI, userWalletAddress, webApp])
 
   const icoParams = useMemo(() => {
     if (!project) {
@@ -135,29 +136,33 @@ const Project: FC = () => {
   }
 
   if (isProjectLoaded) {
-    const markdown = JSON.parse(project?.markdownDocument)
+    const markdown =
+      project?.markdownDocument && JSON.parse(project?.markdownDocument)
 
     return (
       <>
         <Head>
           <title>Project</title>
         </Head>
-        <S.Wrapper>
-          <BackButton onClick={() => router.back()} />
-          <ProjectaInfoHeader
-            description={project.metadata.description}
-            image={project.metadata.image}
-            title={project.metadata.name}
-          />
-          <Line />
-          <Tokenomics
-            distributions={distributions}
-            icoFundDistributions={icoFundDistributions}
-            icoParams={icoParams}
-            totalSupply={project.totalSupply}
-          />
-          <InfoBlock mdContent={markdown.content} />
-        </S.Wrapper>
+        <FadeInWrapper>
+          <S.Wrapper>
+            <BackButton onClick={() => router.back()} />
+            <ProjectInfoHeader
+              description={project.metadata.description}
+              image={project.metadata.image}
+              network={project.network}
+              title={project.metadata.name}
+            />
+            <Line />
+            <Tokenomics
+              distributions={distributions}
+              icoFundDistributions={icoFundDistributions}
+              icoParams={icoParams}
+              totalSupply={project.totalSupply}
+            />
+            <InfoBlock mdContent={markdown?.content} />
+          </S.Wrapper>
+        </FadeInWrapper>
         {!participantState?.participated && (
           <MainButton
             onClick={handleMainButtonClick}

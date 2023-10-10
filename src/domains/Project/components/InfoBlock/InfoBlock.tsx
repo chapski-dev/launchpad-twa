@@ -19,7 +19,7 @@ const tabs = [
 ]
 
 type InfoBlockProps = {
-  mdContent: string
+  mdContent?: string
 }
 
 export const InfoBlock: FC<InfoBlockProps> = (props) => {
@@ -30,7 +30,7 @@ export const InfoBlock: FC<InfoBlockProps> = (props) => {
   const infoContent = useMemo(() => {
     switch (activeTab.value) {
       case 'about':
-        return <MarkdownRenderer mdContent={mdContent} />
+        return mdContent && <MarkdownRenderer mdContent={mdContent} />
       case 'deal_tearms':
         return <DealTerms />
     }

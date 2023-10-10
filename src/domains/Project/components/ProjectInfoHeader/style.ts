@@ -39,3 +39,9 @@ export const Description = styled.p`
   line-height: 20px;
   color: ${({ theme }) => theme.color.hint};
 `
+
+export const TagsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`

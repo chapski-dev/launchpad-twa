@@ -1,6 +1,7 @@
 import { FC } from 'react'
 import { useQuery } from 'react-query'
 import { getICOJettons } from 'api'
+import { FadeInWrapper } from 'ui/FadeInWrapper/FadeInWrapper'
 import { ProjectCard } from './components'
 import * as S from './style'
 
@@ -25,23 +26,25 @@ export const ProjectList: FC<ProjectListProps> = (props) => {
 
   if (isProjectsLoaded) {
     return (
-      <S.Wrapper>
-        {projects.length > 0 ? (
-          projects.map((project: any, idx: number) => (
-            <ProjectCard
-              key={idx}
-              description={project.metadata.description}
-              id={project.id}
-              image={project.metadata.image}
-              title={project.metadata.name}
-            />
-          ))
-        ) : (
-          <S.NotFoundBlock>
-            <S.Label>Oops! Project not found :c</S.Label>
-          </S.NotFoundBlock>
-        )}
-      </S.Wrapper>
+      <FadeInWrapper>
+        <S.Wrapper>
+          {projects.length > 0 ? (
+            projects.map((project: any, idx: number) => (
+              <ProjectCard
+                key={idx}
+                description={project.metadata.description}
+                id={project.id}
+                image={project.metadata.image}
+                title={project.metadata.name}
+              />
+            ))
+          ) : (
+            <S.NotFoundBlock>
+              <S.Label>Oops! Project not found :c</S.Label>
+            </S.NotFoundBlock>
+          )}
+        </S.Wrapper>
+      </FadeInWrapper>
     )
   }
 

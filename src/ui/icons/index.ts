@@ -1,3 +1,5 @@
+export { default as SvgCompleteIcon } from './CompleteIcon'
+export { default as SvgTick } from './Tick'
 export { default as SvgTokenovaIcon } from './TokenovaIcon'
 export { default as SvgTonConnectIcon } from './TonConnectIcon'
 export { default as SvgTonstarterIcon } from './TonstarterIcon'

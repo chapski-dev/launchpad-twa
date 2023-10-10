@@ -10,10 +10,12 @@ import { useQuery } from 'react-query'
 import { useTheme } from 'styled-components'
 import { Address } from 'ton-core'
 import { getICOProjectById } from 'api'
+import { AppRoutes } from 'constants/app'
 import * as S from 'domains/Participate/style'
 import { BackButton } from 'features/BackButton'
 import { MainButton } from 'features/MainButton'
 import { Container } from 'ui/Container/Container'
+import { FadeInWrapper } from 'ui/FadeInWrapper/FadeInWrapper'
 import { Input } from 'ui/Input/Input'
 import { Loader } from 'ui/Loader/Loader'
 import { formatNumberWithSeparators } from 'utils/formatNumberWithSeparators'
@@ -122,9 +124,17 @@ const Participate: FC = () => {
         if (result.ready) {
           setIsTrxChecking(false)
 
-          alert(
-            `You have successfully purchased ${project.metadata.symbol} jettons!`
-          )
+          router.push({
+            pathname: AppRoutes.Complete,
+            query: {
+              symbol: project.metadata.symbol,
+              amount: currentJettonsBuyAmount,
+            },
+          })
+
+          // alert(
+          //   `You have successfully purchased ${project.metadata.symbol} jettons!`
+          // )
         } else {
           currentAttempts++
 
@@ -139,6 +149,7 @@ const Participate: FC = () => {
     currentJettonsBuyAmount,
     project,
     projectSideInfo,
+    router,
     tonConnectUI,
     userWalletAddress,
   ])
@@ -185,59 +196,61 @@ const Participate: FC = () => {
         <Head>
           <title>Project</title>
         </Head>
-        <Container>
-          <BackButton onClick={() => router.back()} />
-          <S.Wrapper>
-            <S.Title>Buy {project.metadata.symbol} jettons</S.Title>
-            <S.InfoBlockWrapper>
-              <S.InfoTitle>
-                {formatNumberWithSeparators(projectSideInfo.minimumBuyTON)}
-              </S.InfoTitle>
-              <S.InfoLabel>Minimum investment</S.InfoLabel>
-            </S.InfoBlockWrapper>
-            <S.InfoBlockWrapper>
-              <S.InfoTitle>
-                {formatNumberWithSeparators(projectSideInfo.maximumBuyTON)}
-              </S.InfoTitle>
-              <S.InfoLabel>Maximum investment</S.InfoLabel>
-            </S.InfoBlockWrapper>
-            <S.InputWrapper>
-              <Input
-                max={projectSideInfo.maximumBuyTON}
-                min={projectSideInfo.maximumBuyTON}
-                onChange={(evt) =>
-                  setCurrentJettonsBuyAmount(Number(evt.target.value))
-                }
-                placeholder={`Enter amount of ${project.metadata.symbol} jettons`}
-                type="number"
-                value={currentJettonsBuyAmount}
-              />
-              <Slider
-                activeDotStyle={{
-                  borderColor: theme.color.btn,
-                }}
-                handleStyle={{
-                  border: 'solid 2px ' + theme.color.btn,
-                }}
-                marks={heightMarks}
-                max={100}
-                min={0}
-                onChange={(e) => handleSliderValueChange(Number(e))}
-                step={1}
-                style={{ width: '95%', margin: '0 auto' }}
-                trackStyle={{
-                  backgroundColor: theme.color.btn,
-                }}
-                value={sliderValue}
-              />
-            </S.InputWrapper>
-          </S.Wrapper>
-          <MainButton
-            onClick={handleBuyJettonsClick}
-            progress={isTrxChecking}
-            text={'Buy ' + project?.metadata.symbol}
-          />
-        </Container>
+        <FadeInWrapper>
+          <Container>
+            <BackButton onClick={() => router.back()} />
+            <S.Wrapper>
+              <S.Title>Buy {project.metadata.symbol} jettons</S.Title>
+              <S.InfoBlockWrapper>
+                <S.InfoTitle>
+                  {formatNumberWithSeparators(projectSideInfo.minimumBuyTON)}
+                </S.InfoTitle>
+                <S.InfoLabel>Minimum investment</S.InfoLabel>
+              </S.InfoBlockWrapper>
+              <S.InfoBlockWrapper>
+                <S.InfoTitle>
+                  {formatNumberWithSeparators(projectSideInfo.maximumBuyTON)}
+                </S.InfoTitle>
+                <S.InfoLabel>Maximum investment</S.InfoLabel>
+              </S.InfoBlockWrapper>
+              <S.InputWrapper>
+                <Input
+                  max={projectSideInfo.maximumBuyTON}
+                  min={projectSideInfo.maximumBuyTON}
+                  onChange={(evt) =>
+                    setCurrentJettonsBuyAmount(Number(evt.target.value))
+                  }
+                  placeholder={`Enter amount of ${project.metadata.symbol} jettons`}
+                  type="number"
+                  value={currentJettonsBuyAmount}
+                />
+                <Slider
+                  activeDotStyle={{
+                    borderColor: theme.color.btn,
+                  }}
+                  handleStyle={{
+                    border: 'solid 2px ' + theme.color.btn,
+                  }}
+                  marks={heightMarks}
+                  max={100}
+                  min={0}
+                  onChange={(e) => handleSliderValueChange(Number(e))}
+                  step={1}
+                  style={{ width: '95%', margin: '0 auto' }}
+                  trackStyle={{
+                    backgroundColor: theme.color.btn,
+                  }}
+                  value={sliderValue}
+                />
+              </S.InputWrapper>
+            </S.Wrapper>
+            <MainButton
+              onClick={handleBuyJettonsClick}
+              progress={isTrxChecking}
+              text={'Buy ' + project?.metadata.symbol}
+            />
+          </Container>
+        </FadeInWrapper>
       </>
     )
   }
