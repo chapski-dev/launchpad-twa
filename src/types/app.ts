@@ -14,9 +14,4 @@ declare module 'styled-components' {
   }
 }
 
-declare module '*.svg' {
-  const content: React.FunctionComponent<React.SVGAttributes<SVGElement>>
-  export default content
-}
-
 export type FCWithChildren<T = {}> = FC<PropsWithChildren<T>>
