@@ -43,3 +43,10 @@ export const InputWrapper = styled.div`
   flex-direction: column;
   gap: 12px;
 `
+
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+`

@@ -56,7 +56,8 @@ const Post = () => {
           <S.Image
             alt="post_image"
             height={170}
-            src={launchpadWebAppUrl + post.frontmatter.socialImage}
+            // src={launchpadWebAppUrl + post.frontmatter.socialImage}
+            src={'/images/testnetPostImage.svg'}
             style={{ width: '100%', height: 'auto' }}
             width={370}
           />

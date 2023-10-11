@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { styled } from 'styled-components'
 import { ConnectWalletButton as FeatureConnectWalletButton } from 'features/ConnectWalletButton/ConnectWalletButton'
 import { Input as UIInput } from 'ui/Input/Input'
@@ -23,12 +24,26 @@ export const FlexWrapper = styled.div`
   height: 46px;
 `
 
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+`
+
 export const Input = styled(UIInput)<{ $isFocused?: boolean }>`
   width: ${({ $isFocused }) => ($isFocused ? '100%' : '49%')};
   transition: width 0.25s ease;
   height: 47px;
   z-index: 10000;
   position: absolute;
+`
+
+export const Header = styled.div`
+  dispay: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 8px;
 `
 
 export const Title = styled.h2`
@@ -42,4 +57,8 @@ export const Title = styled.h2`
 export const ConnectWalletButton = styled(FeatureConnectWalletButton)`
   margin-left: auto;
   width: 49%;
+`
+
+export const PromoImage = styled(Image)`
+  cursor: pointer;
 `

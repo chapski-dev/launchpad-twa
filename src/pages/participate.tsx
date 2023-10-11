@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import 'rc-slider/assets/index.css'
 
 import { TnC } from '@ton-and-company/sdk'
@@ -13,6 +13,8 @@ import { getICOProjectById } from 'api'
 import { AppRoutes } from 'constants/app'
 import * as S from 'domains/Participate/style'
 import { BackButton } from 'features/BackButton'
+import { BalanceBlock } from 'features/BalanceBlock/BalanceBlock'
+import { ConnectWalletButton } from 'features/ConnectWalletButton'
 import { MainButton } from 'features/MainButton'
 import { Container } from 'ui/Container/Container'
 import { FadeInWrapper } from 'ui/FadeInWrapper/FadeInWrapper'
@@ -74,6 +76,12 @@ const Participate: FC = () => {
       enabled: !!userWalletAddress,
     }
   )
+
+  useEffect(() => {
+    if (!userWalletAddress) {
+      router.push(AppRoutes.Home)
+    }
+  }, [router, userWalletAddress])
 
   const handleBuyJettonsClick = useCallback(async () => {
     if (!project || typeof balance !== 'number' || !projectSideInfo) {
@@ -199,6 +207,11 @@ const Participate: FC = () => {
         <FadeInWrapper>
           <Container>
             <BackButton onClick={() => router.back()} />
+            <S.ButtonsWrapper>
+              <BalanceBlock balance={balance || 0} />
+
+              <ConnectWalletButton />
+            </S.ButtonsWrapper>
             <S.Wrapper>
               <S.Title>Buy {project.metadata.symbol} jettons</S.Title>
               <S.InfoBlockWrapper>

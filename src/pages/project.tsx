@@ -13,11 +13,15 @@ import {
 } from 'domains/Project/components'
 import * as S from 'domains/Project/style'
 import { BackButton } from 'features/BackButton'
+import { BalanceBlock } from 'features/BalanceBlock/BalanceBlock'
+import { ConnectWalletButton } from 'features/ConnectWalletButton'
 import { MainButton } from 'features/MainButton'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
+import { Container } from 'ui/Container/Container'
 import { FadeInWrapper } from 'ui/FadeInWrapper/FadeInWrapper'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
+import { getBalance } from 'utils/getBalance'
 
 const Project: FC = () => {
   const router = useRouter()
@@ -80,6 +84,14 @@ const Project: FC = () => {
         enabled: Boolean(userWalletAddress),
       }
     )
+
+  const { data: balance } = useQuery(
+    ['userBalance'],
+    () => getBalance(userWalletAddress, 'testnet'),
+    {
+      enabled: !!userWalletAddress,
+    }
+  )
 
   const handleMainButtonClick = useCallback(() => {
     if (!userWalletAddress) {
@@ -147,6 +159,15 @@ const Project: FC = () => {
         <FadeInWrapper>
           <S.Wrapper>
             <BackButton onClick={() => router.back()} />
+            <Container>
+              {userWalletAddress && (
+                <S.ButtonsWrapper>
+                  <BalanceBlock balance={balance || 0} />
+
+                  <ConnectWalletButton />
+                </S.ButtonsWrapper>
+              )}
+            </Container>
             <ProjectInfoHeader
               description={project.metadata.description}
               image={project.metadata.image}

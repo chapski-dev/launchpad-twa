@@ -6,23 +6,28 @@ import {
   useCallback,
   useMemo,
 } from 'react'
-import { useTonConnectUI } from '@tonconnect/ui-react'
+import { useTonConnectUI, useTonAddress } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { useMutation, useQuery } from 'react-query'
 import { getProfile, saveProfile } from 'api'
 import { ProfileInfoType } from 'api/types'
+import { AppRoutes } from 'constants/app'
 import { Chains } from 'constants/blockchain'
 import { PostsList, ProjectList } from 'domains/Home/components'
 import { Loader } from 'domains/Home/components/Projectslist/style'
 import * as S from 'domains/Home/style'
+import { BalanceBlock } from 'features/BalanceBlock/BalanceBlock'
 import { ConnectWalletButton } from 'features/ConnectWalletButton'
 import { useDebounce } from 'hooks/useDebounce/useDebounce'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
 import { SvgTokenovaIcon, SvgTonstarterIcon, SvgTonupIcon } from 'ui/icons'
+import { Input } from 'ui/Input/Input'
 import { Line } from 'ui/Line/Line'
 import { TabItem, Tabs } from 'ui/Tabs/Tabs'
+import { getBalance } from 'utils/getBalance'
 
 const mockTabs = [
   {
@@ -55,17 +60,29 @@ const Home: FC = () => {
   const [searchValue, setSearchValue] = useState<string>('')
   const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false)
 
+  const router = useRouter()
+
   const debaunceSearchValue = useDebounce(searchValue)
 
   const { webApp, user } = useTelegram()
 
   const [tonConnectUI] = useTonConnectUI()
 
+  const userWalletAddress = useTonAddress()
+
   const { data: profileInfo, isLoading: isProfileInfoLoading } = useQuery(
     ['profileInfo'],
     () => getProfile({ telegram: user?.username }),
     {
       enabled: Boolean(user?.username),
+    }
+  )
+
+  const { data: balance } = useQuery(
+    ['userBalance'],
+    () => getBalance(userWalletAddress, 'testnet'),
+    {
+      enabled: !!userWalletAddress,
     }
   )
 
@@ -126,6 +143,15 @@ const Home: FC = () => {
     }
   }, [debaunceSearchValue, selectedTab.value])
 
+  const handePromoClick = useCallback(() => {
+    router.push({
+      pathname: AppRoutes.Post,
+      query: {
+        fileName: 'testnetcoins_post.md',
+      },
+    })
+  }, [router])
+
   if (!webApp) {
     return <Loader type="projectCard" />
   }
@@ -139,16 +165,40 @@ const Home: FC = () => {
         <S.Wrapper>
           <Container>
             <S.HeaderWrapper>
-              <S.FlexWrapper>
-                <S.Input
-                  $isFocused={isSearchFocused}
-                  onBlur={() => setIsSearchFocused(false)}
-                  onChange={handleSearchInputChange}
-                  onFocus={() => setIsSearchFocused(true)}
-                  placeholder="Search"
-                />
-                <S.ConnectWalletButton />
-              </S.FlexWrapper>
+              {userWalletAddress ? (
+                <S.Header>
+                  <Input
+                    onBlur={() => setIsSearchFocused(false)}
+                    onChange={handleSearchInputChange}
+                    onFocus={() => setIsSearchFocused(true)}
+                    placeholder="Search"
+                  />
+                  <S.ButtonsWrapper>
+                    <BalanceBlock balance={balance} />
+
+                    <ConnectWalletButton />
+                  </S.ButtonsWrapper>
+                </S.Header>
+              ) : (
+                <S.FlexWrapper>
+                  <S.Input
+                    $isFocused={isSearchFocused}
+                    onBlur={() => setIsSearchFocused(false)}
+                    onChange={handleSearchInputChange}
+                    onFocus={() => setIsSearchFocused(true)}
+                    placeholder="Search"
+                  />
+                  <S.ConnectWalletButton />
+                </S.FlexWrapper>
+              )}
+
+              <S.PromoImage
+                alt="testnet_promo_image"
+                height={100}
+                onClick={handePromoClick}
+                src={'/images/testnetLaunch.svg'}
+                width={385}
+              />
 
               <Tabs
                 activeTab={selectedTab}
