@@ -26,25 +26,25 @@ export const ProjectList: FC<ProjectListProps> = (props) => {
 
   if (isProjectsLoaded) {
     return (
-      <FadeInWrapper>
-        <S.Wrapper>
-          {projects.length > 0 ? (
-            projects.map((project: any, idx: number) => (
-              <ProjectCard
-                key={idx}
-                description={project.metadata.description}
-                id={project.id}
-                image={project.metadata.image}
-                title={project.metadata.name}
-              />
-            ))
-          ) : (
-            <S.NotFoundBlock>
-              <S.Label>Oops! Project not found :c</S.Label>
-            </S.NotFoundBlock>
-          )}
-        </S.Wrapper>
-      </FadeInWrapper>
+      // <FadeInWrapper>
+      <S.Wrapper>
+        {projects.length > 0 ? (
+          projects.map((project: any, idx: number) => (
+            <ProjectCard
+              key={idx}
+              description={project.metadata.description}
+              id={project.id}
+              image={project.metadata.image}
+              title={project.metadata.name}
+            />
+          ))
+        ) : (
+          <S.NotFoundBlock>
+            <S.Label>Oops! Project not found :c</S.Label>
+          </S.NotFoundBlock>
+        )}
+      </S.Wrapper>
+      // </FadeInWrapper>
     )
   }
 

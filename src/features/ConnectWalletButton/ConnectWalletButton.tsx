@@ -1,6 +1,8 @@
 import { FC, useState, useRef } from 'react'
 import { useTonConnectUI, useTonAddress } from '@tonconnect/ui-react'
 
+import { useRouter } from 'next/router'
+import { AppRoutes } from 'constants/app'
 import { useOutsideClick } from 'hooks/useOutsideClick/useOutsideClick'
 
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
@@ -20,6 +22,8 @@ export const ConnectWalletButton: FC<ConnectWalletButtonProps> = (props) => {
   >(null)
 
   const dropdownRef = useRef(null)
+
+  const router = useRouter()
 
   const { webApp } = useTelegram()
 
@@ -58,6 +62,9 @@ export const ConnectWalletButton: FC<ConnectWalletButtonProps> = (props) => {
         {shortenAddress(address)}
       </S.AddressBlock>
       <S.DropdownButtons $isDisplayed={isDropdownDisplayed}>
+        <S.DropdownButton onClick={() => router.push(AppRoutes.Referral)}>
+          Referral
+        </S.DropdownButton>
         <S.DropdownButton onClick={handleDisconnectButtonClick}>
           Disconnect
         </S.DropdownButton>

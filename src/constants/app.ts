@@ -4,6 +4,7 @@ export const AppRoutes = {
   Participate: '/participate',
   Post: '/post',
   Complete: '/complete',
+  Referral: '/referral',
 } as const
 
 export const tonAddressExplorerLink = 'https://testnet.ton.cx/address/'

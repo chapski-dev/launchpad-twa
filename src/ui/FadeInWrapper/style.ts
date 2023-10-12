@@ -2,7 +2,7 @@ import { keyframes, styled } from 'styled-components'
 
 const fadeInAnimation = keyframes`
   from {
-    opacity: 0;
+    opacity: 0.6;
   }
   to {
     opacity: 1;
