@@ -21,7 +21,6 @@ import { Container } from 'ui/Container/Container'
 import { FadeInWrapper } from 'ui/FadeInWrapper/FadeInWrapper'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
-import { getBalance } from 'utils/getBalance'
 
 const Project: FC = () => {
   const router = useRouter()
@@ -84,14 +83,6 @@ const Project: FC = () => {
         enabled: Boolean(userWalletAddress),
       }
     )
-
-  const { data: balance } = useQuery(
-    ['userBalance'],
-    () => getBalance(userWalletAddress, 'testnet'),
-    {
-      enabled: !!userWalletAddress,
-    }
-  )
 
   const handleMainButtonClick = useCallback(() => {
     if (!userWalletAddress) {
@@ -162,7 +153,7 @@ const Project: FC = () => {
             <Container>
               {userWalletAddress && (
                 <S.ButtonsWrapper>
-                  <BalanceBlock balance={balance || 0} />
+                  <BalanceBlock />
 
                   <ConnectWalletButton />
                 </S.ButtonsWrapper>

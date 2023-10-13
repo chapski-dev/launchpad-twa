@@ -7,7 +7,7 @@ export const BalanceBlock = () => {
   return (
     <S.Wrapper>
       <S.ToncoinIcon />
-      {balance || '--'}
+      {balance?.toFixed(2) || '--'}
     </S.Wrapper>
   )
 }
