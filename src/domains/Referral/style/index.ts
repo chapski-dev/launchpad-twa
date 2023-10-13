@@ -58,6 +58,7 @@ export const ContentWrapper = styled.div`
 `
 
 export const InfoWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -71,7 +72,8 @@ export const ButtonsWrapper = styled.div`
   width: 90%;
 `
 
-export const Button = styled(UIButton)`
+export const Button = styled(UIButton)<{ isAccent?: boolean }>`
   width: 49%;
-  background-color: ${({ theme }) => theme.color.bgSecondary};
+  background-color: ${({ theme, isAccent }) =>
+    isAccent ? theme.color.btn : theme.color.bgSecondary};
 `

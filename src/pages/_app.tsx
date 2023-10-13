@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios'
 import type { AppProps } from 'next/app'
+import Head from 'next/head'
 import Script from 'next/script'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ThemeProvider } from 'styled-components'
@@ -34,16 +35,21 @@ const queryClient = new QueryClient({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TonConnectProvider>
-        <TelegramProvider>
-          <ThemeProvider theme={theme}>
-            <GlobalStyle />
-            <Component {...pageProps} />
-          </ThemeProvider>
-        </TelegramProvider>
-      </TonConnectProvider>
-      <Script src="https://telegram.org/js/telegram-web-app.js" />
-    </QueryClientProvider>
+    <>
+      <Head>
+        <meta content="width=device-width, user-scalable=no" name="viewport" />
+      </Head>
+      <QueryClientProvider client={queryClient}>
+        <TonConnectProvider>
+          <TelegramProvider>
+            <ThemeProvider theme={theme}>
+              <GlobalStyle />
+              <Component {...pageProps} />
+            </ThemeProvider>
+          </TelegramProvider>
+        </TonConnectProvider>
+        <Script src="https://telegram.org/js/telegram-web-app.js" />
+      </QueryClientProvider>
+    </>
   )
 }

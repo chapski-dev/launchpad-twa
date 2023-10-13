@@ -18,7 +18,6 @@ import { ConnectWalletButton } from 'features/ConnectWalletButton'
 import { MainButton } from 'features/MainButton'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
-import { FadeInWrapper } from 'ui/FadeInWrapper/FadeInWrapper'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
 
@@ -147,34 +146,32 @@ const Project: FC = () => {
         <Head>
           <title>Project</title>
         </Head>
-        <FadeInWrapper>
-          <S.Wrapper>
-            <BackButton onClick={() => router.back()} />
-            <Container>
-              {userWalletAddress && (
-                <S.ButtonsWrapper>
-                  <BalanceBlock />
+        <S.Wrapper>
+          <BackButton onClick={() => router.back()} />
+          <Container>
+            {userWalletAddress && (
+              <S.ButtonsWrapper>
+                <BalanceBlock />
 
-                  <ConnectWalletButton />
-                </S.ButtonsWrapper>
-              )}
-            </Container>
-            <ProjectInfoHeader
-              description={project.metadata.description}
-              image={project.metadata.image}
-              network={project.network}
-              title={project.metadata.name}
-            />
-            <Line />
-            <Tokenomics
-              distributions={distributions}
-              icoFundDistributions={icoFundDistributions}
-              icoParams={icoParams}
-              totalSupply={project.totalSupply}
-            />
-            <InfoBlock mdContent={markdown?.content} />
-          </S.Wrapper>
-        </FadeInWrapper>
+                <ConnectWalletButton />
+              </S.ButtonsWrapper>
+            )}
+          </Container>
+          <ProjectInfoHeader
+            description={project.metadata.description}
+            image={project.metadata.image}
+            network={project.network}
+            title={project.metadata.name}
+          />
+          <Line />
+          <Tokenomics
+            distributions={distributions}
+            icoFundDistributions={icoFundDistributions}
+            icoParams={icoParams}
+            totalSupply={project.totalSupply}
+          />
+          <InfoBlock mdContent={markdown?.content} />
+        </S.Wrapper>
         {!participantState?.participated && (
           <MainButton
             onClick={handleMainButtonClick}

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import matter from 'gray-matter'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -9,14 +9,23 @@ import { launchpadWebAppUrl } from 'constants/app'
 import * as S from 'domains/Post/styles'
 import { BackButton } from 'features/BackButton'
 import { MarkdownRenderer } from 'features/MarkdownRenderer'
+import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
 
 const Post = () => {
+  const [isPostImageLoaded, setIsPostImageLoaded] = useState<boolean>(false)
+
   const router = useRouter()
 
+  const { webApp } = useTelegram()
+
   const { fileName } = router.query
+
+  useEffect(() => {
+    webApp?.expand()
+  }, [webApp])
 
   const {
     data: post,
@@ -55,17 +64,19 @@ const Post = () => {
           <BackButton onClick={() => router.back()} />
           <S.Image
             alt="post_image"
-            height={170}
+            onLoad={() => setIsPostImageLoaded(true)}
             // src={launchpadWebAppUrl + post.frontmatter.socialImage}
-            src={'/images/testnetPostImage.svg'}
-            style={{ width: '100%', height: 'auto' }}
-            width={370}
+            src={'/images/testnetPostImage.png'}
           />
-          <S.Title>{post.frontmatter.title}</S.Title>
-          <Line />
-          <Container>
-            <MarkdownRenderer mdContent={post.content} />
-          </Container>
+          {isPostImageLoaded && (
+            <>
+              <S.Title>{post.frontmatter.title}</S.Title>
+              <Line />
+              <Container>
+                <MarkdownRenderer mdContent={post.content} />
+              </Container>
+            </>
+          )}
         </main>
       </>
     )

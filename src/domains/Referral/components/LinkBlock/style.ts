@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
   padding: 14px 24px;
 
   color: ${({ theme }) => theme.color.text};
-  font-weight: 300;
+  font-weight: 400;
   font-size: 12px;
   line-height: 14px;
   background-color: ${({ theme }) => theme.color.bgSecondary};

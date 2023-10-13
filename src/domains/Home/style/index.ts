@@ -13,7 +13,6 @@ export const HeaderWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 16px;
-  padding-top: 24px;
 `
 
 export const FlexWrapper = styled.div`
@@ -59,6 +58,8 @@ export const ConnectWalletButton = styled(FeatureConnectWalletButton)`
   width: 49%;
 `
 
-export const PromoImage = styled(Image)`
+export const PromoImage = styled.img`
   cursor: pointer;
+  width: 100%;
+  margin-bottom: 12px;
 `

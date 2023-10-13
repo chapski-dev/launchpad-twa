@@ -131,7 +131,7 @@ export const Loader: FCWithChildren<LoaderProps> = (props) => {
             viewBox="0 0 410 499"
             width={410}
           >
-            <rect height="202" width="410" />
+            <rect height="214" width="410" />
             <rect height="20" width="352" x="14" y="218" />
             <rect height="20" width="300" x="14" y="245" />
             <rect height="20" width="221" x="14" y="301" />

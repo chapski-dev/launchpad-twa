@@ -19,6 +19,6 @@ export const Wrapper = styled.div`
 
 export const ToncoinIcon = styled(SvgTonConnectIcon)`
   path {
-    fill: ${({ theme }) => theme.color.btnText};
+    fill: ${({ theme }) => theme.color.text};
   }
 `

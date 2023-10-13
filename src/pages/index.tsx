@@ -23,9 +23,8 @@ import { ConnectWalletButton } from 'features/ConnectWalletButton'
 import { useDebounce } from 'hooks/useDebounce/useDebounce'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
-import { SvgTokenovaIcon, SvgTonstarterIcon, SvgTonupIcon } from 'ui/icons'
+import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons'
 import { Input } from 'ui/Input/Input'
-import { Line } from 'ui/Line/Line'
 import { TabItem, Tabs } from 'ui/Tabs/Tabs'
 
 const mockTabs = [
@@ -40,12 +39,12 @@ const mockTabs = [
     icon: <SvgTonstarterIcon />,
     disabled: true,
   },
-  {
-    label: 'TonUp',
-    value: 'tonup',
-    icon: <SvgTonupIcon />,
-    disabled: true,
-  },
+  // {
+  //   label: 'TonUp',
+  //   value: 'tonup',
+  //   icon: <SvgTonupIcon />,
+  //   disabled: true,
+  // },
   // {
   //   label: 'Blog',
   //   value: 'blog',
@@ -58,6 +57,7 @@ const Home: FC = () => {
   const [selectedTab, setSelectedTab] = useState<TabItem>(mockTabs[0])
   const [searchValue, setSearchValue] = useState<string>('')
   const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false)
+  const [isPromoImageLoaded, setIsPromoImageLoaded] = useState<boolean>(false)
 
   const router = useRouter()
 
@@ -98,6 +98,8 @@ const Home: FC = () => {
 
   useEffect(() => {
     if (webApp && user) {
+      console.log(webApp.initData)
+
       const initData = new URLSearchParams(webApp.initData)
 
       const referrer_id = initData.get('start_param')
@@ -155,51 +157,56 @@ const Home: FC = () => {
       <main className={inter.className}>
         <S.Wrapper>
           <Container>
-            <S.HeaderWrapper>
-              {userWalletAddress ? (
-                <S.Header>
-                  <Input
-                    onBlur={() => setIsSearchFocused(false)}
-                    onChange={handleSearchInputChange}
-                    onFocus={() => setIsSearchFocused(true)}
-                    placeholder="Search"
-                  />
-                  <S.ButtonsWrapper>
-                    <BalanceBlock />
-
-                    <ConnectWalletButton />
-                  </S.ButtonsWrapper>
-                </S.Header>
-              ) : (
-                <S.FlexWrapper>
-                  <S.Input
-                    $isFocused={isSearchFocused}
-                    onBlur={() => setIsSearchFocused(false)}
-                    onChange={handleSearchInputChange}
-                    onFocus={() => setIsSearchFocused(true)}
-                    placeholder="Search"
-                  />
-                  <S.ConnectWalletButton />
-                </S.FlexWrapper>
-              )}
-
-              <S.PromoImage
-                alt="testnet_promo_image"
-                height={100}
-                onClick={handePromoClick}
-                src={'/images/testnetLaunch.svg'}
-                width={385}
-              />
-
-              <Tabs
-                activeTab={selectedTab}
-                onChange={setSelectedTab}
-                tabs={mockTabs}
-              />
-            </S.HeaderWrapper>
+            <S.PromoImage
+              alt="testnet_promo_image"
+              onClick={handePromoClick}
+              onLoad={() => setIsPromoImageLoaded(true)}
+              src={'/images/testnetLaunch.png'}
+            />
           </Container>
-          {/* <Line /> */}
-          <Container>{currentHomeContent}</Container>
+          {isPromoImageLoaded && (
+            <>
+              {' '}
+              <Container>
+                <S.HeaderWrapper>
+                  {userWalletAddress ? (
+                    <S.Header>
+                      <Input
+                        onBlur={() => setIsSearchFocused(false)}
+                        onChange={handleSearchInputChange}
+                        onFocus={() => setIsSearchFocused(true)}
+                        placeholder="Search"
+                      />
+                      <S.ButtonsWrapper>
+                        <BalanceBlock />
+
+                        <ConnectWalletButton />
+                      </S.ButtonsWrapper>
+                    </S.Header>
+                  ) : (
+                    <S.FlexWrapper>
+                      <S.Input
+                        $isFocused={isSearchFocused}
+                        onBlur={() => setIsSearchFocused(false)}
+                        onChange={handleSearchInputChange}
+                        onFocus={() => setIsSearchFocused(true)}
+                        placeholder="Search"
+                      />
+                      <S.ConnectWalletButton />
+                    </S.FlexWrapper>
+                  )}
+
+                  <Tabs
+                    activeTab={selectedTab}
+                    onChange={setSelectedTab}
+                    tabs={mockTabs}
+                  />
+                </S.HeaderWrapper>
+              </Container>
+              {/* <Line /> */}
+              <Container>{currentHomeContent}</Container>
+            </>
+          )}
         </S.Wrapper>
       </main>
     </>

@@ -1,7 +1,4 @@
-import NextImage from 'next/image'
 import { styled } from 'styled-components'
-
-export const Image = styled(NextImage)``
 
 export const Title = styled.h2`
   margin: 0;
@@ -9,4 +6,8 @@ export const Title = styled.h2`
   font-size: 20px;
   font-weight: 700;
   padding: 12px;
+`
+
+export const Image = styled.img`
+  width: 100%;
 `

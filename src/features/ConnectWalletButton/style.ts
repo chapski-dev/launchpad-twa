@@ -56,7 +56,7 @@ export const ArrowIcon = styled(SvgArrow)<{ isActive: boolean | null }>`
   transform: ${({ isActive }) => isActive && 'rotate(180deg)'};
 
   path {
-    fill: ${({ theme }) => theme.color.btnText};
+    fill: ${({ theme }) => theme.color.text};
   }
 `
 
@@ -96,6 +96,7 @@ export const DropdownButton = styled.button`
   background-color: ${({ theme }) => theme.color.bgSecondary};
   cursor: pointer;
   transition: opacity 0.3s;
+  font-size: 14px;
 
   &:hover {
     opacity: 0.5;

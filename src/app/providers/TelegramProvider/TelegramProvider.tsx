@@ -30,8 +30,6 @@ export const TelegramProvider: FCWithChildren = (props) => {
     }
   )
 
-  console.log(balance)
-
   useEffect(() => {
     const app = (window as any).Telegram?.WebApp
 
