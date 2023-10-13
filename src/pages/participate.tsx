@@ -16,12 +16,12 @@ import { BackButton } from 'features/BackButton'
 import { BalanceBlock } from 'features/BalanceBlock/BalanceBlock'
 import { ConnectWalletButton } from 'features/ConnectWalletButton'
 import { MainButton } from 'features/MainButton'
+import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
 import { FadeInWrapper } from 'ui/FadeInWrapper/FadeInWrapper'
 import { Input } from 'ui/Input/Input'
 import { Loader } from 'ui/Loader/Loader'
 import { formatNumberWithSeparators } from 'utils/formatNumberWithSeparators'
-import { getBalance } from 'utils/getBalance'
 
 const heightMarks = {
   0: '0%',
@@ -34,6 +34,8 @@ const heightMarks = {
 const Participate: FC = () => {
   const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
     useState<number>(0)
+
+  const { balance } = useTelegram()
 
   const [isTrxChecking, setIsTrxChecking] = useState<boolean>(false)
 
@@ -64,18 +66,6 @@ const Participate: FC = () => {
   } = useQuery(['icoProject'], () => getICOProjectById(id as string), {
     enabled: Boolean(id),
   })
-
-  const {
-    data: balance,
-    isLoading: isBalanceLoading,
-    isSuccess: isBalanceLoaded,
-  } = useQuery(
-    ['userBalance'],
-    () => getBalance(userWalletAddress, 'testnet'),
-    {
-      enabled: !!userWalletAddress,
-    }
-  )
 
   useEffect(() => {
     if (!userWalletAddress) {
@@ -194,11 +184,11 @@ const Participate: FC = () => {
     )
   }, [currentJettonsBuyAmount, projectSideInfo])
 
-  if (isProjectSideLoading || isProjectLoading || isBalanceLoading) {
+  if (isProjectSideLoading || isProjectLoading) {
     return <Loader type="participatePage" />
   }
 
-  if (isProjectLoaded && isProjectSideLoaded && isBalanceLoaded) {
+  if (isProjectLoaded && isProjectSideLoaded) {
     return (
       <>
         <Head>
@@ -208,7 +198,7 @@ const Participate: FC = () => {
           <Container>
             <BackButton onClick={() => router.back()} />
             <S.ButtonsWrapper>
-              <BalanceBlock balance={balance || 0} />
+              <BalanceBlock />
 
               <ConnectWalletButton />
             </S.ButtonsWrapper>

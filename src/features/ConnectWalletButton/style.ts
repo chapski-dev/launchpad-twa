@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { SvgTonConnectIcon } from 'ui/icons'
+import { SvgArrow, SvgTonConnectIcon } from 'ui/icons'
 
 export const Wrapper = styled.button`
   display: flex;
@@ -36,7 +36,7 @@ export const AddressBlock = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 12px;
   padding: 16px 23px;
   height: 46px;
   border-radius: 10px;
@@ -45,6 +45,19 @@ export const AddressBlock = styled.div`
   font-size: 14px;
   cursor: pointer;
   white-space: nowrap;
+`
+
+export const ArrowIcon = styled(SvgArrow)<{ isActive: boolean | null }>`
+  min-width: 12px;
+  min-height: 12px;
+  width: 12px;
+  height: 12px;
+
+  transform: ${({ isActive }) => isActive && 'rotate(180deg)'};
+
+  path {
+    fill: ${({ theme }) => theme.color.btnText};
+  }
 `
 
 export const DropdownButtons = styled.div<{ $isDisplayed: boolean | null }>`

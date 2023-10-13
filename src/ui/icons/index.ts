@@ -1,3 +1,4 @@
+export { default as SvgArrow } from './Arrow'
 export { default as SvgCompleteIcon } from './CompleteIcon'
 export { default as SvgReferralLink } from './ReferralLink'
 export { default as SvgTick } from './Tick'

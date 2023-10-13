@@ -27,7 +27,6 @@ import { SvgTokenovaIcon, SvgTonstarterIcon, SvgTonupIcon } from 'ui/icons'
 import { Input } from 'ui/Input/Input'
 import { Line } from 'ui/Line/Line'
 import { TabItem, Tabs } from 'ui/Tabs/Tabs'
-import { getBalance } from 'utils/getBalance'
 
 const mockTabs = [
   {
@@ -75,14 +74,6 @@ const Home: FC = () => {
     () => getProfile({ telegram: user?.username }),
     {
       enabled: Boolean(user?.username),
-    }
-  )
-
-  const { data: balance } = useQuery(
-    ['userBalance'],
-    () => getBalance(userWalletAddress, 'testnet'),
-    {
-      enabled: !!userWalletAddress,
     }
   )
 
@@ -174,7 +165,7 @@ const Home: FC = () => {
                     placeholder="Search"
                   />
                   <S.ButtonsWrapper>
-                    <BalanceBlock balance={balance} />
+                    <BalanceBlock />
 
                     <ConnectWalletButton />
                   </S.ButtonsWrapper>
@@ -207,7 +198,7 @@ const Home: FC = () => {
               />
             </S.HeaderWrapper>
           </Container>
-          <Line />
+          {/* <Line /> */}
           <Container>{currentHomeContent}</Container>
         </S.Wrapper>
       </main>

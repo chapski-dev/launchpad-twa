@@ -1,12 +1,16 @@
 import { createContext, useEffect, useMemo, useState } from 'react'
 
+import { useTonAddress } from '@tonconnect/ui-react'
 import Script from 'next/script'
+import { useQuery } from 'react-query'
 import { FCWithChildren } from 'types/app'
+import { getBalance } from 'utils/getBalance'
 import { TelegramUser, WebApp } from './types'
 
 export type TelegramContextType = {
   webApp?: WebApp
   user?: TelegramUser
+  balance?: number
 }
 
 export const TelegramContext = createContext<TelegramContextType>({})
@@ -15,6 +19,18 @@ export const TelegramProvider: FCWithChildren = (props) => {
   const { children } = props
 
   const [webApp, setWebApp] = useState<WebApp | null>(null)
+
+  const userWalletAddress = useTonAddress()
+
+  const { data: balance } = useQuery(
+    ['userBalance'],
+    () => getBalance(userWalletAddress, 'testnet'),
+    {
+      enabled: !!userWalletAddress,
+    }
+  )
+
+  console.log(balance)
 
   useEffect(() => {
     const app = (window as any).Telegram?.WebApp
@@ -31,9 +47,10 @@ export const TelegramProvider: FCWithChildren = (props) => {
           webApp,
           unsafeData: webApp.initDataUnsafe,
           user: webApp.initDataUnsafe.user,
+          balance,
         }
       : {}
-  }, [webApp])
+  }, [webApp, balance])
 
   return (
     <TelegramContext.Provider value={value}>

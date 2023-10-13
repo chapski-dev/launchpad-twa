@@ -1,12 +1,8 @@
-import { FC } from 'react'
+import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import * as S from './style'
 
-type BalanceBlockProps = {
-  balance?: number
-}
-
-export const BalanceBlock: FC<BalanceBlockProps> = (props) => {
-  const { balance } = props
+export const BalanceBlock = () => {
+  const { balance } = useTelegram()
 
   return (
     <S.Wrapper>

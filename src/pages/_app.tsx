@@ -35,14 +35,14 @@ const queryClient = new QueryClient({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <TelegramProvider>
-        <TonConnectProvider>
+      <TonConnectProvider>
+        <TelegramProvider>
           <ThemeProvider theme={theme}>
             <GlobalStyle />
             <Component {...pageProps} />
           </ThemeProvider>
-        </TonConnectProvider>
-      </TelegramProvider>
+        </TelegramProvider>
+      </TonConnectProvider>
       <Script src="https://telegram.org/js/telegram-web-app.js" />
     </QueryClientProvider>
   )
