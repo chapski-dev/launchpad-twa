@@ -76,4 +76,6 @@ export const Button = styled(UIButton)<{ isAccent?: boolean }>`
   width: 49%;
   background-color: ${({ theme, isAccent }) =>
     isAccent ? theme.color.btn : theme.color.bgSecondary};
+  color: ${({ isAccent, theme }) =>
+    !isAccent ? theme.color.text : theme.color.btnText};
 `

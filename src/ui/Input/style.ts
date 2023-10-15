@@ -32,4 +32,5 @@ export const InputWrapper = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.color.bgSecondary};
   padding: 0px 16px;
+  border-radius: 10px;
 `
