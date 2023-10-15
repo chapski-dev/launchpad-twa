@@ -86,8 +86,6 @@ const Home: FC = () => {
 
   useEffect(() => {
     if (webApp && user) {
-      console.log(webApp)
-
       const initData = new URLSearchParams(webApp.initData)
 
       const referrer_id = initData.get('start_param')

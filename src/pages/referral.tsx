@@ -1,7 +1,7 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useMemo } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { QueryCache, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { getProfile } from 'api'
 import { LinkBlock } from 'domains/Referral/components'
 import * as S from 'domains/Referral/style'
@@ -20,7 +20,7 @@ const Referral: FC = () => {
 
   const { webApp, user } = useTelegram()
 
-  const { data: profileInfo, isLoading: isProfileInfoLoading } = useQuery(
+  const { data: profileInfo } = useQuery(
     ['profileInfo'],
     () => getProfile({ telegram: user?.username }),
     {
@@ -40,13 +40,30 @@ const Referral: FC = () => {
     })
   }
 
+  const handleShareClick = () => {
+    const shareLink = `https://t.me/share/url?url=${
+      tokenovaBotUrl + referralIdMock
+    }&text=${'Join Tokenova testnet !'}`
+
+    router.push(shareLink)
+  }
+
+  const shareLink = useMemo(() => {
+    if (!profileInfo) {
+      return ''
+    }
+
+    return `https://t.me/share/url?url=${
+      tokenovaBotUrl + profileInfo.referral_code
+    }&text=${'Join Tokenova testnet !'}`
+  }, [profileInfo])
+
   return (
     <>
       <Head>
         <title>Referral</title>
       </Head>
       <main>
-        {/* <Container> */}
         <BackButton onClick={() => router.back()} />
 
         <S.Wrapper>
@@ -66,12 +83,15 @@ const Referral: FC = () => {
 
               <S.ButtonsWrapper>
                 <S.Button onClick={handleCopyBtnClick}>Copy</S.Button>
-                <S.Button isAccent>Share</S.Button>
+                {/* <a href={shareLink}> share</a>
+                <S.Button isAccent onClick={handleShareClick}>
+                  Share
+                </S.Button> */}
+                <S.ShareLink href={shareLink}>Share</S.ShareLink>
               </S.ButtonsWrapper>
             </S.InfoWrapper>
           </S.ContentWrapper>
         </S.Wrapper>
-        {/* </Container> */}
       </main>
     </>
   )
