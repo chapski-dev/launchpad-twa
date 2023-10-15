@@ -1,7 +1,6 @@
 import { styled } from 'styled-components'
 import { ConnectWalletButton as FeatureConnectWalletButton } from 'features/ConnectWalletButton'
 import { SvgSearch } from 'ui/icons'
-import { Input as UIInput } from 'ui/Input/Input'
 
 export const Wrapper = styled.div`
   display: flex;
@@ -10,6 +9,7 @@ export const Wrapper = styled.div`
   position: relative;
   justify-content: space-between;
   width: 100%;
+  min-height: 48px;
 `
 
 export const SearchButton = styled.div`
