@@ -9,4 +9,4 @@ export const AppRoutes = {
 
 export const tonAddressExplorerLink = 'https://testnet.ton.cx/address/'
 
-export const launchpadWebAppUrl = 'https://launchpad-front-end.vercel.app/'
+export const launchpadWebAppUrl = 'https://front-staging.tokenova.fi/'
