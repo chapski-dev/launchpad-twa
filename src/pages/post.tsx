@@ -50,6 +50,8 @@ const Post = () => {
     }
   )
 
+  console.log(fileName, post)
+
   if (isPostLoading) {
     return <Loader type="postPage" />
   }
@@ -65,8 +67,8 @@ const Post = () => {
           <S.Image
             alt="post_image"
             onLoad={() => setIsPostImageLoaded(true)}
-            // src={launchpadWebAppUrl + post.frontmatter.socialImage}
-            src={'/images/testnetPostImage.png'}
+            src={launchpadWebAppUrl + post.frontmatter.socialImage}
+            // src={'/images/testnetPostImage.png'}
           />
           {isPostImageLoaded && (
             <>

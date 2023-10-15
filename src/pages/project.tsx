@@ -13,11 +13,9 @@ import {
 } from 'domains/Project/components'
 import * as S from 'domains/Project/style'
 import { BackButton } from 'features/BackButton'
-import { ConnectWalletButton } from 'features/ConnectWalletButton'
 import { Layout } from 'features/Layout/Layout'
 import { MainButton } from 'features/MainButton'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
-import { Container } from 'ui/Container/Container'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
 

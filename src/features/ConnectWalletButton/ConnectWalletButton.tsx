@@ -61,14 +61,22 @@ export const ConnectWalletButton: FC<ConnectWalletButtonProps> = (props) => {
       <S.AddressBlock onClick={toggleDropdown}>
         {shortenAddress(address)} <S.ArrowIcon isActive={isDropdownDisplayed} />
       </S.AddressBlock>
-      <S.DropdownButtons $isDisplayed={isDropdownDisplayed}>
-        <S.DropdownButton onClick={() => router.push(AppRoutes.Referral)}>
-          Referral
-        </S.DropdownButton>
-        <S.DropdownButton onClick={handleDisconnectButtonClick}>
-          Disconnect
-        </S.DropdownButton>
-      </S.DropdownButtons>
+      {isDropdownDisplayed && (
+        <S.DropdownButtons $isDisplayed={isDropdownDisplayed}>
+          <S.DropdownButton
+            $isDisplayed={isDropdownDisplayed}
+            onClick={() => router.push(AppRoutes.Referral)}
+          >
+            Referral
+          </S.DropdownButton>
+          <S.DropdownButton
+            $isDisplayed={isDropdownDisplayed}
+            onClick={handleDisconnectButtonClick}
+          >
+            Disconnect
+          </S.DropdownButton>
+        </S.DropdownButtons>
+      )}
     </S.AddressContainer>
   )
 }

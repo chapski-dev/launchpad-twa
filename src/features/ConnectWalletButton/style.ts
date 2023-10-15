@@ -81,7 +81,7 @@ export const DropdownButtons = styled.div<{ $isDisplayed: boolean | null }>`
   z-index: ${({ $isDisplayed }) => ($isDisplayed ? '1' : '-1')};
 `
 
-export const DropdownButton = styled.button`
+export const DropdownButton = styled.button<{ $isDisplayed?: boolean | null }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -97,6 +97,7 @@ export const DropdownButton = styled.button`
   cursor: pointer;
   transition: opacity 0.3s;
   font-size: 14px;
+  pointer-events: ${({ $isDisplayed }) => ($isDisplayed ? 'auto' : 'none')};
 
   &:hover {
     opacity: 0.5;

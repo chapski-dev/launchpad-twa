@@ -96,3 +96,12 @@ export const ShareLink = styled.a`
   width: 49%;
   text-align: center;
 `
+
+export const Link = styled.span`
+  color: ${({ theme }) => theme.color.link};
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`

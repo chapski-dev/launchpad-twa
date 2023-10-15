@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
 import { getProfile } from 'api'
+import { AppRoutes } from 'constants/app'
 import { LinkBlock } from 'domains/Referral/components'
 import * as S from 'domains/Referral/style'
 import { BackButton } from 'features/BackButton'
@@ -40,14 +41,6 @@ const Referral: FC = () => {
     })
   }
 
-  const handleShareClick = () => {
-    const shareLink = `https://t.me/share/url?url=${
-      tokenovaBotUrl + referralIdMock
-    }&text=${'Join Tokenova testnet !'}`
-
-    router.push(shareLink)
-  }
-
   const shareLink = useMemo(() => {
     if (!profileInfo) {
       return ''
@@ -57,6 +50,15 @@ const Referral: FC = () => {
       tokenovaBotUrl + profileInfo.referral_code
     }&text=${'Join Tokenova testnet !'}`
   }, [profileInfo])
+
+  const handleReadMoreClick = () => {
+    router.push({
+      pathname: AppRoutes.Post,
+      query: {
+        fileName: 'referral_system_post.md',
+      },
+    })
+  }
 
   return (
     <>
@@ -77,16 +79,13 @@ const Referral: FC = () => {
                 Anyone on Telegram will be able to join to Tokenova by folowing
                 this link
               </S.Label>
+              <S.Link onClick={handleReadMoreClick}>Read more</S.Link>
             </S.InfoWrapper>
             <S.InfoWrapper>
               <LinkBlock referralCode={profileInfo?.referral_code} />
 
               <S.ButtonsWrapper>
                 <S.Button onClick={handleCopyBtnClick}>Copy</S.Button>
-                {/* <a href={shareLink}> share</a>
-                <S.Button isAccent onClick={handleShareClick}>
-                  Share
-                </S.Button> */}
                 <S.ShareLink href={shareLink}>Share</S.ShareLink>
               </S.ButtonsWrapper>
             </S.InfoWrapper>
