@@ -13,8 +13,8 @@ import {
 } from 'domains/Project/components'
 import * as S from 'domains/Project/style'
 import { BackButton } from 'features/BackButton'
-import { BalanceBlock } from 'features/BalanceBlock/BalanceBlock'
 import { ConnectWalletButton } from 'features/ConnectWalletButton'
+import { Layout } from 'features/Layout/Layout'
 import { MainButton } from 'features/MainButton'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
@@ -133,60 +133,51 @@ const Project: FC = () => {
     )?.value
   }, [project])
 
-  if (isProjectLoading || isParticipantStateLoading) {
-    return <Loader type="projectPage" />
-  }
+  const markdown =
+    project?.markdownDocument && JSON.parse(project?.markdownDocument)
 
-  if (isProjectLoaded) {
-    const markdown =
-      project?.markdownDocument && JSON.parse(project?.markdownDocument)
-
-    return (
-      <>
-        <Head>
-          <title>Project</title>
-        </Head>
-        <S.Wrapper>
-          <BackButton onClick={() => router.back()} />
-          <Container>
-            {userWalletAddress && (
-              <S.ButtonsWrapper>
-                <BalanceBlock />
-
-                <ConnectWalletButton />
-              </S.ButtonsWrapper>
-            )}
-          </Container>
-          <ProjectInfoHeader
-            description={project.metadata.description}
-            image={project.metadata.image}
-            network={project.network}
-            title={project.metadata.name}
-          />
-          <Line />
-          <Tokenomics
-            distributions={distributions}
-            icoFundDistributions={icoFundDistributions}
-            icoParams={icoParams}
-            totalSupply={project.totalSupply}
-          />
-          <InfoBlock mdContent={markdown?.content} />
-        </S.Wrapper>
-        {!participantState?.participated && (
-          <MainButton
-            onClick={handleMainButtonClick}
-            text={
-              userWalletAddress
-                ? 'Buy ' + project.metadata.symbol
-                : 'Connect Wallet'
-            }
-          />
+  return (
+    <>
+      <Head>
+        <title>Project</title>
+      </Head>
+      <BackButton onClick={() => router.back()} />
+      <Layout>
+        {isProjectLoading || isParticipantStateLoading ? (
+          <Loader type="projectPage" />
+        ) : (
+          isProjectLoaded && (
+            <S.Wrapper>
+              <ProjectInfoHeader
+                description={project.metadata.description}
+                image={project.metadata.image}
+                network={project.network}
+                title={project.metadata.name}
+              />
+              <Line />
+              <Tokenomics
+                distributions={distributions}
+                icoFundDistributions={icoFundDistributions}
+                icoParams={icoParams}
+                totalSupply={project.totalSupply}
+              />
+              <InfoBlock mdContent={markdown?.content} />
+            </S.Wrapper>
+          )
         )}
-      </>
-    )
-  }
-
-  return null
+      </Layout>
+      {!participantState?.participated && project?.metadata && (
+        <MainButton
+          onClick={handleMainButtonClick}
+          text={
+            userWalletAddress
+              ? 'Buy ' + project.metadata.symbol
+              : 'Connect Wallet'
+          }
+        />
+      )}
+    </>
+  )
 }
 
 export default Project

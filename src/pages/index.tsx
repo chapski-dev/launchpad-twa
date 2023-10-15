@@ -1,12 +1,5 @@
-import {
-  FC,
-  useEffect,
-  useState,
-  ChangeEvent,
-  useCallback,
-  useMemo,
-} from 'react'
-import { useTonConnectUI, useTonAddress } from '@tonconnect/ui-react'
+import { FC, useEffect, useState, useCallback, useMemo } from 'react'
+import { useTonConnectUI } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -18,13 +11,11 @@ import { Chains } from 'constants/blockchain'
 import { PostsList, ProjectList } from 'domains/Home/components'
 import { Loader } from 'domains/Home/components/Projectslist/style'
 import * as S from 'domains/Home/style'
-import { BalanceBlock } from 'features/BalanceBlock/BalanceBlock'
-import { ConnectWalletButton } from 'features/ConnectWalletButton'
+import { Layout } from 'features/Layout/Layout'
 import { useDebounce } from 'hooks/useDebounce/useDebounce'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
 import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons'
-import { Input } from 'ui/Input/Input'
 import { TabItem, Tabs } from 'ui/Tabs/Tabs'
 
 const mockTabs = [
@@ -56,7 +47,6 @@ const inter = Inter({ subsets: ['latin'] })
 const Home: FC = () => {
   const [selectedTab, setSelectedTab] = useState<TabItem>(mockTabs[0])
   const [searchValue, setSearchValue] = useState<string>('')
-  const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false)
   const [isPromoImageLoaded, setIsPromoImageLoaded] = useState<boolean>(false)
 
   const router = useRouter()
@@ -66,8 +56,6 @@ const Home: FC = () => {
   const { webApp, user } = useTelegram()
 
   const [tonConnectUI] = useTonConnectUI()
-
-  const userWalletAddress = useTonAddress()
 
   const { data: profileInfo, isLoading: isProfileInfoLoading } = useQuery(
     ['profileInfo'],
@@ -98,7 +86,7 @@ const Home: FC = () => {
 
   useEffect(() => {
     if (webApp && user) {
-      console.log(webApp.initData)
+      console.log(webApp)
 
       const initData = new URLSearchParams(webApp.initData)
 
@@ -120,12 +108,9 @@ const Home: FC = () => {
     }
   }, [isProfileInfoLoading, profileInfo, saveProfileInfo, user, webApp])
 
-  const handleSearchInputChange = useCallback(
-    (evt: ChangeEvent<HTMLInputElement>) => {
-      setSearchValue(evt.target.value)
-    },
-    []
-  )
+  const handleSearchInputChange = useCallback((value: string) => {
+    setSearchValue(value)
+  }, [])
 
   const currentHomeContent = useMemo(() => {
     switch (selectedTab.value) {
@@ -155,59 +140,32 @@ const Home: FC = () => {
         <title>Home</title>
       </Head>
       <main className={inter.className}>
-        <S.Wrapper>
-          <Container>
-            <S.PromoImage
-              alt="testnet_promo_image"
-              onClick={handePromoClick}
-              onLoad={() => setIsPromoImageLoaded(true)}
-              src={'/images/testnetLaunch.png'}
-            />
-          </Container>
-          {isPromoImageLoaded && (
-            <>
-              {' '}
-              <Container>
-                <S.HeaderWrapper>
-                  {userWalletAddress ? (
-                    <S.Header>
-                      <Input
-                        onBlur={() => setIsSearchFocused(false)}
-                        onChange={handleSearchInputChange}
-                        onFocus={() => setIsSearchFocused(true)}
-                        placeholder="Search"
-                      />
-                      <S.ButtonsWrapper>
-                        <BalanceBlock />
-
-                        <ConnectWalletButton />
-                      </S.ButtonsWrapper>
-                    </S.Header>
-                  ) : (
-                    <S.FlexWrapper>
-                      <S.Input
-                        $isFocused={isSearchFocused}
-                        onBlur={() => setIsSearchFocused(false)}
-                        onChange={handleSearchInputChange}
-                        onFocus={() => setIsSearchFocused(true)}
-                        placeholder="Search"
-                      />
-                      <S.ConnectWalletButton />
-                    </S.FlexWrapper>
-                  )}
-
-                  <Tabs
-                    activeTab={selectedTab}
-                    onChange={setSelectedTab}
-                    tabs={mockTabs}
-                  />
-                </S.HeaderWrapper>
-              </Container>
-              {/* <Line /> */}
-              <Container>{currentHomeContent}</Container>
-            </>
-          )}
-        </S.Wrapper>
+        <Layout onSearch={handleSearchInputChange}>
+          <S.Wrapper>
+            <Container>
+              <S.PromoImage
+                alt="testnet_promo_image"
+                onClick={handePromoClick}
+                onLoad={() => setIsPromoImageLoaded(true)}
+                src={'/images/testnetLaunch.png'}
+              />
+            </Container>
+            {isPromoImageLoaded && (
+              <>
+                <Container>
+                  <S.HeaderWrapper>
+                    <Tabs
+                      activeTab={selectedTab}
+                      onChange={setSelectedTab}
+                      tabs={mockTabs}
+                    />
+                  </S.HeaderWrapper>
+                </Container>
+                <Container>{currentHomeContent}</Container>
+              </>
+            )}
+          </S.Wrapper>
+        </Layout>
       </main>
     </>
   )

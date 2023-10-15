@@ -9,7 +9,7 @@ export const Input = styled.input<{ error?: boolean; disabled?: boolean }>`
   width: 100%;
   outline: none;
   border: none;
-  padding: 14px 16px;
+  padding: 14px 0;
   border-radius: 10px;
   border: ${({ error }) => error && `1px solid red`};
 
@@ -25,4 +25,11 @@ export const Input = styled.input<{ error?: boolean; disabled?: boolean }>`
     -webkit-transition-deмlay: 9999s;
     -webkit-text-fill-color: ${({ theme }) => theme.color.hint};
   }
+`
+
+export const InputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: ${({ theme }) => theme.color.bgSecondary};
+  padding: 0px 16px;
 `

@@ -8,10 +8,11 @@ export const Wrapper = styled.button`
   gap: 4px;
   border: none;
   outline: none;
-  border-radius: 12px;
-  padding: 16px 16px;
-  width: 49%;
-  height: 46px;
+  border-radius: 40px;
+  padding: 8px 16px;
+  width: max-content;
+  height: 32px;
+  padding: 8px 12px;
   color: ${({ theme }) => theme.color.btnText};
   background-color: ${({ theme }) => theme.color.btn};
   cursor: pointer;
@@ -27,9 +28,8 @@ export const Wrapper = styled.button`
 `
 
 export const AddressContainer = styled.div`
-  position: relative;
-  width: 50%;
-  height: 44px;
+  width: max-content;
+  height: 32px;
 `
 
 export const AddressBlock = styled.div`
@@ -37,9 +37,9 @@ export const AddressBlock = styled.div`
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 16px 23px;
-  height: 46px;
-  border-radius: 10px;
+  height: 32px;
+  padding: 8px 12px;
+  border-radius: 40px;
   color: ${({ theme }) => theme.color.text};
   background-color: ${({ theme }) => theme.color.bgSecondary};
   font-size: 14px;
@@ -65,13 +65,13 @@ export const DropdownButtons = styled.div<{ $isDisplayed: boolean | null }>`
   padding: 0;
   margin: 0;
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 6px);
   left: 0;
   width: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border-radius: 10px;
+  border-radius: 15px;
   background-color: ${({ theme }) => theme.color.bgSecondary};
   opacity: ${({ $isDisplayed }) => ($isDisplayed ? 1 : 0)};
   transform: translateY(

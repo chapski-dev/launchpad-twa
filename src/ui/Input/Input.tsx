@@ -1,8 +1,9 @@
 import {
   ChangeEvent,
   HTMLInputTypeAttribute,
-  FC,
   InputHTMLAttributes,
+  ReactNode,
+  forwardRef,
 } from 'react'
 import * as S from './style'
 
@@ -19,9 +20,10 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   type?: HTMLInputTypeAttribute
   max?: number
   min?: number
+  actionElement?: ReactNode
 }
 
-export const Input: FC<InputProps> = (props) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const {
     className,
     disabled,
@@ -33,6 +35,7 @@ export const Input: FC<InputProps> = (props) => {
     max,
     min,
     type,
+    actionElement,
     ...otherInputProps
   } = props
 
@@ -51,17 +54,20 @@ export const Input: FC<InputProps> = (props) => {
   }
 
   return (
-    <S.Input
-      className={className}
-      disabled={disabled}
-      error={error}
-      max={max}
-      min={min}
-      name={name}
-      onChange={handleChange}
-      placeholder={placeholder}
-      value={value}
-      {...otherInputProps}
-    />
+    <S.InputWrapper className={className}>
+      <S.Input
+        ref={ref}
+        disabled={disabled}
+        error={error}
+        max={max}
+        min={min}
+        name={name}
+        onChange={handleChange}
+        placeholder={placeholder}
+        value={value}
+        {...otherInputProps}
+      />
+      {actionElement}
+    </S.InputWrapper>
   )
-}
+})
