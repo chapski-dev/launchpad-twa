@@ -29,10 +29,13 @@ export const SearchIcon = styled(SvgSearch)`
   }
 `
 
-export const ConnectWalletButton = styled(FeatureConnectWalletButton)`
+export const ConnectWalletButton = styled(FeatureConnectWalletButton)<{
+  isConnected?: boolean
+}>`
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  left: ${({ isConnected }) => isConnected && '50%'};
+  transform: ${({ isConnected }) => isConnected && 'translateX(-50%)'};
+  right: ${({ isConnected }) => !isConnected && '12px'};
 `
 
 export const BalanceBlock = styled.div`

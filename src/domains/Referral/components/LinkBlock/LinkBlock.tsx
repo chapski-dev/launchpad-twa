@@ -1,20 +1,19 @@
 import { FC } from 'react'
 import * as S from './style'
 
-// const mockLink = 't.me/tokenovabot/launchpad?startapp='
-
-//t.me/tokenovabot/launchpad
-
 const labelLink = 't.me/tokenova...'
 
 type LinkBlockProps = {
   referralCode?: string
+  onClick: () => void
 }
 
 export const LinkBlock: FC<LinkBlockProps> = (props) => {
-  const { referralCode } = props
+  const { referralCode, onClick } = props
 
   return (
-    <S.Wrapper>{referralCode ? labelLink + referralCode : '...'}</S.Wrapper>
+    <S.Wrapper onClick={onClick}>
+      {referralCode ? labelLink + referralCode : '...'}
+    </S.Wrapper>
   )
 }

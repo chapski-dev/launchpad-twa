@@ -2,6 +2,7 @@ import { FC } from 'react'
 import { useTonAddress } from '@tonconnect/ui-react'
 import { useRouter } from 'next/router'
 import { AppRoutes } from 'constants/app'
+import { ConnectWalletButton } from 'features/ConnectWalletButton'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { SvgToncoinIcon } from 'ui/icons'
 import * as S from './style'
@@ -27,7 +28,7 @@ export const Header: FC<HeaderProps> = (props) => {
         </S.SearchButton>
       )}
 
-      <S.ConnectWalletButton />
+      <S.ConnectWalletButton isConnected={Boolean(userWalletAddress)} />
       {userWalletAddress && (
         <S.BalanceBlock>
           {balance?.toFixed(2) || '--'}

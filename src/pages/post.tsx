@@ -32,25 +32,21 @@ const Post = () => {
     isLoading: isPostLoading,
     isSuccess: isPostLoaded,
   } = useQuery(
-    ['post'],
+    ['post', fileName],
     () => getPostByFilename({ fileName: fileName as string }),
     {
       enabled: !!fileName,
-      select: useCallback((data: PostFileType[]) => {
-        const post = data[0]
-
-        const { data: frontmatter, content } = matter(post.content)
+      select: useCallback((data: PostFileType) => {
+        const { data: frontmatter, content } = matter(data.content)
 
         return {
-          fileName: post.filename,
+          fileName: data.filename,
           frontmatter,
           content,
         }
       }, []),
     }
   )
-
-  console.log(fileName, post)
 
   if (isPostLoading) {
     return <Loader type="postPage" />

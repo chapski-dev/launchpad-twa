@@ -4,11 +4,12 @@ import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
 import { getProfile } from 'api'
 import { AppRoutes } from 'constants/app'
-import { LinkBlock } from 'domains/Referral/components'
+import { InvitedAlertBlock, LinkBlock } from 'domains/Referral/components'
 import * as S from 'domains/Referral/style'
 import { BackButton } from 'features/BackButton'
 import { useClipboard } from 'hooks/useClipboard/useClipboard'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
+import { Container } from 'ui/Container/Container'
 
 const tokenovaBotUrl = 't.me/tokenovabot/launchpad?startapp='
 
@@ -28,8 +29,6 @@ const Referral: FC = () => {
       enabled: Boolean(user?.username),
     }
   )
-
-  console.log(profileInfo)
 
   useEffect(() => {
     webApp?.expand()
@@ -68,6 +67,7 @@ const Referral: FC = () => {
       <main>
         <BackButton onClick={() => router.back()} />
 
+        {/* <InvitedAlertBlock /> */}
         <S.Wrapper>
           <S.ContentWrapper>
             <S.Circle>
@@ -82,7 +82,10 @@ const Referral: FC = () => {
               <S.Link onClick={handleReadMoreClick}>Read more</S.Link>
             </S.InfoWrapper>
             <S.InfoWrapper>
-              <LinkBlock referralCode={profileInfo?.referral_code} />
+              <LinkBlock
+                onClick={handleCopyBtnClick}
+                referralCode={profileInfo?.referral_code}
+              />
 
               <S.ButtonsWrapper>
                 <S.Button onClick={handleCopyBtnClick}>Copy</S.Button>
