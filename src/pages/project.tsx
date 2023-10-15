@@ -162,20 +162,20 @@ const Project: FC = () => {
                 totalSupply={project.totalSupply}
               />
               <InfoBlock mdContent={markdown?.content} />
+              {!participantState?.participated && (
+                <MainButton
+                  onClick={handleMainButtonClick}
+                  text={
+                    userWalletAddress
+                      ? 'Buy ' + project.metadata.symbol
+                      : 'Connect Wallet'
+                  }
+                />
+              )}
             </S.Wrapper>
           )
         )}
       </Layout>
-      {!participantState?.participated && project?.metadata && (
-        <MainButton
-          onClick={handleMainButtonClick}
-          text={
-            userWalletAddress
-              ? 'Buy ' + project.metadata.symbol
-              : 'Connect Wallet'
-          }
-        />
-      )}
     </>
   )
 }

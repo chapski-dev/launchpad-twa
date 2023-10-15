@@ -240,15 +240,15 @@ const Participate: FC = () => {
                   />
                 </S.InputWrapper>
               </S.Wrapper>
+              <MainButton
+                onClick={handleBuyJettonsClick}
+                progress={isTrxChecking}
+                text={'Buy ' + project.metadata.symbol}
+              />
             </Container>
           )
         )}
       </Layout>
-      <MainButton
-        onClick={handleBuyJettonsClick}
-        progress={isTrxChecking}
-        text={'Buy ' + project?.metadata.symbol}
-      />
     </>
   )
 }
