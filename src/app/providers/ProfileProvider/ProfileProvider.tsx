@@ -65,14 +65,6 @@ export const ProfileProvider: FCWithChildren = (props) => {
 
   useEffect(() => {
     if (webApp && user) {
-      console.log(
-        webApp.CloudStorage.getItem(
-          'isAlreadyAuthorized',
-          (error: any, data: any) => {
-            console.log(data)
-          }
-        )
-      )
       const initData = new URLSearchParams(webApp.initData)
 
       const referrer_id = initData.get('start_param')

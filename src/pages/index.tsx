@@ -68,7 +68,7 @@ const Home: FC = () => {
           if (data) {
             console.log(data)
             const timer = setTimeout(() => {
-              setIsInvitedByBlockDisplayed(true)
+              setIsInvitedByBlockDisplayed(false)
             }, 30000)
 
             return () => {
