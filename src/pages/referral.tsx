@@ -28,7 +28,11 @@ const Referral: FC = () => {
   }, [webApp])
 
   const handleCopyBtnClick = () => {
-    clipboard(tokenovaBotUrl + referralIdMock, () => {
+    if (!profileInfo) {
+      return
+    }
+
+    clipboard(tokenovaBotUrl + profileInfo.referral_code, () => {
       alert('You have successfully copied the referral link!')
     })
   }

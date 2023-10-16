@@ -111,7 +111,9 @@ const Home: FC = () => {
             )}
           </S.Wrapper>
         </Layout>
-        {isFirstAppLoad && <S.InvitedAlertBlock userName={'markokhman'} />}
+        {isFirstAppLoad && invitedBy?.username && (
+          <S.InvitedAlertBlock userName={invitedBy.username} />
+        )}
       </main>
     </>
   )

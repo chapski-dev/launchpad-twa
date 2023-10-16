@@ -12,8 +12,7 @@ export const Wrapper = styled.div`
 
   color: ${({ theme }) => theme.color.text};
   font-weight: 400;
-  font-size: 12px;
-  line-height: 14px;
+  font-size: 16px;
   background-color: ${({ theme }) => theme.color.bgSecondary};
   cursor: pointer;
 `
