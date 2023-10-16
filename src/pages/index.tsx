@@ -44,8 +44,6 @@ const Home: FC = () => {
   const [selectedTab, setSelectedTab] = useState<TabItem>(mockTabs[0])
   const [searchValue, setSearchValue] = useState<string>('')
   const [isPromoImageLoaded, setIsPromoImageLoaded] = useState<boolean>(false)
-  const [isInvitedByBlockDisplayed, setIsInvitedByBlockDisplayed] =
-    useState<boolean>(false)
 
   const router = useRouter()
 
@@ -53,32 +51,11 @@ const Home: FC = () => {
 
   const { invitedBy } = useProfileContext()
 
-  const { webApp } = useTelegram()
+  const { webApp, isFirstAppLoad } = useTelegram()
 
   const handleSearchInputChange = useCallback((value: string) => {
     setSearchValue(value)
   }, [])
-
-  useEffect(() => {
-    if (webApp) {
-      webApp.CloudStorage.getItem(
-        'isAlreadyAuthorized',
-        (error: any, data: any) => {
-          // && invitedBy?.username
-          if (data) {
-            console.log(data)
-            const timer = setTimeout(() => {
-              setIsInvitedByBlockDisplayed(false)
-            }, 30000)
-
-            return () => {
-              clearTimeout(timer)
-            }
-          }
-        }
-      )
-    }
-  }, [invitedBy, webApp])
 
   const currentHomeContent = useMemo(() => {
     switch (selectedTab.value) {
@@ -134,7 +111,7 @@ const Home: FC = () => {
             )}
           </S.Wrapper>
         </Layout>
-        {isInvitedByBlockDisplayed && <S.InvitedAlertBlock />}
+        {isFirstAppLoad && <S.InvitedAlertBlock />}
       </main>
     </>
   )

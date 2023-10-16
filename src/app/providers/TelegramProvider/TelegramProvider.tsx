@@ -11,6 +11,7 @@ export type TelegramContextType = {
   webApp?: WebApp
   user?: TelegramUser
   balance?: number
+  isFirstAppLoad?: boolean
 }
 
 export const TelegramContext = createContext<TelegramContextType>({})
@@ -19,6 +20,8 @@ export const TelegramProvider: FCWithChildren = (props) => {
   const { children } = props
 
   const [webApp, setWebApp] = useState<WebApp | null>(null)
+
+  const [isFirstAppLoad, setIsFirstAppLoad] = useState<boolean>(true)
 
   const userWalletAddress = useTonAddress()
 
@@ -35,6 +38,23 @@ export const TelegramProvider: FCWithChildren = (props) => {
 
     if (app) {
       app.ready()
+
+      app.CloudStorage.getItem(
+        'isAlreadyAuthorized',
+        (error: any, data: any) => {
+          // && invitedBy?.username
+          if (!Boolean(data)) {
+            console.log(data)
+            const timer = setTimeout(() => {
+              setIsFirstAppLoad(false)
+            }, 30000)
+
+            return () => {
+              clearTimeout(timer)
+            }
+          }
+        }
+      )
       setWebApp(app)
     }
   }, [])
@@ -46,9 +66,10 @@ export const TelegramProvider: FCWithChildren = (props) => {
           unsafeData: webApp.initDataUnsafe,
           user: webApp.initDataUnsafe.user,
           balance,
+          isFirstAppLoad,
         }
       : {}
-  }, [webApp, balance])
+  }, [webApp, balance, isFirstAppLoad])
 
   return (
     <TelegramContext.Provider value={value}>
