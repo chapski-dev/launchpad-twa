@@ -21,7 +21,7 @@ export const TelegramProvider: FCWithChildren = (props) => {
 
   const [webApp, setWebApp] = useState<WebApp | null>(null)
 
-  const [isFirstAppLoad, setIsFirstAppLoad] = useState<boolean>(true)
+  const [isFirstAppLoad, setIsFirstAppLoad] = useState<boolean>(false)
 
   const userWalletAddress = useTonAddress()
 
@@ -46,7 +46,7 @@ export const TelegramProvider: FCWithChildren = (props) => {
           if (!Boolean(data)) {
             console.log(data)
             const timer = setTimeout(() => {
-              setIsFirstAppLoad(false)
+              setIsFirstAppLoad(true)
             }, 30000)
 
             return () => {

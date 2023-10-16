@@ -60,7 +60,9 @@ const Referral: FC = () => {
       <main>
         <BackButton onClick={() => router.back()} />
 
-        {invitedBy?.username && <InvitedAlertBlock />}
+        {invitedBy?.username && (
+          <InvitedAlertBlock userName={invitedBy.username} />
+        )}
         {webApp && (
           <S.Wrapper>
             <S.ContentWrapper>

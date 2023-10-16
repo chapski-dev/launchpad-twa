@@ -1,4 +1,4 @@
-import { FC, useState, useCallback, useMemo, useEffect } from 'react'
+import { FC, useState, useCallback, useMemo } from 'react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -111,7 +111,7 @@ const Home: FC = () => {
             )}
           </S.Wrapper>
         </Layout>
-        {isFirstAppLoad && <S.InvitedAlertBlock />}
+        {isFirstAppLoad && <S.InvitedAlertBlock userName={'markokhman'} />}
       </main>
     </>
   )
