@@ -1,4 +1,5 @@
 import { styled } from 'styled-components'
+import { InvitedAlertBlock as UIInvitedAlertBlock } from 'ui/InitedAlertBlock/InvitedAlertBlock'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -40,4 +41,11 @@ export const PromoImage = styled.img`
   cursor: pointer;
   width: 100%;
   margin-bottom: 12px;
+`
+
+export const InvitedAlertBlock = styled(UIInvitedAlertBlock)`
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  transition: all 0.3s;
 `

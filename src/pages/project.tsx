@@ -141,7 +141,7 @@ const Project: FC = () => {
       </Head>
       <BackButton onClick={() => router.back()} />
       <Layout>
-        {isProjectLoading || isParticipantStateLoading ? (
+        {isProjectLoading || isParticipantStateLoading || !webApp ? (
           <Loader type="projectPage" />
         ) : (
           isProjectLoaded && (

@@ -1,9 +1,15 @@
 import { FC } from 'react'
 import * as S from './style'
 
-export const InvitedAlertBlock: FC = () => {
+type InvitedAlertBlockProps = {
+  className?: string
+}
+
+export const InvitedAlertBlock: FC<InvitedAlertBlockProps> = (props) => {
+  const { className } = props
+
   return (
-    <S.Wrapper>
+    <S.Wrapper className={className}>
       🙋🏽
       <S.AlertLabel>
         You've been invited by{' '}

@@ -1,18 +1,14 @@
-import { FC, useEffect, useState, useCallback, useMemo } from 'react'
-import { useTonConnectUI } from '@tonconnect/ui-react'
+import { FC, useState, useCallback, useMemo, useEffect } from 'react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useMutation, useQuery } from 'react-query'
-import { getProfile, saveProfile } from 'api'
-import { ProfileInfoType } from 'api/types'
 import { AppRoutes } from 'constants/app'
-import { Chains } from 'constants/blockchain'
 import { PostsList, ProjectList } from 'domains/Home/components'
 import { Loader } from 'domains/Home/components/Projectslist/style'
 import * as S from 'domains/Home/style'
 import { Layout } from 'features/Layout/Layout'
 import { useDebounce } from 'hooks/useDebounce/useDebounce'
+import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
 import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons'
@@ -48,67 +44,40 @@ const Home: FC = () => {
   const [selectedTab, setSelectedTab] = useState<TabItem>(mockTabs[0])
   const [searchValue, setSearchValue] = useState<string>('')
   const [isPromoImageLoaded, setIsPromoImageLoaded] = useState<boolean>(false)
+  const [isInvitedByBlockDisplayed, setIsInvitedByBlockDisplayed] =
+    useState<boolean>(false)
 
   const router = useRouter()
 
   const debaunceSearchValue = useDebounce(searchValue)
 
-  const { webApp, user } = useTelegram()
+  const { invitedBy } = useProfileContext()
 
-  const [tonConnectUI] = useTonConnectUI()
-
-  const { data: profileInfo, isLoading: isProfileInfoLoading } = useQuery(
-    ['profileInfo'],
-    () => getProfile({ telegram: user?.username }),
-    {
-      enabled: Boolean(user?.username),
-    }
-  )
-
-  const { mutate: saveProfileInfo } = useMutation(
-    ['saveProfile'],
-    (profileData: ProfileInfoType) => saveProfile(profileData)
-  )
-
-  useEffect(() => {
-    tonConnectUI.onStatusChange((wallet) => {
-      if (wallet !== null) {
-        if (Chains[wallet.account.chain] === 'mainnet') {
-          alert('Please, connect testnet wallet')
-
-          tonConnectUI.disconnect()
-
-          return
-        }
-      }
-    })
-  }, [profileInfo, tonConnectUI])
-
-  useEffect(() => {
-    if (webApp && user) {
-      const initData = new URLSearchParams(webApp.initData)
-
-      const referrer_id = initData.get('start_param')
-
-      if (!isProfileInfoLoading && !profileInfo) {
-        saveProfileInfo({
-          email: '',
-          name: user.first_name + user.last_name,
-          referrer_id: referrer_id || '',
-          telegram: user.username,
-          walletAddress: '',
-          image: '',
-          telegramInitData: webApp.initData,
-        })
-
-        return
-      }
-    }
-  }, [isProfileInfoLoading, profileInfo, saveProfileInfo, user, webApp])
+  const { webApp } = useTelegram()
 
   const handleSearchInputChange = useCallback((value: string) => {
     setSearchValue(value)
   }, [])
+
+  useEffect(() => {
+    if (webApp) {
+      webApp.CloudStorage.getItem(
+        'isAlreadyAuthorized',
+        (error: any, data: any) => {
+          // && invitedBy?.username
+          if (data) {
+            const timer = setTimeout(() => {
+              setIsInvitedByBlockDisplayed(false)
+            }, 30000)
+
+            return () => {
+              clearTimeout(timer)
+            }
+          }
+        }
+      )
+    }
+  }, [invitedBy, webApp])
 
   const currentHomeContent = useMemo(() => {
     switch (selectedTab.value) {
@@ -164,6 +133,7 @@ const Home: FC = () => {
             )}
           </S.Wrapper>
         </Layout>
+        {isInvitedByBlockDisplayed && <S.InvitedAlertBlock />}
       </main>
     </>
   )

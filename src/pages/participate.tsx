@@ -33,7 +33,7 @@ const Participate: FC = () => {
   const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
     useState<number>(0)
 
-  const { balance } = useTelegram()
+  const { webApp, balance } = useTelegram()
 
   const [isTrxChecking, setIsTrxChecking] = useState<boolean>(false)
 
@@ -189,7 +189,7 @@ const Participate: FC = () => {
       </Head>
       <BackButton onClick={() => router.back()} />
       <Layout>
-        {isProjectSideLoading || isProjectLoading ? (
+        {isProjectSideLoading || isProjectLoading || !webApp ? (
           <Loader type="participatePage" />
         ) : (
           isProjectLoaded &&
