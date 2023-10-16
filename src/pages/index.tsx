@@ -66,8 +66,9 @@ const Home: FC = () => {
         (error: any, data: any) => {
           // && invitedBy?.username
           if (data) {
+            console.log(data)
             const timer = setTimeout(() => {
-              setIsInvitedByBlockDisplayed(false)
+              setIsInvitedByBlockDisplayed(true)
             }, 30000)
 
             return () => {
