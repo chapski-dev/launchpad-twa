@@ -71,16 +71,8 @@ const Participate: FC = () => {
     }
   }, [router, userWalletAddress])
 
-  const handleBuyJettonsClick = useCallback(async () => {
+  const buyJettons = useCallback(async () => {
     if (!project || typeof balance !== 'number' || !projectSideInfo) {
-      console.log(project, balance, projectSideInfo)
-      return
-    }
-
-    if (balance - 0.2 < currentJettonsBuyAmount) {
-      alert(
-        `You don't have enough TON in your account to purchase ${project.metadata.symbol}`
-      )
       return
     }
 
@@ -127,10 +119,6 @@ const Participate: FC = () => {
               amount: currentJettonsBuyAmount,
             },
           })
-
-          // alert(
-          //   `You have successfully purchased ${project.metadata.symbol} jettons!`
-          // )
         } else {
           currentAttempts++
 
@@ -148,6 +136,68 @@ const Participate: FC = () => {
     router,
     tonConnectUI,
     userWalletAddress,
+  ])
+
+  const handleBuyJettonsClick = useCallback(async () => {
+    if (!project || typeof balance !== 'number' || !projectSideInfo) {
+      return
+    }
+
+    if (Math.floor(balance) !== 0 && balance - 0.2 < currentJettonsBuyAmount) {
+      alert(
+        `You don't have enough TON in your account to purchase ${project.metadata.symbol}`
+      )
+      return
+    }
+
+    if (Math.floor(balance) !== 0) {
+      buyJettons()
+
+      return
+    }
+
+    if (balance === 0) {
+      setIsTrxChecking(true)
+
+      const claimHash = await TnC.claimBonus(
+        userWalletAddress,
+        webApp?.initData
+      )
+
+      let currentClaimAttempts = 0
+
+      const checkClaimTransactionStatus = async () => {
+        if (currentClaimAttempts >= 5) {
+          setIsTrxChecking(false)
+          alert(
+            'Exceeded maximum number of attempts to check your transaction.'
+          )
+          return
+        }
+
+        const result = await TnC.waitForTx(claimHash, currentClaimAttempts)
+
+        if (result.ready) {
+          buyJettons()
+        } else {
+          currentClaimAttempts++
+
+          setTimeout(checkClaimTransactionStatus, 1000)
+        }
+
+        console.log(result)
+      }
+
+      checkClaimTransactionStatus()
+    }
+  }, [
+    balance,
+    buyJettons,
+    currentJettonsBuyAmount,
+    project,
+    projectSideInfo,
+    userWalletAddress,
+    webApp?.initData,
   ])
 
   const handleSliderValueChange = useCallback(

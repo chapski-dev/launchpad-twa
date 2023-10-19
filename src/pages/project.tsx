@@ -8,6 +8,7 @@ import { getICOProjectById } from 'api'
 import { AppRoutes } from 'constants/app'
 import {
   InfoBlock,
+  ParticipatedInfo,
   ProjectInfoHeader,
   Tokenomics,
 } from 'domains/Project/components'
@@ -73,11 +74,14 @@ const Project: FC = () => {
     useQuery(
       ['participantState', project?.icoMasterAddress],
       () =>
-        TnC.participantState(userWalletAddress, project?.icoMasterAddress || 0),
-      // () => TnC.participantState(userWalletAddress, '0'),
+        TnC.fullParticipantState(
+          userWalletAddress,
+          project?.icoMasterAddress,
+          'fail'
+        ),
       {
-        // enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
-        enabled: Boolean(userWalletAddress),
+        enabled:
+          Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
       }
     )
 
@@ -153,6 +157,13 @@ const Project: FC = () => {
                 title={project.metadata.name}
               />
               <Line />
+              {/* {userWalletAddress && participantState?.participated && ( */}
+              {userWalletAddress && (
+                <ParticipatedInfo
+                  participantState={participantState?.state}
+                  symbol={project.metadata.symbol}
+                />
+              )}
               <Tokenomics
                 distributions={distributions}
                 icoFundDistributions={icoFundDistributions}

@@ -1,0 +1,21 @@
+import * as React from 'react'
+import { SVGProps, memo } from 'react'
+const SvgUnlock = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    fill="none"
+    height={17}
+    viewBox="0 0 16 17"
+    width={16}
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      clipRule="evenodd"
+      d="M7.57329 12.4357H8.57329V9.955H7.57329V12.4357ZM5.62662 6.90434V5.84234C5.62928 5.16568 5.89528 4.53101 6.37662 4.05368C6.85529 3.57968 7.48796 3.31968 8.16196 3.31968C8.87862 3.29701 9.53462 3.60101 10.0226 4.12034L10.364 4.48501L11.094 3.80101L10.7513 3.43634C10.086 2.72634 9.14596 2.31968 8.17529 2.31968C7.23596 2.30034 6.34328 2.67901 5.67262 3.34368C5.00195 4.00834 4.63062 4.89434 4.62662 5.85368V6.90434H2.75995V15.4863H13.5733V6.90434H5.62662Z"
+      fill="white"
+      fillRule="evenodd"
+    />
+  </svg>
+)
+const Memo = memo(SvgUnlock)
+export default Memo

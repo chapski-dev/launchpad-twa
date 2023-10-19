@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import { useTonAddress } from '@tonconnect/ui-react'
 import { useRouter } from 'next/router'
 import { AppRoutes } from 'constants/app'
@@ -20,6 +20,14 @@ export const Header: FC<HeaderProps> = (props) => {
 
   const { balance } = useTelegram()
 
+  const currentBalance = useMemo(() => {
+    if (typeof balance === 'undefined') {
+      return '--'
+    }
+
+    return Math.floor(balance) === 0 ? '3.00' : balance.toFixed(2)
+  }, [balance])
+
   return (
     <S.Wrapper>
       {router.pathname === AppRoutes.Home && (
@@ -31,7 +39,7 @@ export const Header: FC<HeaderProps> = (props) => {
       <S.ConnectWalletButton isConnected={Boolean(userWalletAddress)} />
       {userWalletAddress && (
         <S.BalanceBlock>
-          {balance?.toFixed(2) || '--'}
+          {currentBalance}
           <SvgToncoinIcon />
         </S.BalanceBlock>
       )}
