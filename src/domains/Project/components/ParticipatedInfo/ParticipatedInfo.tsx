@@ -6,6 +6,7 @@ import {
   StateOnWallet,
   StateVested,
 } from '@ton-and-company/sdk/dist/core/sdk'
+import dayjs from 'dayjs'
 import { Container } from 'ui/Container/Container'
 import { SvgUnlock } from 'ui/icons'
 
@@ -129,11 +130,11 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
               <S.TrxsWrapper>
                 {participantState.txList.map((tx) => (
                   <LockTransactionBlock
-                    key={tx}
+                    key={tx.hash}
                     amount={(
                       Number(participantState.vest_portion) / 1e9
                     ).toFixed(2)}
-                    date={'2023-01-2 23:00 GMT'}
+                    date={dayjs(tx.date).toString()}
                     isLocked={false}
                     symbol={symbol}
                   />

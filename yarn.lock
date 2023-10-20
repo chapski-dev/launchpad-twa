@@ -1650,9 +1650,9 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@ton-and-company/sdk@git+https://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@github.com/ton-and-company/ton-contracts-sdk":
-  version "0.0.28"
-  resolved "git+https://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@github.com/ton-and-company/ton-contracts-sdk#93396ec34df0a6eed895104a72a807d23642bd4c"
+"@ton-and-company/sdk@git+https://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@github.com/ton-and-company/ton-contracts-sdk":
+  version "0.0.29"
+  resolved "git+https://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@github.com/ton-and-company/ton-contracts-sdk#0ca1fdd696bb779b8ad50a1cab7085a18ed20c1a"
   dependencies:
     ton "^13.5.0"
     ton-crypto "^3.2.0"
