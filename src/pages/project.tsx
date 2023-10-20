@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { TnC } from '@ton-and-company/sdk'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import Head from 'next/head'
@@ -17,10 +17,14 @@ import { BackButton } from 'features/BackButton'
 import { Layout } from 'features/Layout/Layout'
 import { MainButton } from 'features/MainButton'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
+import { Button } from 'ui/Button/Button'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
 
 const Project: FC = () => {
+  const [currentParticipantMode, setCurrentParticipantMode] =
+    useState('in-progress')
+
   const router = useRouter()
 
   const userWalletAddress = useTonAddress()
@@ -70,14 +74,34 @@ const Project: FC = () => {
     }, []),
   })
 
+  const switchParticipantState = () => {
+    switch (currentParticipantMode) {
+      case 'in-progress':
+        setCurrentParticipantMode('on-wallet')
+        break
+      case 'on-wallet':
+        setCurrentParticipantMode('lock-released')
+        break
+      case 'lock-released':
+        setCurrentParticipantMode('vest')
+        break
+      case 'vest':
+        setCurrentParticipantMode('fail')
+        break
+      case 'fail':
+        setCurrentParticipantMode('in-progress')
+        break
+    }
+  }
+
   const { data: participantState, isLoading: isParticipantStateLoading } =
     useQuery(
-      ['participantState', project?.icoMasterAddress],
+      ['participantState', project?.icoMasterAddress, currentParticipantMode],
       () =>
         TnC.fullParticipantState(
           userWalletAddress,
           project?.icoMasterAddress,
-          'fail'
+          currentParticipantMode
         ),
       {
         enabled:
@@ -159,10 +183,15 @@ const Project: FC = () => {
               <Line />
               {/* {userWalletAddress && participantState?.participated && ( */}
               {userWalletAddress && (
-                <ParticipatedInfo
-                  participantState={participantState?.state}
-                  symbol={project.metadata.symbol}
-                />
+                <>
+                  <ParticipatedInfo
+                    participantState={participantState?.state}
+                    symbol={project.metadata.symbol}
+                  />
+                  <Button onClick={switchParticipantState}>
+                    Switch Participant Info State (staging)
+                  </Button>
+                </>
               )}
               <Tokenomics
                 distributions={distributions}

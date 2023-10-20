@@ -6,10 +6,14 @@ import {
   StateOnWallet,
   StateVested,
 } from '@ton-and-company/sdk/dist/core/sdk'
-import dayjs from 'dayjs'
 import { Container } from 'ui/Container/Container'
 import { SvgUnlock } from 'ui/icons'
 
+import {
+  TransactionBlock,
+  LockTransactionBlock,
+  ProgressBlock,
+} from './components'
 import * as S from './style'
 
 type ParticipiantProps = {
@@ -25,6 +29,8 @@ type ParticipiantProps = {
 export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
   const { participantState, symbol } = props
 
+  console.log(participantState)
+
   const currentInfoContent = useMemo(() => {
     if (!participantState) {
       return
@@ -35,22 +41,23 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
         return (
           <>
             <S.DescriptionWrapper>
-              <SvgUnlock />
               <S.Description>
-                {(Number(participantState.balance) / 1e9).toFixed(2)} ETH Locked
-                by the end of Tokensale
+                {(Number(participantState.balance) / 1e9).toFixed(2)} {symbol}{' '}
+                Locked by the end of Tokensale
               </S.Description>
             </S.DescriptionWrapper>
             <S.SaleProgressBlock>
-              <S.SaleProgressTitle>Token sale progress:</S.SaleProgressTitle>
-              <S.ProgressBarWrapper>
-                <S.Label className="text-sm text-gray-light">
-                  {2000000} ({30}%)
-                </S.Label>
-                <S.ProgressBar>
-                  <S.ProgressLine width={30} />
-                </S.ProgressBar>
-              </S.ProgressBarWrapper>
+              <S.SaleProgressTitleWrapper>
+                <S.SaleProgressTitle>Token sale progress:</S.SaleProgressTitle>
+              </S.SaleProgressTitleWrapper>
+              <S.TrxLine />
+              <S.SaleProgressBlock>
+                <ProgressBlock
+                  amount={20000}
+                  maxAmount={100000}
+                  minAmount={60000}
+                />
+              </S.SaleProgressBlock>
             </S.SaleProgressBlock>
           </>
         )
@@ -58,42 +65,40 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
         return (
           <S.SaleProgressBlock>
             <S.TrxsWrapper>
-              <S.TrxBlock>
-                <S.TrxInfoWrapper>
-                  <S.Label>&gt; 100 {symbol} (Price 0.1TON)</S.Label>
-                  <S.DateLabel>2023-01-2 23:00 GMT</S.DateLabel>
-                </S.TrxInfoWrapper>
-                <S.TrxArrowIcon />
-              </S.TrxBlock>
-              <S.TrxBlock>
-                <S.TrxInfoWrapper>
-                  <S.Label>&gt; 100 ETH (Price 0.1TON)</S.Label>
-                  <S.DateLabel>2023-01-2 23:00 GMT</S.DateLabel>
-                </S.TrxInfoWrapper>
-                <S.TrxArrowIcon />
-              </S.TrxBlock>
+              <TransactionBlock
+                amount="100"
+                date="2023-01-2 23:00 GMT"
+                rate="0.1"
+                symbol={symbol}
+              />
+              <S.TrxLine />
+              <TransactionBlock
+                amount="100"
+                date="2023-01-2 23:00 GMT"
+                rate="0.1"
+                symbol={symbol}
+              />
             </S.TrxsWrapper>
           </S.SaleProgressBlock>
         )
       case 'locked':
-        const lockedBalance =
-          Number(participantState.balance - participantState.unlocked_balance) /
-          1e9
-
         return (
-          <S.DescriptionWrapper>
-            <SvgUnlock />
-            <S.Description>
-              {lockedBalance.toFixed(2)} {symbol} Locked by the end of Tokensale
-            </S.Description>
-          </S.DescriptionWrapper>
+          <S.SaleProgressBlock>
+            <S.DescriptionWrapper>
+              <SvgUnlock />
+              <S.Description>
+                {(Number(participantState.balance) / 1e9).toFixed(2)} {symbol}{' '}
+                Locked by the end of Tokensale
+              </S.Description>
+            </S.DescriptionWrapper>
+          </S.SaleProgressBlock>
         )
       case 'vested':
-        const vestedBalance = Number(participantState.balance) / 1e9
+        // const vestedBalance = Number(participantState.balance) / 1e9
 
         return (
           <>
-            {!participantState.released && (
+            {/* {!participantState.released && (
               <S.DescriptionWrapper>
                 <SvgUnlock />
                 <S.Description>
@@ -101,48 +106,52 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
                   ETH Locked by the end of Tokensale
                 </S.Description>
               </S.DescriptionWrapper>
-            )}
+            )} */}
             <S.SaleProgressBlock>
-              <S.SaleProgressTitle>
-                Unlock schedule (Unlocked {participantState.claimed}/
-                {participantState.count})
-              </S.SaleProgressTitle>
+              <S.SaleProgressTitleWrapper>
+                <S.SaleProgressTitle>Unlock schedule</S.SaleProgressTitle>
+                <S.SaleProgressChip>
+                  Unlocked {participantState.claimed}/{participantState.count}
+                </S.SaleProgressChip>
+              </S.SaleProgressTitleWrapper>
+              <S.TrxLine />
+              {participantState.next_time && (
+                <S.DescriptionWrapper>
+                  <S.Description>
+                    Next Part will unlock on{' '}
+                    <span style={{ fontWeight: 700 }}>2023-01-2 23:00 GMT</span>
+                  </S.Description>
+                </S.DescriptionWrapper>
+              )}
+            </S.SaleProgressBlock>
 
+            <S.SaleProgressBlock>
               <S.TrxsWrapper>
                 {participantState.txList.map((tx) => (
-                  <S.TrxBlock>
-                    <S.TrxLabelWrapper>
-                      <S.PointCircle />
-
-                      <S.TrxInfoWrapper>
-                        <S.Label>
-                          {Number(participantState.vest_portion) / 1e9} {symbol}{' '}
-                          Unlocked
-                        </S.Label>
-
-                        <S.DateLabel>2023-01-2 23:00 GMT</S.DateLabel>
-                      </S.TrxInfoWrapper>
-                    </S.TrxLabelWrapper>
-
-                    <S.TrxArrowIcon />
-                  </S.TrxBlock>
+                  <LockTransactionBlock
+                    key={tx}
+                    amount={(
+                      Number(participantState.vest_portion) / 1e9
+                    ).toFixed(2)}
+                    date={'2023-01-2 23:00 GMT'}
+                    isLocked={false}
+                    symbol={symbol}
+                  />
                 ))}
+              </S.TrxsWrapper>
+            </S.SaleProgressBlock>
+            {/* TODO: после обновления sdk переделать */}
+            <S.SaleProgressBlock>
+              <S.TrxsWrapper>
                 {participantState.next_time && (
-                  <S.TrxBlock disabled={true}>
-                    <S.TrxLabelWrapper>
-                      <S.PointCircle />
-
-                      <S.TrxInfoWrapper>
-                        <S.Label>
-                          {Number(participantState.vest_portion) / 1e9} {symbol}{' '}
-                          Unlocked
-                        </S.Label>
-                        <S.DateLabel>
-                          {dayjs(participantState.next_time).toString()}
-                        </S.DateLabel>
-                      </S.TrxInfoWrapper>
-                    </S.TrxLabelWrapper>
-                  </S.TrxBlock>
+                  <LockTransactionBlock
+                    amount={(
+                      Number(participantState.vest_portion) / 1e9
+                    ).toFixed(2)}
+                    date={'2023-01-2 23:00 GMT'}
+                    isLocked={true}
+                    symbol={symbol}
+                  />
                 )}
               </S.TrxsWrapper>
             </S.SaleProgressBlock>
@@ -150,12 +159,32 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
         )
       case 'failed':
         return (
-          <S.SaleProgressBlock>
-            <S.SaleProgressTitle>
-              ICO Failed and Money is refunded (blockchain fees are deducted)
-            </S.SaleProgressTitle>
-            <S.Link href="#">Refund transaction link</S.Link>
-          </S.SaleProgressBlock>
+          <>
+            <S.SaleProgressBlock>
+              <S.SaleProgressTitleWrapper>
+                <S.SaleProgressTitle>Token sale failed</S.SaleProgressTitle>
+              </S.SaleProgressTitleWrapper>
+              <S.TrxLine />
+              <S.SaleProgressBlock>
+                <ProgressBlock
+                  amount={20000}
+                  isFailed
+                  maxAmount={100000}
+                  minAmount={60000}
+                />
+              </S.SaleProgressBlock>
+              <S.TrxLine />
+              <TransactionBlock
+                amount={(Number(participantState.refundAmount) / 1e9).toFixed(
+                  2
+                )}
+                date="2023-01-2 23:00 GMT"
+                isRefund
+                rate="0.1"
+                symbol={symbol}
+              />
+            </S.SaleProgressBlock>
+          </>
         )
     }
   }, [participantState, symbol])
@@ -163,10 +192,15 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
   const currentBalance = useMemo(() => {
     switch (participantState?.type) {
       case 'locked':
+        return (participantState as any).unlocked_balance
+          ? (Number((participantState as any).unlocked_balance) / 1e9).toFixed(
+              2
+            )
+          : '0.00'
       case 'in-progress':
         return '0.00'
       default:
-        return (participantState as any).balance / 1e9
+        return (participantState as any).balance
           ? (Number((participantState as any).balance) / 1e9).toFixed(2)
           : '0.00'
     }

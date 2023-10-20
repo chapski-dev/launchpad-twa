@@ -72,7 +72,7 @@ export const ContentWrapper = styled.div`
 export const DescriptionWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 8px 12px;
+  padding: 12px;
   gap: 4px;
 `
 
@@ -87,73 +87,38 @@ export const Description = styled.p`
 `
 
 export const SaleProgressBlock = styled.div`
-  padding: 12px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.color.bg};
   display: flex;
   flex-direction: column;
-  gap: 16px;
 `
 
-export const SaleProgressTitle = styled.h5`
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 120%;
-  letter-spacing: -0.32px;
-  color: ${({ theme }) => theme.color.text};
-`
-
-export const ProgressBarWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`
-
-export const ProgressBar = styled.div`
-  height: 7px;
-  width: 100%;
-  border-radius: 12px;
-  background-color: ${({ theme }) => theme.color.bgSecondary};
-`
-
-export const ProgressLine = styled.div<{ color?: string; width: number }>`
-  height: 100%;
-  border-radius: 12px;
-  background-color: ${({ color }) => color || '#40E063'};
-  width: ${({ width }) => `${width}%`};
-`
-
-export const TrxBlock = styled.div<{ disabled?: boolean }>`
+export const SaleProgressTitleWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  padding: 12px;
 `
 
-export const TrxInfoWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
-export const DateLabel = styled.span`
-  font-size: 14px;
+export const SaleProgressTitle = styled.h5`
+  font-size: 20px;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 120%;
-  color: ${({ theme }) => theme.color.link};
+  letter-spacing: -0.4px;
+  color: ${({ theme }) => theme.color.text};
 `
 
-export const TrxLabel = styled.span<{ isBold?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 4px;
+export const SaleProgressChip = styled.div`
+  background: linear-gradient(86deg, #dd2bcd 0%, #1b7cfb 100%);
+  padding: 3px 6px;
+  border-radius: 4px;
   font-size: 16px;
   font-style: normal;
-  font-weight: ${({ isBold }) => (isBold ? 700 : 600)};
+  font-weight: 600;
   line-height: 120%;
   letter-spacing: -0.32px;
+  color: #fff;
 `
 
 export const TrxArrowIcon = styled(SvgTrxArrow)`
@@ -165,7 +130,6 @@ export const TrxArrowIcon = styled(SvgTrxArrow)`
 export const TrxsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
 `
 
 export const PointCircle = styled.div`
@@ -175,10 +139,11 @@ export const PointCircle = styled.div`
   background-color: ${({ theme }) => theme.color.link};
 `
 
-export const TrxLabelWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
+export const TrxLine = styled.div`
+  width: 100%;
+  height: 1px;
+  opacity: 0.12;
+  background: #999;
 `
 
 export const Link = styled.a`
