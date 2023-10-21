@@ -76,14 +76,14 @@ export const DescriptionWrapper = styled.div`
   gap: 4px;
 `
 
-export const Description = styled.p`
+export const Description = styled.p<{ isLock?: boolean }>`
   margin: 0;
   padding: 0;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 120%;
-  color: ${({ theme }) => theme.color.hint};
+  color: ${({ theme, isLock }) => (isLock ? '#fff' : theme.color.hint)};
 `
 
 export const SaleProgressBlock = styled.div`

@@ -40,7 +40,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
         return (
           <>
             <S.DescriptionWrapper>
-              <S.Description>
+              <S.Description isLock>
                 {(Number(participantState.balance) / 1e9).toFixed(2)} {symbol}{' '}
                 Locked by the end of Tokensale
               </S.Description>
@@ -84,7 +84,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
         return (
           <S.DescriptionWrapper>
             <SvgLockFlat />
-            <S.Description>
+            <S.Description isLock>
               {(Number(participantState.balance) / 1e9).toFixed(2)} {symbol}{' '}
               Locked by the end of Tokensale
             </S.Description>

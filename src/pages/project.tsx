@@ -129,7 +129,9 @@ const Project: FC = () => {
       return
     }
 
-    toggleParticipateModal()
+    if (!isParticipateModalOpen) {
+      toggleParticipateModal()
+    }
 
     // router.push({
     //   pathname: AppRoutes.Participate,
@@ -137,7 +139,7 @@ const Project: FC = () => {
     //     id,
     //   },
     // })
-  }, [tonConnectUI, userWalletAddress, webApp])
+  }, [isParticipateModalOpen, tonConnectUI, userWalletAddress, webApp])
 
   const icoParams = useMemo(() => {
     if (!project) {
@@ -222,6 +224,11 @@ const Project: FC = () => {
         )}
         {isParticipateModalOpen && (
           <ParticipateModal
+            icoParams={
+              project?.tokenomics.find(
+                (tokenomic: any) => tokenomic.name === 'ico'
+              )?.value
+            }
             jettonImage={project?.metadata.image}
             onClose={toggleParticipateModal}
             symbol={project?.metadata.symbol}
