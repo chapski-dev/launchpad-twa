@@ -206,7 +206,6 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
   return (
     <Container>
       <S.Wrapper>
-        <S.Title>Participated info:</S.Title>
         <S.ParticipatedBlockWrapper>
           <S.BalanceWrapper>
             <S.Label>Balance</S.Label>
