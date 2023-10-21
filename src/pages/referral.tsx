@@ -12,8 +12,6 @@ import { InvitedAlertBlock } from 'ui/InitedAlertBlock/InvitedAlertBlock'
 
 const tokenovaBotUrl = 't.me/tokenovabot/launchpad?startapp='
 
-const referralIdMock = 'JDsQ_1s2d18'
-
 const Referral: FC = () => {
   const router = useRouter()
 

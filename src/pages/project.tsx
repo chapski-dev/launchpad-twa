@@ -5,7 +5,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
 import { getICOProjectById } from 'api'
-import { AppRoutes } from 'constants/app'
 import {
   InfoBlock,
   ParticipatedInfo,
@@ -221,14 +220,14 @@ const Project: FC = () => {
             </S.Wrapper>
           )
         )}
+        {isParticipateModalOpen && (
+          <ParticipateModal
+            jettonImage={project?.metadata.image}
+            onClose={toggleParticipateModal}
+            symbol={project?.metadata.symbol}
+          />
+        )}
       </Layout>
-      {isParticipateModalOpen && (
-        <ParticipateModal
-          jettonImage={project?.metadata.image}
-          onClose={toggleParticipateModal}
-          symbol={project?.metadata.symbol}
-        />
-      )}
     </>
   )
 }

@@ -11,7 +11,9 @@ type ModalProps = {
 
 const PORTAL_TARGET = 'portal'
 
-const portalElement = document.getElementById(PORTAL_TARGET) as HTMLElement
+const portalElement =
+  typeof document !== 'undefined' &&
+  (document.getElementById(PORTAL_TARGET) as HTMLElement)
 
 export const Modal: FCWithChildren<ModalProps> = (props) => {
   const { children, className, onClose, title } = props
@@ -36,27 +38,35 @@ export const Modal: FCWithChildren<ModalProps> = (props) => {
   )
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = 'auto'
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = 'hidden'
+      return () => {
+        document.body.style.overflow = 'auto'
+      }
     }
   }, [])
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    if (typeof document !== 'undefined') {
+      document.addEventListener('keydown', handleKeyDown)
+      return () => document.removeEventListener('keydown', handleKeyDown)
+    }
   }, [handleKeyDown])
 
-  return ReactDOM.createPortal(
-    <S.WrapModal ref={outsideRef} onClick={handleWrapperClick}>
-      <S.CardWrapper className={className}>
-        <S.Header>
-          <S.Title>{title}</S.Title>
-          <S.Close onClick={onClose} />
-        </S.Header>
-        {children}
-      </S.CardWrapper>
-    </S.WrapModal>,
-    portalElement
-  )
+  if (portalElement) {
+    return ReactDOM.createPortal(
+      <S.WrapModal ref={outsideRef} onClick={handleWrapperClick}>
+        <S.CardWrapper className={className}>
+          <S.Header>
+            <S.Title>{title}</S.Title>
+            <S.Close onClick={onClose} />
+          </S.Header>
+          {children}
+        </S.CardWrapper>
+      </S.WrapModal>,
+      portalElement
+    )
+  }
+
+  return null
 }
