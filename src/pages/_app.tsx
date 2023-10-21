@@ -51,6 +51,7 @@ export default function App({ Component, pageProps }: AppProps) {
             </ProfileProvider>
           </TelegramProvider>
         </TonConnectProvider>
+        <div id="portal"></div>
         <Script src="https://telegram.org/js/telegram-web-app.js" />
       </QueryClientProvider>
     </>

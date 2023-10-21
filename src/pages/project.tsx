@@ -11,6 +11,7 @@ import {
   ParticipatedInfo,
   ProjectInfoHeader,
   Tokenomics,
+  ParticipateModal,
 } from 'domains/Project/components'
 import * as S from 'domains/Project/style'
 import { BackButton } from 'features/BackButton'
@@ -24,6 +25,9 @@ import { Loader } from 'ui/Loader/Loader'
 const Project: FC = () => {
   const [currentParticipantMode, setCurrentParticipantMode] =
     useState('in-progress')
+
+  const [isParticipateModalOpen, setIsParticipateModakOpen] =
+    useState<boolean>(false)
 
   const router = useRouter()
 
@@ -109,6 +113,10 @@ const Project: FC = () => {
       }
     )
 
+  const toggleParticipateModal = () => {
+    setIsParticipateModakOpen((prev) => !prev)
+  }
+
   const handleMainButtonClick = useCallback(() => {
     if (!userWalletAddress) {
       if (!webApp) {
@@ -122,15 +130,15 @@ const Project: FC = () => {
       return
     }
 
-    // alert('Coming soon ..)')
+    toggleParticipateModal()
 
-    router.push({
-      pathname: AppRoutes.Participate,
-      query: {
-        id,
-      },
-    })
-  }, [id, router, tonConnectUI, userWalletAddress, webApp])
+    // router.push({
+    //   pathname: AppRoutes.Participate,
+    //   query: {
+    //     id,
+    //   },
+    // })
+  }, [tonConnectUI, userWalletAddress, webApp])
 
   const icoParams = useMemo(() => {
     if (!project) {
@@ -200,20 +208,27 @@ const Project: FC = () => {
                 totalSupply={project.totalSupply}
               />
               <InfoBlock mdContent={markdown?.content} />
-              {!participantState?.participated && (
-                <MainButton
-                  onClick={handleMainButtonClick}
-                  text={
-                    userWalletAddress
-                      ? 'Buy ' + project.metadata.symbol
-                      : 'Connect Wallet'
-                  }
-                />
-              )}
+              {/* {!participantState?.participated && ( */}
+              <MainButton
+                onClick={handleMainButtonClick}
+                text={
+                  userWalletAddress
+                    ? 'Buy ' + project.metadata.symbol
+                    : 'Connect Wallet'
+                }
+              />
+              {/* )} */}
             </S.Wrapper>
           )
         )}
       </Layout>
+      {isParticipateModalOpen && (
+        <ParticipateModal
+          jettonImage={project?.metadata.image}
+          onClose={toggleParticipateModal}
+          symbol={project?.metadata.symbol}
+        />
+      )}
     </>
   )
 }

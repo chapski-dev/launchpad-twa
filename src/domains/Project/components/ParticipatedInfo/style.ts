@@ -13,7 +13,7 @@ export const Title = styled.h3`
   font-size: 24px;
   font-weight: 700;
   line-height: 32px;
-  color: #fff;
+  color: ${({ theme }) => theme.color.text};
 `
 
 export const ParticipatedBlockWrapper = styled.div`

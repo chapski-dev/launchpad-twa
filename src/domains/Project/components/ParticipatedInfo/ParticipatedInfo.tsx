@@ -8,7 +8,7 @@ import {
 } from '@ton-and-company/sdk/dist/core/sdk'
 import dayjs from 'dayjs'
 import { Container } from 'ui/Container/Container'
-import { SvgUnlock } from 'ui/icons'
+import { SvgLockFlat } from 'ui/icons'
 
 import {
   TransactionBlock,
@@ -29,8 +29,6 @@ type ParticipiantProps = {
 
 export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
   const { participantState, symbol } = props
-
-  console.log(participantState)
 
   const currentInfoContent = useMemo(() => {
     if (!participantState) {
@@ -84,15 +82,13 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
         )
       case 'locked':
         return (
-          <S.SaleProgressBlock>
-            <S.DescriptionWrapper>
-              <SvgUnlock />
-              <S.Description>
-                {(Number(participantState.balance) / 1e9).toFixed(2)} {symbol}{' '}
-                Locked by the end of Tokensale
-              </S.Description>
-            </S.DescriptionWrapper>
-          </S.SaleProgressBlock>
+          <S.DescriptionWrapper>
+            <SvgLockFlat />
+            <S.Description>
+              {(Number(participantState.balance) / 1e9).toFixed(2)} {symbol}{' '}
+              Locked by the end of Tokensale
+            </S.Description>
+          </S.DescriptionWrapper>
         )
       case 'vested':
         // const vestedBalance = Number(participantState.balance) / 1e9
