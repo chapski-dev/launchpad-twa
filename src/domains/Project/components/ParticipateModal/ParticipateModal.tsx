@@ -1,4 +1,11 @@
-import { ChangeEvent, FC, useCallback, useRef, useState } from 'react'
+import {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { TnC } from '@ton-and-company/sdk'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { useQuery } from 'react-query'
@@ -43,20 +50,40 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
   const jettonsInputRef = useRef<HTMLInputElement | null>(null)
 
-  const {
-    data: projectSideInfo,
-    // isLoading: isProjectSideLoading,
-    // isSuccess: isProjectSideLoaded,
-  } = useQuery(['projectSideInfo'], () => TnC.projectInfo(1), {
-    onSuccess: (data) => {
-      setCurrentJettonsBuyAmount(data.maximumBuyToken.toString())
-      setCurrentJettonsBuyAmountTON(data.maximumBuyTON.toString())
+  const { data: projectSideInfo } = useQuery(
+    ['projectSideInfo'],
+    () => TnC.projectInfo(1),
+    {
+      onSuccess: (data) => {
+        setCurrentJettonsBuyAmount(data.maximumBuyToken.toString())
+        setCurrentJettonsBuyAmountTON(data.maximumBuyTON.toString())
+      },
+    }
+  )
 
-      if (jettonsInputRef) {
-        jettonsInputRef.current?.click()
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const tonConnectTrxModal = document.getElementById('tc-widget-root')
+      const tcRootElement = tonConnectTrxModal?.querySelector('tc-root')
+
+      const handleTcRootChange = () => {
+        if (isTrxSigning && !tcRootElement?.hasChildNodes()) {
+          setIsTrxSigning(false)
+        }
       }
-    },
-  })
+
+      handleTcRootChange()
+
+      tcRootElement?.addEventListener('DOMSubtreeModified', handleTcRootChange)
+
+      return () => {
+        tcRootElement?.removeEventListener(
+          'DOMSubtreeModified',
+          handleTcRootChange
+        )
+      }
+    }
+  }, [isTrxSigning])
 
   const buyJettons = useCallback(async () => {
     if (!icoParams || typeof balance === 'undefined' || !projectSideInfo) {
@@ -80,6 +107,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
     setIsTrxSigning(true)
     const trx = await tonConnectUI.sendTransaction(deployParams)
+
+    console.log(trx)
 
     if (trx.boc) {
       setIsTrxSigning(false)
@@ -114,6 +143,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
       checkTransactionStatus()
     }
+
+    setIsTrxSigning(false)
   }, [
     balance,
     currentJettonsBuyAmount,
@@ -122,6 +153,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     tonConnectUI,
     userWalletAddress,
   ])
+
+  console.log(isTrxSigning)
 
   const handleBuyJettonsClick = useCallback(async () => {
     if (isSuccessBlockDisplayed) {
