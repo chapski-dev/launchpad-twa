@@ -26,7 +26,7 @@ const Project: FC = () => {
     useState('in-progress')
 
   const [isParticipateModalOpen, setIsParticipateModakOpen] =
-    useState<boolean>(true)
+    useState<boolean>(false)
 
   const router = useRouter()
 
@@ -180,11 +180,11 @@ const Project: FC = () => {
         <title>Project</title>
       </Head>
       <BackButton onClick={() => router.back()} />
-      <Layout>
-        {isProjectLoading || isParticipantStateLoading || !webApp ? (
-          <Loader type="projectPage" />
-        ) : (
-          isProjectLoaded && (
+      {isProjectLoading || isParticipantStateLoading || !webApp ? (
+        <Loader type="projectPage" />
+      ) : (
+        isProjectLoaded && (
+          <Layout>
             <S.Wrapper>
               <ProjectInfoHeader
                 description={project.metadata.description}
@@ -225,21 +225,21 @@ const Project: FC = () => {
               )}
               {/* )} */}
             </S.Wrapper>
-          )
-        )}
-        {isParticipateModalOpen && (
-          <ParticipateModal
-            icoParams={
-              project?.tokenomics.find(
-                (tokenomic: any) => tokenomic.name === 'ico'
-              )?.value
-            }
-            jettonImage={project?.metadata.image}
-            onClose={toggleParticipateModal}
-            symbol={project?.metadata.symbol}
-          />
-        )}
-      </Layout>
+            {isParticipateModalOpen && (
+              <ParticipateModal
+                icoParams={
+                  project?.tokenomics.find(
+                    (tokenomic: any) => tokenomic.name === 'ico'
+                  )?.value
+                }
+                jettonImage={project?.metadata.image}
+                onClose={toggleParticipateModal}
+                symbol={project?.metadata.symbol}
+              />
+            )}
+          </Layout>
+        )
+      )}
     </>
   )
 }
