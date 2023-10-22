@@ -15,6 +15,7 @@ export const WrapModal = styled.div`
   justify-content: flex-end;
   flex-direction: column;
   background: rgba(0, 0, 0, 0.32);
+  transition: height 0.3s ease;
 `
 
 export const CardWrapper = styled.div`
@@ -23,6 +24,7 @@ export const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${({ theme }) => theme.color.bg};
+  transition: height 0.3s ease;
 `
 
 export const Header = styled.div`

@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { TnC } from '@ton-and-company/sdk'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import Head from 'next/head'
@@ -26,7 +26,7 @@ const Project: FC = () => {
     useState('in-progress')
 
   const [isParticipateModalOpen, setIsParticipateModakOpen] =
-    useState<boolean>(false)
+    useState<boolean>(true)
 
   const router = useRouter()
 
@@ -37,6 +37,10 @@ const Project: FC = () => {
   const { webApp } = useTelegram()
 
   const { id } = router.query
+
+  useEffect(() => {
+    webApp?.expand()
+  }, [webApp])
 
   const {
     data: project,
@@ -129,16 +133,15 @@ const Project: FC = () => {
       return
     }
 
+    // if (participantState?.participated) {
+    //   alert('You have already participated in this project')
+
+    //   return
+    // }
+
     if (!isParticipateModalOpen) {
       toggleParticipateModal()
     }
-
-    // router.push({
-    //   pathname: AppRoutes.Participate,
-    //   query: {
-    //     id,
-    //   },
-    // })
   }, [isParticipateModalOpen, tonConnectUI, userWalletAddress, webApp])
 
   const icoParams = useMemo(() => {
@@ -210,14 +213,16 @@ const Project: FC = () => {
               />
               <InfoBlock mdContent={markdown?.content} />
               {/* {!participantState?.participated && ( */}
-              <MainButton
-                onClick={handleMainButtonClick}
-                text={
-                  userWalletAddress
-                    ? 'Buy ' + project.metadata.symbol
-                    : 'Connect Wallet'
-                }
-              />
+              {!isParticipateModalOpen && (
+                <MainButton
+                  onClick={handleMainButtonClick}
+                  text={
+                    userWalletAddress
+                      ? 'Buy ' + project?.metadata.symbol
+                      : 'Connect Wallet'
+                  }
+                />
+              )}
               {/* )} */}
             </S.Wrapper>
           )

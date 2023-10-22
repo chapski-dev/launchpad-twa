@@ -52,8 +52,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
       setCurrentJettonsBuyAmount(data.maximumBuyToken.toString())
       setCurrentJettonsBuyAmountTON(data.maximumBuyTON.toString())
 
-      if (jettonsInputRef.current) {
-        jettonsInputRef.current.focus()
+      if (jettonsInputRef) {
+        jettonsInputRef.current?.click()
       }
     },
   })
@@ -62,8 +62,6 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     if (!icoParams || typeof balance === 'undefined' || !projectSideInfo) {
       return
     }
-
-    console.log('tset')
 
     const trxMessage = await TnC.buyJettons(
       Address.parse(icoParams.address),
@@ -253,6 +251,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
               <S.JettonInputContainer>
                 <S.JettonInput
                   ref={jettonsInputRef}
+                  autoFocus
                   disabled={isTrxChecking}
                   inputMode="numeric"
                   max={projectSideInfo?.maximumBuyToken}
