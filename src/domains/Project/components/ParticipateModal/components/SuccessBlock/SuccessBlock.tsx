@@ -2,7 +2,7 @@ import { FC } from 'react'
 import * as S from './style'
 
 type SuccessBlockProps = {
-  amount: number
+  amount: string
   symbol: string
 }
 

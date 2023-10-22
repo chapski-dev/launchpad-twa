@@ -22,9 +22,10 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
   const { symbol, onClose, jettonImage, icoParams } = props
 
   const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
-    useState<number>(0)
+    useState<string>('0')
   const [currentJettonsBuyAmountTON, setCurrentJettonsBuyAmountTON] =
-    useState<number>(0)
+    useState<string>('0')
+
   const [isTrxChecking, setIsTrxChecking] = useState<boolean>(false)
   const [isSuccessBlockDisplayed, setIsSuccessBlockDisplayed] =
     useState<boolean>(false)
@@ -45,8 +46,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     // isSuccess: isProjectSideLoaded,
   } = useQuery(['projectSideInfo'], () => TnC.projectInfo(1), {
     onSuccess: (data) => {
-      setCurrentJettonsBuyAmount(data.maximumBuyToken)
-      setCurrentJettonsBuyAmountTON(data.maximumBuyTON)
+      setCurrentJettonsBuyAmount(data.maximumBuyToken.toString())
+      setCurrentJettonsBuyAmountTON(data.maximumBuyTON.toString())
 
       if (jettonsInputRef.current) {
         jettonsInputRef.current.focus()
@@ -133,11 +134,9 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
       return
     }
 
-    console.log('click')
-
     if (
       Math.floor(+balance) !== 0 &&
-      +balance - 0.2 < currentJettonsBuyAmountTON
+      Number(balance) - 0.2 < Number(currentJettonsBuyAmountTON)
     ) {
       alert(`You don't have enough TON in your account to purchase ${symbol}`)
       return
@@ -177,8 +176,6 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
           setTimeout(checkClaimTransactionStatus, 1000)
         }
-
-        console.log(result)
       }
 
       checkClaimTransactionStatus()
@@ -208,17 +205,29 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
       }
 
       if (amountInputName === 'jetton') {
-        setCurrentJettonsBuyAmount(Number(amountInputValue))
+        setCurrentJettonsBuyAmount(
+          amountInputValue.length > 6
+            ? Number(amountInputValue).toFixed(2)
+            : amountInputValue
+        )
         setCurrentJettonsBuyAmountTON(
-          Number(amountInputValue) * projectSideInfo.price
+          `${Number(amountInputValue) * projectSideInfo.price}`.length > 6
+            ? (Number(amountInputValue) * projectSideInfo.price).toFixed(2)
+            : `${Number(amountInputValue) * projectSideInfo.price}`
         )
 
         return
       }
 
-      setCurrentJettonsBuyAmountTON(Number(amountInputValue))
+      setCurrentJettonsBuyAmountTON(
+        amountInputValue.length > 6
+          ? Number(amountInputValue).toFixed(2)
+          : amountInputValue
+      )
       setCurrentJettonsBuyAmount(
-        Number(amountInputValue) / projectSideInfo.price
+        `${Number(amountInputValue) / projectSideInfo.price}`.length > 6
+          ? (Number(amountInputValue) / projectSideInfo.price).toFixed(2)
+          : `${Number(amountInputValue) / projectSideInfo.price}`
       )
     },
     [projectSideInfo]
@@ -243,9 +252,12 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
                 <S.JettonInput
                   ref={jettonsInputRef}
                   disabled={isTrxChecking}
+                  max={projectSideInfo?.maximumBuyToken}
+                  min={projectSideInfo?.minimumBuyToken}
                   name="jetton"
                   onChange={handleAmountInputChange}
                   placeholder="50"
+                  type="number"
                   value={currentJettonsBuyAmount}
                 />
                 <S.JettonInputContentWrapper>
@@ -259,9 +271,12 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
               <S.JettonInputContainer>
                 <S.JettonInput
                   disabled={isTrxChecking}
+                  max={projectSideInfo?.maximumBuyTON}
+                  min={projectSideInfo?.minimumBuyTON}
                   name="ton"
                   onChange={handleAmountInputChange}
                   placeholder="4.5"
+                  type="number"
                   value={currentJettonsBuyAmountTON}
                 />
                 <S.JettonInputContentWrapper>
@@ -277,8 +292,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
                 1 {symbol} = {projectSideInfo?.price} TON
               </S.Label>
               <S.Label>
-                {currentJettonsBuyAmountTON.toFixed(2)} TON = $
-                {(currentJettonsBuyAmountTON * 2.13).toFixed(2)}
+                {Number(currentJettonsBuyAmountTON).toFixed(2)} TON = $
+                {(Number(currentJettonsBuyAmountTON) * 2.13).toFixed(2)}
               </S.Label>
             </S.RateWrapper>
             <S.Label>
