@@ -27,8 +27,11 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     useState<string>('0')
 
   const [isTrxChecking, setIsTrxChecking] = useState<boolean>(false)
+
   const [isSuccessBlockDisplayed, setIsSuccessBlockDisplayed] =
     useState<boolean>(false)
+
+  const [isTrxSigning, setIsTrxSigning] = useState<boolean>(false)
 
   const { balance } = useProfileContext()
 
@@ -73,9 +76,16 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
       messages: [trxMessage],
     }
 
+    if (jettonsInputRef.current) {
+      jettonsInputRef.current.blur()
+    }
+
+    setIsTrxSigning(true)
     const trx = await tonConnectUI.sendTransaction(deployParams)
 
     if (trx.boc) {
+      setIsTrxSigning(false)
+
       setIsTrxChecking(true)
 
       let currentAttempts = 0
@@ -97,14 +107,6 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
           setIsSuccessBlockDisplayed(true)
 
           return
-
-          //   router.push({
-          //     pathname: AppRoutes.Complete,
-          //     query: {
-          //       symbol,
-          //       amount: currentJettonsBuyAmount,
-          //     },
-          //   })
         } else {
           currentAttempts++
 
@@ -252,6 +254,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
                 <S.JettonInput
                   ref={jettonsInputRef}
                   disabled={isTrxChecking}
+                  inputMode="numeric"
                   max={projectSideInfo?.maximumBuyToken}
                   min={projectSideInfo?.minimumBuyToken}
                   name="jetton"
@@ -271,6 +274,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
               <S.JettonInputContainer>
                 <S.JettonInput
                   disabled={isTrxChecking}
+                  inputMode="numeric"
                   max={projectSideInfo?.maximumBuyTON}
                   min={projectSideInfo?.minimumBuyTON}
                   name="ton"
@@ -304,11 +308,13 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
         </S.Wrapper>
       )}
 
-      <MainButton
-        onClick={handleBuyJettonsClick}
-        progress={isTrxChecking}
-        text={isSuccessBlockDisplayed ? 'Back to project' : 'Buy ' + symbol}
-      />
+      {!isTrxSigning && (
+        <MainButton
+          onClick={handleBuyJettonsClick}
+          progress={isTrxChecking}
+          text={isSuccessBlockDisplayed ? 'Back to project' : 'Buy ' + symbol}
+        />
+      )}
     </Modal>
   )
 }
