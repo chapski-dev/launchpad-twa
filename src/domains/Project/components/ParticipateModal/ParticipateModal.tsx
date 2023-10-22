@@ -49,6 +49,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
   const userWalletAddress = useTonAddress()
 
   const jettonsInputRef = useRef<HTMLInputElement | null>(null)
+  const tonInputRef = useRef<HTMLInputElement | null>(null)
 
   const { data: projectSideInfo } = useQuery(
     ['projectSideInfo'],
@@ -69,6 +70,9 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
       const handleTcRootChange = () => {
         if (isTrxSigning && !tcRootElement?.hasChildNodes()) {
           setIsTrxSigning(false)
+        } else if (tcRootElement?.hasChildNodes()) {
+          jettonsInputRef.current?.blur()
+          tonInputRef.current?.blur()
         }
       }
 
@@ -99,10 +103,6 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     const deployParams = {
       validUntil: Date.now() + 100000,
       messages: [trxMessage],
-    }
-
-    if (jettonsInputRef.current) {
-      jettonsInputRef.current.blur()
     }
 
     setIsTrxSigning(true)
@@ -305,6 +305,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
               <S.JettonInputContainer>
                 <S.JettonInput
+                  ref={tonInputRef}
                   disabled={isTrxChecking}
                   inputMode="numeric"
                   max={projectSideInfo?.maximumBuyTON}
