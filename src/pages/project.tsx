@@ -30,7 +30,7 @@ const Project: FC = () => {
     useState('in-progress')
 
   const [isParticipateModalOpen, setIsParticipateModakOpen] =
-    useState<boolean>(true)
+    useState<boolean>(false)
 
   const router = useRouter()
 

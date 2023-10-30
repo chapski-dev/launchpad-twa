@@ -358,8 +358,6 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
         </S.Wrapper>
       )}
 
-      <Button onClick={handleBuyJettonsClick}>Buy</Button>
-
       {!isTrxSigning && (
         <MainButton
           onClick={handleBuyJettonsClick}
