@@ -216,23 +216,6 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
     }
   }, [participantState, symbol, tranformedParticipantStatus])
 
-  const currentBalance = useMemo(() => {
-    const buyTrxsAmount = participantState.buy_transactions.reduce<number>(
-      (prev, curr) => {
-        return prev + Number(BigInt(curr.jetton_value)) / 1e9
-      },
-      0
-    )
-
-    const unlockedTrxAmount = participantState.unlock_transactions
-      .filter((unlockTrx) => unlockTrx.hash !== 'scheduled')
-      .reduce<number>((prev, curr) => {
-        return prev + Number(BigInt(curr.jetton_value)) / 1e9
-      }, 0)
-
-    return (buyTrxsAmount + unlockedTrxAmount).toFixed(2)
-  }, [participantState])
-
   return (
     <Container>
       <S.Wrapper>
@@ -240,7 +223,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
           <S.BalanceWrapper>
             <S.Label>Balance</S.Label>
             <S.BalanceLabel>
-              {currentBalance} {symbol}
+              {toHumanNumber(BigInt(participantState.jetton_balance))} {symbol}
             </S.BalanceLabel>
           </S.BalanceWrapper>
           <S.Line />
