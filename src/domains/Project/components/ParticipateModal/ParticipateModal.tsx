@@ -17,12 +17,14 @@ import { SvgToncoinIcon } from 'ui/icons'
 import { Modal } from 'ui/Modal/Modal'
 import { SuccessBlock } from './components'
 import * as S from './style'
+import { Button } from '../Tokenomics/components/StatBlock/style'
 
 type ParticipateModalProps = {
   symbol: string
   onClose: () => void
   jettonImage: string
   icoParams: any
+  isAlreadyParticipated: boolean
 }
 
 export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
@@ -62,6 +64,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     }
   )
 
+  const { data: tonPrice } = useQuery(['currentTonPrice'], () => TnC.tonPrice())
+
   useEffect(() => {
     if (typeof document !== 'undefined') {
       const tonConnectTrxModal = document.getElementById('tc-widget-root')
@@ -94,21 +98,24 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
       return
     }
 
+    const initUserTrxMessage = await TnC.initUser(
+      icoParams.address,
+      currentJettonsBuyAmountTON
+    )
+
     const trxMessage = await TnC.buyJettons(
       Address.parse(icoParams.address),
       Address.parse(userWalletAddress),
-      BigInt(currentJettonsBuyAmount)
+      BigInt(currentJettonsBuyAmountTON)
     )
 
     const deployParams = {
       validUntil: Date.now() + 100000,
-      messages: [trxMessage],
+      messages: [initUserTrxMessage],
     }
 
     setIsTrxSigning(true)
     const trx = await tonConnectUI.sendTransaction(deployParams)
-
-    console.log(trx)
 
     if (trx.boc) {
       setIsTrxSigning(false)
@@ -147,14 +154,12 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     setIsTrxSigning(false)
   }, [
     balance,
-    currentJettonsBuyAmount,
+    currentJettonsBuyAmountTON,
     icoParams,
     projectSideInfo,
     tonConnectUI,
     userWalletAddress,
   ])
-
-  console.log(isTrxSigning)
 
   const handleBuyJettonsClick = useCallback(async () => {
     if (isSuccessBlockDisplayed) {
@@ -181,37 +186,47 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
       return
     }
 
-    if (+balance === 0) {
+    const checkUserBonusData = await TnC.checkBonus(userWalletAddress)
+
+    if (+balance === 0 && !checkUserBonusData.requested) {
       setIsTrxChecking(true)
 
-      const claimHash = await TnC.claimBonus(
+      const claimBonusData = await TnC.claimBonus(
         userWalletAddress,
         webApp?.initData
       )
 
-      let currentClaimAttempts = 0
+      console.log(claimBonusData)
 
-      const checkClaimTransactionStatus = async () => {
-        if (currentClaimAttempts >= 5) {
-          setIsTrxChecking(false)
-          alert(
-            'Exceeded maximum number of attempts to check your transaction.'
-          )
-          return
-        }
+      if (claimBonusData.ok) {
+        setIsTrxChecking(false)
 
-        const result = await TnC.waitForTx(claimHash, currentClaimAttempts)
-
-        if (result.ready) {
-          buyJettons()
-        } else {
-          currentClaimAttempts++
-
-          setTimeout(checkClaimTransactionStatus, 1000)
-        }
+        buyJettons()
       }
 
-      checkClaimTransactionStatus()
+      // let currentClaimAttempts = 0
+
+      // const checkClaimTransactionStatus = async () => {
+      //   if (currentClaimAttempts >= 5) {
+      //     setIsTrxChecking(false)
+      //     alert(
+      //       'Exceeded maximum number of attempts to check your transaction.'
+      //     )
+      //     return
+      //   }
+
+      //   const result = await TnC.waitForTx(claimHash, currentClaimAttempts)
+
+      //   if (result.ready) {
+      //     buyJettons()
+      //   } else {
+      //     currentClaimAttempts++
+
+      //     setTimeout(checkClaimTransactionStatus, 1000)
+      //   }
+      // }
+
+      // checkClaimTransactionStatus()
     }
   }, [
     isSuccessBlockDisplayed,
@@ -330,7 +345,9 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
               </S.Label>
               <S.Label>
                 {Number(currentJettonsBuyAmountTON).toFixed(2)} TON = $
-                {(Number(currentJettonsBuyAmountTON) * 2.13).toFixed(2)}
+                {tonPrice
+                  ? (Number(currentJettonsBuyAmountTON) * +tonPrice).toFixed(2)
+                  : '0.00'}
               </S.Label>
             </S.RateWrapper>
             <S.Label>
@@ -340,6 +357,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
           </S.AmountWrapper>
         </S.Wrapper>
       )}
+
+      <Button onClick={handleBuyJettonsClick}>Buy</Button>
 
       {!isTrxSigning && (
         <MainButton

@@ -21,12 +21,16 @@ import { Button } from 'ui/Button/Button'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
 
+const MOCK_USER_ADDRESS = 'EQCXTqyq89qdoH5MWXEFMWceA6V4ODis_4SlWlDxOin-LfHb'
+
+const MOCK_ICO_ADDRESS = 'EQBS_IUY_sOjPuFK9Dzg4mE1n-OzveGgM3LUYIdYrb5YE4EK'
+
 const Project: FC = () => {
   const [currentParticipantMode, setCurrentParticipantMode] =
     useState('in-progress')
 
   const [isParticipateModalOpen, setIsParticipateModakOpen] =
-    useState<boolean>(false)
+    useState<boolean>(true)
 
   const router = useRouter()
 
@@ -101,20 +105,17 @@ const Project: FC = () => {
     }
   }
 
-  const { data: participantState, isLoading: isParticipantStateLoading } =
-    useQuery(
-      ['participantState', project?.icoMasterAddress, currentParticipantMode],
-      () =>
-        TnC.fullParticipantState(
-          userWalletAddress,
-          project?.icoMasterAddress,
-          currentParticipantMode
-        ),
-      {
-        enabled:
-          Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
-      }
-    )
+  const {
+    data: participantState,
+    isLoading: isParticipantStateLoading,
+    isSuccess: isParticipantStateLoaded,
+  } = useQuery(
+    ['participantState'],
+    () => TnC.getParticipantState(MOCK_USER_ADDRESS, MOCK_ICO_ADDRESS),
+    {
+      enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
+    }
+  )
 
   const toggleParticipateModal = () => {
     setIsParticipateModakOpen((prev) => !prev)
@@ -133,16 +134,22 @@ const Project: FC = () => {
       return
     }
 
-    // if (participantState?.participated) {
-    //   alert('You have already participated in this project')
+    if (participantState?.participated) {
+      alert('You have already participated in this project')
 
-    //   return
-    // }
+      return
+    }
 
     if (!isParticipateModalOpen) {
       toggleParticipateModal()
     }
-  }, [isParticipateModalOpen, tonConnectUI, userWalletAddress, webApp])
+  }, [
+    isParticipateModalOpen,
+    participantState?.participated,
+    tonConnectUI,
+    userWalletAddress,
+    webApp,
+  ])
 
   const icoParams = useMemo(() => {
     if (!project) {
@@ -183,7 +190,8 @@ const Project: FC = () => {
       {isProjectLoading || isParticipantStateLoading || !webApp ? (
         <Loader type="projectPage" />
       ) : (
-        isProjectLoaded && (
+        isProjectLoaded &&
+        isParticipantStateLoaded && (
           <Layout>
             <S.Wrapper>
               <ProjectInfoHeader
@@ -192,12 +200,13 @@ const Project: FC = () => {
                 network={project.network}
                 title={project.metadata.name}
               />
+
               <Line />
-              {/* {userWalletAddress && participantState?.participated && ( */}
-              {userWalletAddress && (
+
+              {userWalletAddress && participantState.participated && (
                 <>
                   <ParticipatedInfo
-                    participantState={participantState?.state}
+                    participantState={participantState}
                     symbol={project.metadata.symbol}
                   />
                   <Button onClick={switchParticipantState}>
@@ -205,15 +214,17 @@ const Project: FC = () => {
                   </Button>
                 </>
               )}
+
               <Tokenomics
                 distributions={distributions}
                 icoFundDistributions={icoFundDistributions}
                 icoParams={icoParams}
                 totalSupply={project.totalSupply}
               />
+
               <InfoBlock mdContent={markdown?.content} />
-              {/* {!participantState?.participated && ( */}
-              {!isParticipateModalOpen && (
+
+              {!participantState?.participated && !isParticipateModalOpen && (
                 <MainButton
                   onClick={handleMainButtonClick}
                   text={
@@ -223,8 +234,8 @@ const Project: FC = () => {
                   }
                 />
               )}
-              {/* )} */}
             </S.Wrapper>
+
             {isParticipateModalOpen && (
               <ParticipateModal
                 icoParams={
@@ -232,6 +243,7 @@ const Project: FC = () => {
                     (tokenomic: any) => tokenomic.name === 'ico'
                   )?.value
                 }
+                isAlreadyParticipated={participantState.participated}
                 jettonImage={project?.metadata.image}
                 onClose={toggleParticipateModal}
                 symbol={project?.metadata.symbol}

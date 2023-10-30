@@ -2,9 +2,9 @@ import { FC, useMemo } from 'react'
 import * as S from './style'
 
 type ProgressBlockProps = {
-  amount: number
-  minAmount: number
-  maxAmount: number
+  amount: string
+  minAmount: string
+  maxAmount: string
   isFailed?: boolean
 }
 
@@ -12,11 +12,11 @@ export const ProgressBlock: FC<ProgressBlockProps> = (props) => {
   const { amount, minAmount, maxAmount, isFailed } = props
 
   const progressPercent = useMemo(() => {
-    return Math.floor((amount / maxAmount) * 100)
+    return Math.floor((+amount / +maxAmount) * 100)
   }, [amount, maxAmount])
 
   const minAmountPercent = useMemo(() => {
-    return Math.floor((minAmount / maxAmount) * 100)
+    return Math.floor((+minAmount / +maxAmount) * 100)
   }, [maxAmount, minAmount])
 
   return (
