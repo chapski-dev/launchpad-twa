@@ -21,9 +21,9 @@ import { Button } from 'ui/Button/Button'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
 
-const MOCK_USER_ADDRESS = 'EQCXTqyq89qdoH5MWXEFMWceA6V4ODis_4SlWlDxOin-LfHb'
+// const MOCK_USER_ADDRESS = 'EQCXTqyq89qdoH5MWXEFMWceA6V4ODis_4SlWlDxOin-LfHb'
 
-const MOCK_ICO_ADDRESS = 'EQBS_IUY_sOjPuFK9Dzg4mE1n-OzveGgM3LUYIdYrb5YE4EK'
+// const MOCK_ICO_ADDRESS = 'EQBS_IUY_sOjPuFK9Dzg4mE1n-OzveGgM3LUYIdYrb5YE4EK'
 
 const Project: FC = () => {
   const [currentParticipantMode, setCurrentParticipantMode] =
@@ -108,14 +108,16 @@ const Project: FC = () => {
   const {
     data: participantState,
     isLoading: isParticipantStateLoading,
-    isSuccess: isParticipantStateLoaded,
+    // isSuccess: isParticipantStateLoaded,
   } = useQuery(
     ['participantState'],
-    () => TnC.getParticipantState(MOCK_USER_ADDRESS, MOCK_ICO_ADDRESS),
+    () => TnC.getParticipantState(userWalletAddress, project?.icoMasterAddress),
     {
       enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
     }
   )
+
+  console.log(participantState)
 
   const toggleParticipateModal = () => {
     setIsParticipateModakOpen((prev) => !prev)
@@ -190,8 +192,7 @@ const Project: FC = () => {
       {isProjectLoading || isParticipantStateLoading || !webApp ? (
         <Loader type="projectPage" />
       ) : (
-        isProjectLoaded &&
-        isParticipantStateLoaded && (
+        isProjectLoaded && (
           <Layout>
             <S.Wrapper>
               <ProjectInfoHeader
@@ -203,7 +204,7 @@ const Project: FC = () => {
 
               <Line />
 
-              {userWalletAddress && participantState.participated && (
+              {userWalletAddress && participantState?.participated && (
                 <>
                   <ParticipatedInfo
                     participantState={participantState}
@@ -236,14 +237,14 @@ const Project: FC = () => {
               )}
             </S.Wrapper>
 
-            {isParticipateModalOpen && (
+            {participantState && isParticipateModalOpen && (
               <ParticipateModal
                 icoParams={
                   project?.tokenomics.find(
                     (tokenomic: any) => tokenomic.name === 'ico'
                   )?.value
                 }
-                isAlreadyParticipated={participantState.participated}
+                isAlreadyParticipated={participantState?.participated}
                 jettonImage={project?.metadata.image}
                 onClose={toggleParticipateModal}
                 symbol={project?.metadata.symbol}
