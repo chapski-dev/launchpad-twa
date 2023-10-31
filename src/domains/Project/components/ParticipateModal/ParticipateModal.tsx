@@ -17,7 +17,6 @@ import { SvgToncoinIcon } from 'ui/icons'
 import { Modal } from 'ui/Modal/Modal'
 import { SuccessBlock } from './components'
 import * as S from './style'
-import { Button } from '../Tokenomics/components/StatBlock/style'
 
 type ParticipateModalProps = {
   symbol: string
@@ -28,7 +27,8 @@ type ParticipateModalProps = {
 }
 
 export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
-  const { symbol, onClose, jettonImage, icoParams } = props
+  const { symbol, onClose, jettonImage, icoParams, isAlreadyParticipated } =
+    props
 
   const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
     useState<string>('0')
@@ -98,20 +98,20 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
       return
     }
 
-    const initUserTrxMessage = await TnC.initUser(
-      icoParams.address,
-      currentJettonsBuyAmountTON
-    )
-
-    const trxMessage = await TnC.buyJettons(
-      Address.parse(icoParams.address),
-      Address.parse(userWalletAddress),
-      BigInt(currentJettonsBuyAmountTON)
-    )
+    const trxMessage = isAlreadyParticipated
+      ? await TnC.buyJettons(
+          Address.parse(icoParams.address),
+          Address.parse(userWalletAddress),
+          BigInt(currentJettonsBuyAmountTON)
+        )
+      : await TnC.initUser(
+          icoParams.address,
+          (Number(currentJettonsBuyAmountTON) + 1).toString()
+        )
 
     const deployParams = {
       validUntil: Date.now() + 100000,
-      messages: [initUserTrxMessage],
+      messages: [trxMessage],
     }
 
     setIsTrxSigning(true)
@@ -156,6 +156,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     balance,
     currentJettonsBuyAmountTON,
     icoParams,
+    isAlreadyParticipated,
     projectSideInfo,
     tonConnectUI,
     userWalletAddress,
