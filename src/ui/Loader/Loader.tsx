@@ -6,11 +6,12 @@ import * as S from './style'
 
 type LoaderProps = {
   type?:
-    | 'projectCard'
+    | 'homePage'
     | 'projectPage'
     | 'participatePage'
     | 'postCard'
     | 'postPage'
+    | 'projectCard'
   className?: string
 }
 
@@ -21,47 +22,63 @@ export const Loader: FCWithChildren<LoaderProps> = (props) => {
 
   const loaderContent = useMemo(() => {
     switch (type) {
+      case 'homePage':
+        return (
+          <ContentLoader
+            backgroundColor={theme.color.bgSecondary}
+            foregroundColor="#ffffff33"
+            height={421}
+            speed={2.5}
+            viewBox="0 0 409 421"
+            width={403}
+          >
+            {/* <rect height="421" width="409" /> */}
+            <rect height="32" rx="16" width="168" x="121" y="12" />
+            <rect height="32" rx="16" width="32" x="12" y="12" />
+            <rect height="32" rx="16" width="75" x="322" y="12" />
+            <rect height="95" rx="12" width="385" x="12" y="61" />
+            <rect height="23" rx="8" width="100" x="25" y="177" />
+            <rect height="18" rx="8" width="107" x="105" y="237" />
+            <rect height="18" rx="8" width="287" x="105" y="260" />
+            <rect height="18" rx="8" width="217" x="105" y="283" />
+            <rect height="80" rx="19" width="80" x="15" y="237" />
+            <rect height="18" rx="8" width="107" x="105" y="341" />
+            <rect height="18" rx="8" width="287" x="105" y="364" />
+            <rect height="18" rx="8" width="217" x="105" y="387" />
+            <rect height="80" rx="19" width="80" x="15" y="341" />
+            <rect height="23" rx="8" width="100" x="162" y="177" />
+            <rect height="4" rx="2" width="120" x="15" y="205" />
+          </ContentLoader>
+        )
       case 'projectCard':
         return (
           <S.Wrapper className={className}>
             <ContentLoader
               backgroundColor={theme.color.bgSecondary}
-              foregroundColor={'#ffffff33'}
+              foregroundColor="#ffffff33"
               height={80}
               speed={2.5}
-              viewBox="0 0 320 80"
-              width={320}
+              viewBox="0 0 377 80"
+              width={377}
             >
-              <rect height="80" rx="16" width="80" />
-              <rect height="18" rx="9" width="111" x="92" />
-              <rect height="16" rx="8" width="210" x="92" y="24" />
-              <rect height="16" rx="8" width="181" x="92" y="46" />
+              <rect height="18" rx="8" width="107" x="90" />
+              <rect height="18" rx="8" width="287" x="90" y="23" />
+              <rect height="18" rx="8" width="217" x="90" y="46" />
+              <rect height="80" rx="19" width="80" />
             </ContentLoader>
+
             <ContentLoader
               backgroundColor={theme.color.bgSecondary}
               foregroundColor="#ffffff33"
               height={80}
               speed={2.5}
-              viewBox="0 0 320 80"
-              width={320}
+              viewBox="0 0 377 80"
+              width={377}
             >
-              <rect height="80" rx="16" width="80" />
-              <rect height="18" rx="9" width="111" x="92" />
-              <rect height="16" rx="8" width="210" x="92" y="24" />
-              <rect height="16" rx="8" width="181" x="92" y="46" />
-            </ContentLoader>
-            <ContentLoader
-              backgroundColor={theme.color.bgSecondary}
-              foregroundColor="#ffffff33"
-              height={80}
-              speed={2.5}
-              viewBox="0 0 320 80"
-              width={320}
-            >
-              <rect height="80" rx="16" width="80" />
-              <rect height="18" rx="9" width="111" x="92" />
-              <rect height="16" rx="8" width="210" x="92" y="24" />
-              <rect height="16" rx="8" width="181" x="92" y="46" />
+              <rect height="18" rx="8" width="107" x="90" />
+              <rect height="18" rx="8" width="287" x="90" y="23" />
+              <rect height="18" rx="8" width="217" x="90" y="46" />
+              <rect height="80" rx="19" width="80" />
             </ContentLoader>
           </S.Wrapper>
         )
@@ -86,26 +103,6 @@ export const Loader: FCWithChildren<LoaderProps> = (props) => {
           </S.Wrapper>
         )
       case 'participatePage':
-        return (
-          <S.Wrapper className={className}>
-            <ContentLoader
-              backgroundColor={theme.color.bgSecondary}
-              foregroundColor="#ffffff33"
-              height={546}
-              speed={2.5}
-              viewBox="0 0 343 546"
-              width={343}
-            >
-              <rect height="25" rx="6" width="53" y="48" />
-              <rect height="38" rx="6" width="352" y="178" />
-              <rect height="38" rx="6" width="352" y="232" />
-              <rect height="32" rx="6" width="210" />
-              <rect height="20" rx="6" width="127" y="77" />
-              <rect height="25" rx="6" width="53" y="113" />
-              <rect height="20" rx="6" width="127" y="142" />
-            </ContentLoader>
-          </S.Wrapper>
-        )
       case 'postCard':
         return (
           <S.Wrapper className={className}>

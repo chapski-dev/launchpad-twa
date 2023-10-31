@@ -1,7 +1,6 @@
 import { FC } from 'react'
 import { useQuery } from 'react-query'
 import { getICOJettons } from 'api'
-import { FadeInWrapper } from 'ui/FadeInWrapper/FadeInWrapper'
 import { ProjectCard } from './components'
 import * as S from './style'
 
@@ -26,9 +25,8 @@ export const ProjectList: FC<ProjectListProps> = (props) => {
 
   if (isProjectsLoaded) {
     return (
-      // <FadeInWrapper>
       <S.Wrapper>
-        {projects.length > 0 ? (
+        {projects?.length > 0 ? (
           projects.map((project: any, idx: number) => (
             <ProjectCard
               key={idx}
@@ -44,7 +42,6 @@ export const ProjectList: FC<ProjectListProps> = (props) => {
           </S.NotFoundBlock>
         )}
       </S.Wrapper>
-      // </FadeInWrapper>
     )
   }
 

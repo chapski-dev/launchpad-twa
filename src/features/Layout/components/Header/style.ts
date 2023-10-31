@@ -38,6 +38,12 @@ export const ConnectWalletButton = styled(FeatureConnectWalletButton)<{
   right: ${({ isConnected }) => !isConnected && '12px'};
 `
 
+export const BalanceBlockPlaceholder = styled.div`
+  width: 75px;
+  height: 32px;
+  border-radius: 40px;
+`
+
 export const BalanceBlock = styled.div`
   display: flex;
   align-items: center;

@@ -49,3 +49,7 @@ export const InvitedAlertBlock = styled(UIInvitedAlertBlock)`
   width: 100%;
   transition: all 0.3s;
 `
+
+export const LoaderWrapper = styled.div`
+  margin-top: -6px;
+`

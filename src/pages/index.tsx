@@ -1,4 +1,5 @@
-import { FC, useState, useCallback, useMemo } from 'react'
+import { FC, useState, useCallback, useMemo, useEffect } from 'react'
+import { useIsConnectionRestored } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -51,10 +52,21 @@ const Home: FC = () => {
 
   const { invitedBy } = useProfileContext()
 
-  const { webApp, isFirstAppLoad } = useTelegram()
+  const { webApp, isFirstAppLoad, balance } = useTelegram()
+
+  const isConnectionRestored = useIsConnectionRestored()
 
   const handleSearchInputChange = useCallback((value: string) => {
     setSearchValue(value)
+  }, [])
+
+  useEffect(() => {
+    const promoImg = new Image()
+    promoImg.src = '/images/testnetLaunch.png'
+
+    promoImg.onload = () => {
+      setIsPromoImageLoaded(true)
+    }
   }, [])
 
   const currentHomeContent = useMemo(() => {
@@ -75,8 +87,17 @@ const Home: FC = () => {
     })
   }, [router])
 
-  if (!webApp) {
-    return <Loader type="projectCard" />
+  if (
+    !webApp ||
+    !isConnectionRestored ||
+    !isPromoImageLoaded ||
+    typeof balance === 'undefined'
+  ) {
+    return (
+      <S.LoaderWrapper>
+        <Loader type="homePage" />
+      </S.LoaderWrapper>
+    )
   }
 
   return (

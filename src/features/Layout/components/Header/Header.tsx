@@ -2,7 +2,7 @@ import { FC, useMemo } from 'react'
 import { useTonAddress } from '@tonconnect/ui-react'
 import { useRouter } from 'next/router'
 import { AppRoutes } from 'constants/app'
-import { ConnectWalletButton } from 'features/ConnectWalletButton'
+
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { SvgToncoinIcon } from 'ui/icons'
 import * as S from './style'

@@ -117,8 +117,6 @@ const Project: FC = () => {
     }
   )
 
-  console.log(participantState)
-
   const toggleParticipateModal = () => {
     setIsParticipateModakOpen((prev) => !prev)
   }
@@ -189,69 +187,74 @@ const Project: FC = () => {
         <title>Project</title>
       </Head>
       <BackButton onClick={() => router.back()} />
-      {isProjectLoading || isParticipantStateLoading || !webApp ? (
-        <Loader type="projectPage" />
-      ) : (
-        isProjectLoaded && (
-          <Layout>
-            <S.Wrapper>
-              <ProjectInfoHeader
-                description={project.metadata.description}
-                image={project.metadata.image}
-                network={project.network}
-                title={project.metadata.name}
-              />
-
-              <Line />
-
-              {userWalletAddress && participantState?.participated && (
-                <>
-                  <ParticipatedInfo
-                    participantState={participantState}
-                    symbol={project.metadata.symbol}
+      {webApp && (
+        <Layout>
+          {isProjectLoading || isParticipantStateLoading ? (
+            <Loader type="projectPage" />
+          ) : (
+            isProjectLoaded && (
+              <>
+                {' '}
+                <S.Wrapper>
+                  <ProjectInfoHeader
+                    description={project.metadata.description}
+                    image={project.metadata.image}
+                    network={project.network}
+                    title={project.metadata.name}
                   />
-                  <Button onClick={switchParticipantState}>
-                    Switch Participant Info State (staging)
-                  </Button>
-                </>
-              )}
 
-              <Tokenomics
-                distributions={distributions}
-                icoFundDistributions={icoFundDistributions}
-                icoParams={icoParams}
-                totalSupply={project.totalSupply}
-              />
+                  <Line />
 
-              <InfoBlock mdContent={markdown?.content} />
+                  {userWalletAddress && participantState?.participated && (
+                    <>
+                      <ParticipatedInfo
+                        participantState={participantState}
+                        symbol={project.metadata.symbol}
+                      />
+                      <Button onClick={switchParticipantState}>
+                        Switch Participant Info State (staging)
+                      </Button>
+                    </>
+                  )}
 
-              {!participantState?.participated && !isParticipateModalOpen && (
-                <MainButton
-                  onClick={handleMainButtonClick}
-                  text={
-                    userWalletAddress
-                      ? 'Buy ' + project?.metadata.symbol
-                      : 'Connect Wallet'
-                  }
-                />
-              )}
-            </S.Wrapper>
+                  <Tokenomics
+                    distributions={distributions}
+                    icoFundDistributions={icoFundDistributions}
+                    icoParams={icoParams}
+                    totalSupply={project.totalSupply}
+                  />
 
-            {participantState && isParticipateModalOpen && (
-              <ParticipateModal
-                icoParams={
-                  project?.tokenomics.find(
-                    (tokenomic: any) => tokenomic.name === 'ico'
-                  )?.value
-                }
-                isAlreadyParticipated={participantState?.participated}
-                jettonImage={project?.metadata.image}
-                onClose={toggleParticipateModal}
-                symbol={project?.metadata.symbol}
-              />
-            )}
-          </Layout>
-        )
+                  <InfoBlock mdContent={markdown?.content} />
+
+                  {!participantState?.participated &&
+                    !isParticipateModalOpen && (
+                      <MainButton
+                        onClick={handleMainButtonClick}
+                        text={
+                          userWalletAddress
+                            ? 'Buy ' + project?.metadata.symbol
+                            : 'Connect Wallet'
+                        }
+                      />
+                    )}
+                </S.Wrapper>
+                {participantState && isParticipateModalOpen && (
+                  <ParticipateModal
+                    icoParams={
+                      project?.tokenomics.find(
+                        (tokenomic: any) => tokenomic.name === 'ico'
+                      )?.value
+                    }
+                    isAlreadyParticipated={participantState?.participated}
+                    jettonImage={project?.metadata.image}
+                    onClose={toggleParticipateModal}
+                    symbol={project?.metadata.symbol}
+                  />
+                )}
+              </>
+            )
+          )}
+        </Layout>
       )}
     </>
   )
