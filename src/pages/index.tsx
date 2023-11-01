@@ -1,5 +1,5 @@
 import { FC, useState, useCallback, useMemo, useEffect } from 'react'
-import { useIsConnectionRestored } from '@tonconnect/ui-react'
+import { useIsConnectionRestored, useTonAddress } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -56,6 +56,10 @@ const Home: FC = () => {
 
   const isConnectionRestored = useIsConnectionRestored()
 
+  const userWalletAddress = useTonAddress()
+
+  console.log(userWalletAddress)
+
   const handleSearchInputChange = useCallback((value: string) => {
     setSearchValue(value)
   }, [])
@@ -91,7 +95,7 @@ const Home: FC = () => {
     !webApp ||
     !isConnectionRestored ||
     !isPromoImageLoaded ||
-    typeof balance === 'undefined'
+    (userWalletAddress && typeof balance === 'undefined')
   ) {
     return (
       <S.LoaderWrapper>
