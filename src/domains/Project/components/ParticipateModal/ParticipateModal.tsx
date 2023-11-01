@@ -197,37 +197,35 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
         webApp?.initData
       )
 
-      console.log(claimBonusData)
-
       if (claimBonusData.ok) {
         setIsTrxChecking(false)
 
         buyJettons()
       }
 
-      // let currentClaimAttempts = 0
+      let currentClaimAttempts = 0
 
-      // const checkClaimTransactionStatus = async () => {
-      //   if (currentClaimAttempts >= 5) {
-      //     setIsTrxChecking(false)
-      //     alert(
-      //       'Exceeded maximum number of attempts to check your transaction.'
-      //     )
-      //     return
-      //   }
+      const checkClaimTransactionStatus = async () => {
+        if (currentClaimAttempts >= 4) {
+          setIsTrxChecking(false)
+          alert(
+            'Exceeded maximum number of attempts to check your transaction.'
+          )
+          return
+        }
 
-      //   const result = await TnC.waitForTx(claimHash, currentClaimAttempts)
+        const result = await TnC.checkBonus(userWalletAddress)
 
-      //   if (result.ready) {
-      //     buyJettons()
-      //   } else {
-      //     currentClaimAttempts++
+        if (result.got) {
+          buyJettons()
+        } else {
+          currentClaimAttempts++
 
-      //     setTimeout(checkClaimTransactionStatus, 1000)
-      //   }
-      // }
+          setTimeout(checkClaimTransactionStatus, 12000)
+        }
+      }
 
-      // checkClaimTransactionStatus()
+      checkClaimTransactionStatus()
     }
   }, [
     isSuccessBlockDisplayed,
