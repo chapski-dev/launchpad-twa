@@ -3,6 +3,7 @@ import {
   FC,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -295,7 +296,13 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     [projectSideInfo]
   )
 
-  console.log(isTrxSigning)
+  const currentBalance = useMemo(() => {
+    if (typeof balance === 'undefined') {
+      return '--'
+    }
+
+    return Math.floor(+balance) === 0 ? '3.00' : Number(balance).toFixed(2)
+  }, [balance])
 
   return (
     <Modal onClose={onClose} title={`Buy ${symbol} jettons`}>
@@ -307,7 +314,11 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
             <S.ContentHeaderWrapper>
               <S.Label isBold>Amount</S.Label>
               <S.Label>
-                Balance: <S.Label isBold>{balance} TON</S.Label>
+                Balance:{' '}
+                <S.Label isBold>
+                  {currentBalance}
+                  TON
+                </S.Label>
               </S.Label>
             </S.ContentHeaderWrapper>
 
