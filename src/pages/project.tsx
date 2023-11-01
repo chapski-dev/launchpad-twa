@@ -105,17 +105,18 @@ const Project: FC = () => {
     }
   }
 
-  const {
-    data: participantState,
-    isLoading: isParticipantStateLoading,
-    // isSuccess: isParticipantStateLoaded,
-  } = useQuery(
-    ['participantState'],
-    () => TnC.getParticipantState(userWalletAddress, project?.icoMasterAddress),
-    {
-      enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
-    }
-  )
+  const { data: participantState, isLoading: isParticipantStateLoading } =
+    useQuery(
+      ['participantState'],
+      () =>
+        TnC.getParticipantState(userWalletAddress, project?.icoMasterAddress),
+      {
+        enabled:
+          Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
+      }
+    )
+
+  console.log(participantState)
 
   const toggleParticipateModal = () => {
     setIsParticipateModakOpen((prev) => !prev)
@@ -245,7 +246,6 @@ const Project: FC = () => {
                         (tokenomic: any) => tokenomic.name === 'ico'
                       )?.value
                     }
-                    isAlreadyParticipated={participantState?.participated}
                     jettonImage={project?.metadata.image}
                     onClose={toggleParticipateModal}
                     symbol={project?.metadata.symbol}

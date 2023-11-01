@@ -23,12 +23,10 @@ type ParticipateModalProps = {
   onClose: () => void
   jettonImage: string
   icoParams: any
-  isAlreadyParticipated: boolean
 }
 
 export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
-  const { symbol, onClose, jettonImage, icoParams, isAlreadyParticipated } =
-    props
+  const { symbol, onClose, jettonImage, icoParams } = props
 
   const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
     useState<string>('0')
@@ -66,6 +64,14 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
   const { data: tonPrice } = useQuery(['currentTonPrice'], () => TnC.tonPrice())
 
+  const { data: participantState, refetch: refetchParticipantState } = useQuery(
+    ['participantState'],
+    () => TnC.getParticipantState(userWalletAddress, icoParams?.address),
+    {
+      enabled: Boolean(userWalletAddress) && Boolean(icoParams?.address),
+    }
+  )
+
   useEffect(() => {
     if (typeof document !== 'undefined') {
       const tonConnectTrxModal = document.getElementById('tc-widget-root')
@@ -77,6 +83,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
         } else if (tcRootElement?.hasChildNodes()) {
           jettonsInputRef.current?.blur()
           tonInputRef.current?.blur()
+          setIsTrxSigning(true)
         }
       }
 
@@ -94,11 +101,18 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
   }, [isTrxSigning])
 
   const buyJettons = useCallback(async () => {
-    if (!icoParams || typeof balance === 'undefined' || !projectSideInfo) {
+    if (
+      !icoParams ||
+      typeof balance === 'undefined' ||
+      !projectSideInfo ||
+      !participantState
+    ) {
       return
     }
 
-    const trxMessage = isAlreadyParticipated
+    console.log(icoParams.address)
+
+    const trxMessage = participantState.participated
       ? await TnC.buyJettons(
           Address.parse(icoParams.address),
           Address.parse(userWalletAddress),
@@ -125,7 +139,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
       let currentAttempts = 0
 
       const checkTransactionStatus = async () => {
-        if (currentAttempts >= 5) {
+        if (currentAttempts >= 4) {
           setIsTrxChecking(false)
           alert(
             'Exceeded maximum number of attempts to check your transaction.'
@@ -133,9 +147,9 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
           return
         }
 
-        const result = await TnC.waitForBuyTx(trx.boc, currentAttempts)
+        refetchParticipantState()
 
-        if (result.ready) {
+        if (participantState.participated) {
           setIsTrxChecking(false)
 
           setIsSuccessBlockDisplayed(true)
@@ -156,8 +170,9 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     balance,
     currentJettonsBuyAmountTON,
     icoParams,
-    isAlreadyParticipated,
+    participantState,
     projectSideInfo,
+    refetchParticipantState,
     tonConnectUI,
     userWalletAddress,
   ])
@@ -279,6 +294,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     },
     [projectSideInfo]
   )
+
+  console.log(isTrxSigning)
 
   return (
     <Modal onClose={onClose} title={`Buy ${symbol} jettons`}>
