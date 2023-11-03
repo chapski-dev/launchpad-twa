@@ -8,7 +8,10 @@ import {
   useState,
 } from 'react'
 import { TnC } from '@ton-and-company/sdk'
-import { ICOInfo } from '@ton-and-company/sdk/dist/core/sdk'
+import {
+  ICOInfo,
+  ParticipantFullInfo,
+} from '@ton-and-company/sdk/dist/core/sdk'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { useQuery } from 'react-query'
 import { Address } from 'ton-core'
@@ -27,10 +30,20 @@ type ParticipateModalProps = {
   jettonImage: string
   icoMasterAddress: string
   icoInfo: ICOInfo
+  participantState: ParticipantFullInfo
+  refetchProjectParticipantInfo: () => void
 }
 
 export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
-  const { symbol, onClose, jettonImage, icoMasterAddress, icoInfo } = props
+  const {
+    symbol,
+    onClose,
+    jettonImage,
+    icoMasterAddress,
+    icoInfo,
+    participantState,
+    refetchProjectParticipantInfo,
+  } = props
 
   const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
     useState<string>(() => toHumanNumber(icoInfo.maxParticipation))
@@ -60,14 +73,6 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
   const tonInputRef = useRef<HTMLInputElement | null>(null)
 
   const { data: tonPrice } = useQuery(['currentTonPrice'], () => TnC.tonPrice())
-
-  const { data: participantState, refetch: refetchParticipantState } = useQuery(
-    ['participantState'],
-    () => TnC.getParticipantState(userWalletAddress, icoMasterAddress),
-    {
-      enabled: Boolean(userWalletAddress) && Boolean(icoMasterAddress),
-    }
-  )
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -114,7 +119,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
         )
       : await TnC.initUser(
           Address.parse(icoMasterAddress),
-          (Number(currentJettonsBuyAmountTON) + 1).toString()
+          (Number(currentJettonsBuyAmountTON) + 0.85).toString()
         )
 
     const deployParams = {
@@ -141,12 +146,17 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
           return
         }
 
-        refetchParticipantState()
+        const newParticipantState = await TnC.getParticipantState(
+          userWalletAddress,
+          icoMasterAddress
+        )
 
-        if (participantState.participated) {
+        if (newParticipantState.participated) {
           setIsTrxChecking(false)
 
           setIsSuccessBlockDisplayed(true)
+
+          refetchProjectParticipantInfo()
 
           return
         } else {
@@ -154,10 +164,6 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
           setTimeout(checkTransactionStatus, 7000)
         }
-      }
-
-      if (!isTrxChecking) {
-        return
       }
 
       checkTransactionStatus()
@@ -169,10 +175,9 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     currentJettonsBuyAmountTON,
     icoMasterAddress,
     participantState,
-    refetchParticipantState,
     tonConnectUI,
     userWalletAddress,
-    isTrxChecking,
+    refetchProjectParticipantInfo,
   ])
 
   const handleBuyJettonsClick = useCallback(async () => {

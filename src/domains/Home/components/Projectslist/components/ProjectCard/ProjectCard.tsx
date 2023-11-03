@@ -18,9 +18,11 @@ type ProjectCardProps = {
 export const ProjectCard: FC<ProjectCardProps> = (props) => {
   const { image, title, description, id, icoMasterAddress } = props
 
+  console.log(icoMasterAddress)
+
   const router = useRouter()
 
-  const { data: icoInfo } = useQuery(['icoInfo'], () =>
+  const { data: icoInfo } = useQuery(['icoInfo', icoMasterAddress], () =>
     TnC.icoInfo(icoMasterAddress)
   )
 

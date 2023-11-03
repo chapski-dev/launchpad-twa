@@ -80,7 +80,7 @@ const Project: FC = () => {
   const {
     data: participantState,
     isLoading: isParticipantStateLoading,
-    isSuccess: isParticipantStateLoaded,
+    refetch: refetchProjectParticipantInfo,
   } = useQuery(
     ['participantState'],
     () => TnC.getParticipantState(userWalletAddress, project?.icoMasterAddress),
@@ -89,11 +89,7 @@ const Project: FC = () => {
     }
   )
 
-  const {
-    data: currentIcoInfo,
-    isLoading: isCurrentIcoInfoLoading,
-    isSuccess: isCurrentIcoInfoLoaded,
-  } = useQuery(
+  const { data: currentIcoInfo, isLoading: isCurrentIcoInfoLoading } = useQuery(
     ['currentIcoInfo'],
     () => TnC.icoInfo(project?.icoMasterAddress),
     {
@@ -162,6 +158,21 @@ const Project: FC = () => {
     )?.value
   }, [project])
 
+  const isLoading = useMemo(() => {
+    if (userWalletAddress) {
+      return (
+        isProjectLoading || isParticipantStateLoading || isCurrentIcoInfoLoading
+      )
+    }
+
+    return isProjectLoading
+  }, [
+    isCurrentIcoInfoLoading,
+    isParticipantStateLoading,
+    isProjectLoading,
+    userWalletAddress,
+  ])
+
   const markdown =
     project?.markdownDocument && JSON.parse(project?.markdownDocument)
 
@@ -173,14 +184,10 @@ const Project: FC = () => {
       <BackButton onClick={() => router.back()} />
       {webApp && (
         <Layout>
-          {isProjectLoading ||
-          isParticipantStateLoading ||
-          isCurrentIcoInfoLoading ? (
+          {isLoading ? (
             <Loader type="projectPage" />
           ) : (
-            isProjectLoaded &&
-            isParticipantStateLoaded &&
-            isCurrentIcoInfoLoaded && (
+            isProjectLoaded && (
               <>
                 <S.Wrapper>
                   <ProjectInfoHeader
@@ -208,7 +215,7 @@ const Project: FC = () => {
                   />
 
                   <InfoBlock
-                    icoInfo={currentIcoInfo}
+                    icoInfo={currentIcoInfo!}
                     mdContent={markdown?.content}
                   />
 
@@ -226,10 +233,14 @@ const Project: FC = () => {
                 </S.Wrapper>
                 {participantState && isParticipateModalOpen && (
                   <ParticipateModal
-                    icoInfo={currentIcoInfo}
+                    icoInfo={currentIcoInfo!}
                     icoMasterAddress={project?.icoMasterAddress}
                     jettonImage={project?.metadata.image}
                     onClose={toggleParticipateModal}
+                    participantState={participantState}
+                    refetchProjectParticipantInfo={
+                      refetchProjectParticipantInfo
+                    }
                     symbol={project?.metadata.symbol}
                   />
                 )}
