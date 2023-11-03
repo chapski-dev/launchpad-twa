@@ -17,18 +17,10 @@ import { BackButton } from 'features/BackButton'
 import { Layout } from 'features/Layout/Layout'
 import { MainButton } from 'features/MainButton'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
-import { Button } from 'ui/Button/Button'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
 
-// const MOCK_USER_ADDRESS = 'EQCXTqyq89qdoH5MWXEFMWceA6V4ODis_4SlWlDxOin-LfHb'
-
-// const MOCK_ICO_ADDRESS = 'EQBS_IUY_sOjPuFK9Dzg4mE1n-OzveGgM3LUYIdYrb5YE4EK'
-
 const Project: FC = () => {
-  const [currentParticipantMode, setCurrentParticipantMode] =
-    useState('in-progress')
-
   const [isParticipateModalOpen, setIsParticipateModakOpen] =
     useState<boolean>(false)
 
@@ -85,36 +77,29 @@ const Project: FC = () => {
     }, []),
   })
 
-  const switchParticipantState = () => {
-    switch (currentParticipantMode) {
-      case 'in-progress':
-        setCurrentParticipantMode('on-wallet')
-        break
-      case 'on-wallet':
-        setCurrentParticipantMode('lock-released')
-        break
-      case 'lock-released':
-        setCurrentParticipantMode('vest')
-        break
-      case 'vest':
-        setCurrentParticipantMode('fail')
-        break
-      case 'fail':
-        setCurrentParticipantMode('in-progress')
-        break
+  const {
+    data: participantState,
+    isLoading: isParticipantStateLoading,
+    isSuccess: isParticipantStateLoaded,
+  } = useQuery(
+    ['participantState'],
+    () => TnC.getParticipantState(userWalletAddress, project?.icoMasterAddress),
+    {
+      enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
     }
-  }
+  )
 
-  const { data: participantState, isLoading: isParticipantStateLoading } =
-    useQuery(
-      ['participantState'],
-      () =>
-        TnC.getParticipantState(userWalletAddress, project?.icoMasterAddress),
-      {
-        enabled:
-          Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
-      }
-    )
+  const {
+    data: currentIcoInfo,
+    isLoading: isCurrentIcoInfoLoading,
+    isSuccess: isCurrentIcoInfoLoaded,
+  } = useQuery(
+    ['currentIcoInfo'],
+    () => TnC.icoInfo(project?.icoMasterAddress),
+    {
+      enabled: Boolean(project?.icoMasterAddress),
+    }
+  )
 
   const toggleParticipateModal = () => {
     setIsParticipateModakOpen((prev) => !prev)
@@ -188,12 +173,15 @@ const Project: FC = () => {
       <BackButton onClick={() => router.back()} />
       {webApp && (
         <Layout>
-          {isProjectLoading || isParticipantStateLoading ? (
+          {isProjectLoading ||
+          isParticipantStateLoading ||
+          isCurrentIcoInfoLoading ? (
             <Loader type="projectPage" />
           ) : (
-            isProjectLoaded && (
+            isProjectLoaded &&
+            isParticipantStateLoaded &&
+            isCurrentIcoInfoLoaded && (
               <>
-                {' '}
                 <S.Wrapper>
                   <ProjectInfoHeader
                     description={project.metadata.description}
@@ -205,15 +193,10 @@ const Project: FC = () => {
                   <Line />
 
                   {userWalletAddress && participantState?.participated && (
-                    <>
-                      <ParticipatedInfo
-                        participantState={participantState}
-                        symbol={project.metadata.symbol}
-                      />
-                      <Button onClick={switchParticipantState}>
-                        Switch Participant Info State (staging)
-                      </Button>
-                    </>
+                    <ParticipatedInfo
+                      participantState={participantState}
+                      symbol={project.metadata.symbol}
+                    />
                   )}
 
                   <Tokenomics
@@ -223,7 +206,10 @@ const Project: FC = () => {
                     totalSupply={project.totalSupply}
                   />
 
-                  <InfoBlock mdContent={markdown?.content} />
+                  <InfoBlock
+                    icoInfo={currentIcoInfo}
+                    mdContent={markdown?.content}
+                  />
 
                   {!participantState?.participated &&
                     !isParticipateModalOpen && (
@@ -239,6 +225,7 @@ const Project: FC = () => {
                 </S.Wrapper>
                 {participantState && isParticipateModalOpen && (
                   <ParticipateModal
+                    icoInfo={currentIcoInfo}
                     icoMasterAddress={project?.icoMasterAddress}
                     jettonImage={project?.metadata.image}
                     onClose={toggleParticipateModal}

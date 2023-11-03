@@ -1,4 +1,5 @@
 import { FC, useState, useMemo } from 'react'
+import { ICOInfo } from '@ton-and-company/sdk/dist/core/sdk'
 import { MarkdownRenderer } from 'features/MarkdownRenderer'
 import { Container } from 'ui/Container/Container'
 import { Line } from 'ui/Line/Line'
@@ -19,10 +20,11 @@ const tabs = [
 
 type InfoBlockProps = {
   mdContent?: string
+  icoInfo: ICOInfo
 }
 
 export const InfoBlock: FC<InfoBlockProps> = (props) => {
-  const { mdContent } = props
+  const { mdContent, icoInfo } = props
 
   const [activeTab, setActiveTab] = useState(tabs[0])
 
@@ -31,9 +33,9 @@ export const InfoBlock: FC<InfoBlockProps> = (props) => {
       case 'about':
         return mdContent && <MarkdownRenderer mdContent={mdContent} />
       case 'deal_tearms':
-        return <DealTerms />
+        return <DealTerms icoInfo={icoInfo} />
     }
-  }, [activeTab.value, mdContent])
+  }, [activeTab.value, mdContent, icoInfo])
 
   return (
     <S.Wrapper>

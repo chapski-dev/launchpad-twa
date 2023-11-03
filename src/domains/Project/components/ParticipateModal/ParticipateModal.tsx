@@ -8,6 +8,7 @@ import {
   useState,
 } from 'react'
 import { TnC } from '@ton-and-company/sdk'
+import { ICOInfo } from '@ton-and-company/sdk/dist/core/sdk'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { useQuery } from 'react-query'
 import { Address } from 'ton-core'
@@ -16,6 +17,7 @@ import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { SvgToncoinIcon } from 'ui/icons'
 import { Modal } from 'ui/Modal/Modal'
+import { toHumanNumber } from 'utils/toHumanNumber'
 import { SuccessBlock } from './components'
 import * as S from './style'
 
@@ -24,15 +26,20 @@ type ParticipateModalProps = {
   onClose: () => void
   jettonImage: string
   icoMasterAddress: string
+  icoInfo: ICOInfo
 }
 
 export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
-  const { symbol, onClose, jettonImage, icoMasterAddress } = props
+  const { symbol, onClose, jettonImage, icoMasterAddress, icoInfo } = props
 
   const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
-    useState<string>('0')
+    useState<string>(() => toHumanNumber(icoInfo.maxParticipation))
   const [currentJettonsBuyAmountTON, setCurrentJettonsBuyAmountTON] =
-    useState<string>('0')
+    useState<string>(() =>
+      (
+        Number(toHumanNumber(icoInfo.maxParticipation)) * icoInfo.tonPerJetton
+      ).toString()
+    )
 
   const [isTrxChecking, setIsTrxChecking] = useState<boolean>(false)
 
@@ -51,17 +58,6 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
   const jettonsInputRef = useRef<HTMLInputElement | null>(null)
   const tonInputRef = useRef<HTMLInputElement | null>(null)
-
-  const { data: projectSideInfo } = useQuery(
-    ['projectSideInfo'],
-    () => TnC.projectInfo(1),
-    {
-      onSuccess: (data) => {
-        setCurrentJettonsBuyAmount(data.maximumBuyToken.toString())
-        setCurrentJettonsBuyAmountTON(data.maximumBuyTON.toString())
-      },
-    }
-  )
 
   const { data: tonPrice } = useQuery(['currentTonPrice'], () => TnC.tonPrice())
 
@@ -105,13 +101,10 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     if (
       !icoMasterAddress ||
       typeof balance === 'undefined' ||
-      !projectSideInfo ||
       !participantState
     ) {
       return
     }
-
-    console.log(icoMasterAddress)
 
     const trxMessage = participantState.participated
       ? await TnC.buyJettons(
@@ -163,6 +156,10 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
         }
       }
 
+      if (!isTrxChecking) {
+        return
+      }
+
       checkTransactionStatus()
     }
 
@@ -172,10 +169,10 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     currentJettonsBuyAmountTON,
     icoMasterAddress,
     participantState,
-    projectSideInfo,
     refetchParticipantState,
     tonConnectUI,
     userWalletAddress,
+    isTrxChecking,
   ])
 
   const handleBuyJettonsClick = useCallback(async () => {
@@ -185,7 +182,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
       return
     }
 
-    if (typeof balance === 'undefined' || !projectSideInfo) {
+    if (typeof balance === 'undefined') {
       return
     }
 
@@ -246,7 +243,6 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
   }, [
     isSuccessBlockDisplayed,
     balance,
-    projectSideInfo,
     currentJettonsBuyAmountTON,
     onClose,
     symbol,
@@ -259,10 +255,6 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     (evt: ChangeEvent<HTMLInputElement>) => {
       let { value: amountInputValue, name: amountInputName } = evt.target
 
-      if (!projectSideInfo) {
-        return
-      }
-
       if (isNaN(Number(amountInputValue))) {
         return
       }
@@ -274,9 +266,9 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
             : amountInputValue
         )
         setCurrentJettonsBuyAmountTON(
-          `${Number(amountInputValue) * projectSideInfo.price}`.length > 6
-            ? (Number(amountInputValue) * projectSideInfo.price).toFixed(2)
-            : `${Number(amountInputValue) * projectSideInfo.price}`
+          `${Number(amountInputValue) * icoInfo.tonPerJetton}`.length > 6
+            ? (Number(amountInputValue) * icoInfo.tonPerJetton).toFixed(2)
+            : `${Number(amountInputValue) * icoInfo.tonPerJetton}`
         )
 
         return
@@ -288,12 +280,12 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
           : amountInputValue
       )
       setCurrentJettonsBuyAmount(
-        `${Number(amountInputValue) / projectSideInfo.price}`.length > 6
-          ? (Number(amountInputValue) / projectSideInfo.price).toFixed(2)
-          : `${Number(amountInputValue) / projectSideInfo.price}`
+        `${Number(amountInputValue) / icoInfo.tonPerJetton}`.length > 6
+          ? (Number(amountInputValue) / icoInfo.tonPerJetton).toFixed(2)
+          : `${Number(amountInputValue) / icoInfo.tonPerJetton}`
       )
     },
-    [projectSideInfo]
+    [icoInfo]
   )
 
   const currentBalance = useMemo(() => {
@@ -329,8 +321,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
                   autoFocus
                   disabled={isTrxChecking}
                   inputMode="numeric"
-                  max={projectSideInfo?.maximumBuyToken}
-                  min={projectSideInfo?.minimumBuyToken}
+                  max={Number(toHumanNumber(icoInfo.maxParticipation))}
+                  min={Number(toHumanNumber(icoInfo.minParticipation))}
                   name="jetton"
                   onChange={handleAmountInputChange}
                   placeholder="50"
@@ -341,7 +333,6 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
                   <S.JettonImageWrapper>
                     <S.JettonImage alt={'jetton_image'} src={jettonImage} />
                   </S.JettonImageWrapper>
-                  <S.JettonSymbolLabel>{symbol}</S.JettonSymbolLabel>
                 </S.JettonInputContentWrapper>
               </S.JettonInputContainer>
 
@@ -350,8 +341,14 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
                   ref={tonInputRef}
                   disabled={isTrxChecking}
                   inputMode="numeric"
-                  max={projectSideInfo?.maximumBuyTON}
-                  min={projectSideInfo?.minimumBuyTON}
+                  max={
+                    Number(toHumanNumber(icoInfo.maxParticipation)) *
+                    icoInfo.tonPerJetton
+                  }
+                  min={
+                    Number(toHumanNumber(icoInfo.minParticipation)) *
+                    icoInfo.tonPerJetton
+                  }
                   name="ton"
                   onChange={handleAmountInputChange}
                   placeholder="4.5"
@@ -368,7 +365,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
             <S.RateWrapper>
               <S.Label>
-                1 {symbol} = {projectSideInfo?.price} TON
+                1 {symbol} = {icoInfo.tonPerJetton} TON
               </S.Label>
               <S.Label>
                 {Number(currentJettonsBuyAmountTON).toFixed(2)} TON = $
@@ -377,10 +374,13 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
                   : '0.00'}
               </S.Label>
             </S.RateWrapper>
-            <S.Label>
-              Min {projectSideInfo?.minimumBuyTON} TON, Max{' '}
-              {projectSideInfo?.maximumBuyTON} TON
-            </S.Label>
+            <S.RateWrapper>
+              <S.Label>
+                Min {toHumanNumber(icoInfo.minParticipation)} {symbol}, Max{' '}
+                {toHumanNumber(icoInfo.maxParticipation)} {symbol}
+              </S.Label>
+              <S.Label>Max TX cost = 0.85 TON</S.Label>
+            </S.RateWrapper>
           </S.AmountWrapper>
         </S.Wrapper>
       )}

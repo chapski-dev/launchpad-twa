@@ -46,7 +46,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       return
     }
 
-    if (type === 'number' && min && isNaN(Number(evt.target.value))) {
+    if (
+      type === 'number' &&
+      min &&
+      isNaN(Number(evt.target.value)) &&
+      evt.target.value !== ''
+    ) {
       evt.target.value = min.toString()
     }
 

@@ -1,57 +1,52 @@
-import { FC } from 'react'
-import { TnC } from '@ton-and-company/sdk'
+import { FC, useMemo } from 'react'
+import { ICOInfo } from '@ton-and-company/sdk/dist/core/sdk'
 import dayjs from 'dayjs'
-import { useQuery } from 'react-query'
 import { Line } from 'ui/Line/Line'
-import { Loader } from 'ui/Loader/Loader'
-import { formatNumberWithSeparators } from 'utils/formatNumberWithSeparators'
+import { getTonPriceFromBigInt } from 'utils/getTonPriceFromBigInt'
 import * as S from './style'
 
-export const DealTerms: FC = () => {
-  const {
-    data: projectSideInfo,
-    isLoading: isProjectSideLoading,
-    isSuccess: isProjectSideLoaded,
-  } = useQuery(['projectSideInfo'], () => TnC.projectInfo(1))
+type DealTermsProps = {
+  icoInfo: ICOInfo
+}
 
-  if (isProjectSideLoading) {
-    return <Loader />
-  }
+export const DealTerms: FC<DealTermsProps> = (props) => {
+  const { icoInfo } = props
 
-  if (isProjectSideLoaded) {
-    return (
-      <S.Wrapper>
-        <S.InfoWrapper>
-          <S.Title>
-            {formatNumberWithSeparators(projectSideInfo.claimedTokens)}
-          </S.Title>
-          <S.Label className="text-gray-light">Tokens claimed</S.Label>
-        </S.InfoWrapper>
-        <Line />
-        <S.InfoWrapper>
-          <S.Title>{projectSideInfo.participants}</S.Title>
-          <S.Label className="text-gray-light">Participants</S.Label>
-        </S.InfoWrapper>
-        <Line />
-        <S.InfoWrapper>
-          <S.Title>
-            {`${projectSideInfo.fundingGoalTON[0]} - ${projectSideInfo.fundingGoalTON[1]}`}
-          </S.Title>
-          <S.Label className="text-gray-light">Funding goal</S.Label>
-        </S.InfoWrapper>
-        <Line />
-        <S.InfoWrapper>
-          <S.Title>{dayjs(projectSideInfo.deadline).toString()}</S.Title>
-          <S.Label className="text-gray-light">Deadline</S.Label>
-        </S.InfoWrapper>
-        <Line />
-        <S.InfoWrapper>
-          <S.Title>${projectSideInfo.price}</S.Title>
-          <S.Label className="text-gray-light">Price per token</S.Label>
-        </S.InfoWrapper>
-      </S.Wrapper>
-    )
-  }
+  const { softCap, totalSupply, tonPerJetton } = icoInfo
 
-  return null
+  const transformedSoftCapAmount = useMemo(() => {
+    return getTonPriceFromBigInt(softCap, tonPerJetton)
+  }, [softCap, tonPerJetton])
+
+  const transformedTotalSupplyAmount = useMemo(() => {
+    return getTonPriceFromBigInt(totalSupply, tonPerJetton)
+  }, [totalSupply, tonPerJetton])
+
+  return (
+    <S.Wrapper>
+      <S.InfoWrapper>
+        <S.Title>{icoInfo.users}</S.Title>
+        <S.Label className="text-gray-light">Participants</S.Label>
+      </S.InfoWrapper>
+      <Line />
+      <S.InfoWrapper>
+        <S.Title>
+          {transformedSoftCapAmount === transformedTotalSupplyAmount
+            ? transformedTotalSupplyAmount
+            : `${transformedSoftCapAmount} - ${transformedTotalSupplyAmount}`}
+        </S.Title>
+        <S.Label className="text-gray-light">Funding goal</S.Label>
+      </S.InfoWrapper>
+      <Line />
+      <S.InfoWrapper>
+        <S.Title>{dayjs(icoInfo.endTime).toString()}</S.Title>
+        <S.Label className="text-gray-light">Deadline</S.Label>
+      </S.InfoWrapper>
+      <Line />
+      <S.InfoWrapper>
+        <S.Title>${tonPerJetton}</S.Title>
+        <S.Label className="text-gray-light">Price per token</S.Label>
+      </S.InfoWrapper>
+    </S.Wrapper>
+  )
 }

@@ -196,18 +196,20 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
                   ))}
                 </S.TrxsWrapper>
               </S.SaleProgressBlock>
-              {/* TODO: после обновления sdk переделать */}
               <S.SaleProgressBlock>
                 <S.TrxsWrapper>
-                  {lockedTrxs.map((lockedTx) => (
-                    <LockTransactionBlock
-                      key={lockedTx.hash}
-                      amount={toHumanNumber(BigInt(lockedTx.jetton_value))}
-                      date={dayjs(lockedTx.time).toString()}
-                      isLocked={true}
-                      symbol={symbol}
-                    />
-                  ))}
+                  {lockedTrxs.map((lockedTx) => {
+                    return (
+                      <LockTransactionBlock
+                        key={lockedTx.hash}
+                        amount={toHumanNumber(BigInt(lockedTx.jetton_value))}
+                        buttons={[]}
+                        date={dayjs(lockedTx.time).toString()}
+                        isLocked={true}
+                        symbol={symbol}
+                      />
+                    )
+                  })}
                 </S.TrxsWrapper>
               </S.SaleProgressBlock>
             </>

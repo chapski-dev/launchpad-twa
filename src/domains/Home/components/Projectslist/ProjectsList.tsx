@@ -31,6 +31,7 @@ export const ProjectList: FC<ProjectListProps> = (props) => {
             <ProjectCard
               key={idx}
               description={project.metadata.description}
+              icoMasterAddress={project.icoMasterAddress}
               id={project.id}
               image={project.metadata.image}
               title={project.metadata.name}
