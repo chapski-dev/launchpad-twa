@@ -23,11 +23,11 @@ type ParticipateModalProps = {
   symbol: string
   onClose: () => void
   jettonImage: string
-  icoParams: any
+  icoMasterAddress: string
 }
 
 export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
-  const { symbol, onClose, jettonImage, icoParams } = props
+  const { symbol, onClose, jettonImage, icoMasterAddress } = props
 
   const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
     useState<string>('0')
@@ -67,9 +67,9 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
   const { data: participantState, refetch: refetchParticipantState } = useQuery(
     ['participantState'],
-    () => TnC.getParticipantState(userWalletAddress, icoParams?.address),
+    () => TnC.getParticipantState(userWalletAddress, icoMasterAddress),
     {
-      enabled: Boolean(userWalletAddress) && Boolean(icoParams?.address),
+      enabled: Boolean(userWalletAddress) && Boolean(icoMasterAddress),
     }
   )
 
@@ -103,7 +103,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
   const buyJettons = useCallback(async () => {
     if (
-      !icoParams ||
+      !icoMasterAddress ||
       typeof balance === 'undefined' ||
       !projectSideInfo ||
       !participantState
@@ -111,16 +111,16 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
       return
     }
 
-    console.log(icoParams.address)
+    console.log(icoMasterAddress)
 
     const trxMessage = participantState.participated
       ? await TnC.buyJettons(
-          Address.parse(icoParams.address),
+          Address.parse(icoMasterAddress),
           Address.parse(userWalletAddress),
           BigInt(currentJettonsBuyAmountTON)
         )
       : await TnC.initUser(
-          icoParams.address,
+          Address.parse(icoMasterAddress),
           (Number(currentJettonsBuyAmountTON) + 1).toString()
         )
 
@@ -170,7 +170,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
   }, [
     balance,
     currentJettonsBuyAmountTON,
-    icoParams,
+    icoMasterAddress,
     participantState,
     projectSideInfo,
     refetchParticipantState,

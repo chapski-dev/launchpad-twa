@@ -239,7 +239,7 @@ const Project: FC = () => {
                 </S.Wrapper>
                 {participantState && isParticipateModalOpen && (
                   <ParticipateModal
-                    icoParams={project?.icoMasterAddress}
+                    icoMasterAddress={project?.icoMasterAddress}
                     jettonImage={project?.metadata.image}
                     onClose={toggleParticipateModal}
                     symbol={project?.metadata.symbol}
