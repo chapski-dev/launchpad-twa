@@ -159,7 +159,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
         } else {
           currentAttempts++
 
-          setTimeout(checkTransactionStatus, 1000)
+          setTimeout(checkTransactionStatus, 7000)
         }
       }
 

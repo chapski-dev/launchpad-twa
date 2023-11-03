@@ -116,8 +116,6 @@ const Project: FC = () => {
       }
     )
 
-  console.log(participantState)
-
   const toggleParticipateModal = () => {
     setIsParticipateModakOpen((prev) => !prev)
   }
@@ -241,11 +239,7 @@ const Project: FC = () => {
                 </S.Wrapper>
                 {participantState && isParticipateModalOpen && (
                   <ParticipateModal
-                    icoParams={
-                      project?.tokenomics.find(
-                        (tokenomic: any) => tokenomic.name === 'ico'
-                      )?.value
-                    }
+                    icoParams={project?.icoMasterAddress}
                     jettonImage={project?.metadata.image}
                     onClose={toggleParticipateModal}
                     symbol={project?.metadata.symbol}
