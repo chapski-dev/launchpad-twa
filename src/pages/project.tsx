@@ -194,6 +194,7 @@ const Project: FC = () => {
 
                   {userWalletAddress && participantState?.participated && (
                     <ParticipatedInfo
+                      icoMasterAddress={project.icoMasterAddress}
                       participantState={participantState}
                       symbol={project.metadata.symbol}
                     />
