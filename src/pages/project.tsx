@@ -175,8 +175,10 @@ const Project: FC = () => {
     userWalletAddress,
   ])
 
+  console.log(participantState)
+
   const isEarlyClaimButtonDisplayed = useMemo(() => {
-    if (!participantState) {
+    if (!participantState || !participantState?.participated) {
       return false
     }
 
