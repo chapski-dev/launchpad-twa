@@ -1,9 +1,11 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { TnC } from '@ton-and-company/sdk'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
+import dayjs from 'dayjs'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
+import { Address } from 'ton-core'
 import { getICOProjectById } from 'api'
 import {
   InfoBlock,
@@ -173,6 +175,36 @@ const Project: FC = () => {
     userWalletAddress,
   ])
 
+  const isEarlyClaimButtonDisplayed = useMemo(() => {
+    if (!participantState) {
+      return false
+    }
+
+    return (
+      participantState.sale_state.state === 'can-end' &&
+      dayjs().isBefore(participantState.sale_state.endTime)
+    )
+  }, [participantState])
+
+  const handleEarlyClaimButtonClick = useCallback(async () => {
+    if (!project) {
+      return
+    }
+
+    const trxMessage = TnC.earlyClaim(Address.parse(project.icoMasterAddress))
+
+    const deployParams = {
+      validUntil: Date.now() + 100000,
+      messages: [trxMessage],
+    }
+
+    const trx = await tonConnectUI.sendTransaction(deployParams)
+
+    if (trx.boc) {
+      alert('Early claim successfully submitted')
+    }
+  }, [project, tonConnectUI])
+
   const markdown =
     project?.markdownDocument && JSON.parse(project?.markdownDocument)
 
@@ -230,6 +262,13 @@ const Project: FC = () => {
                         }
                       />
                     )}
+
+                  {isEarlyClaimButtonDisplayed && (
+                    <MainButton
+                      onClick={handleEarlyClaimButtonClick}
+                      text="Eearly claim"
+                    />
+                  )}
                 </S.Wrapper>
                 {participantState && isParticipateModalOpen && (
                   <ParticipateModal

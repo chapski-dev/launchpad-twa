@@ -32,19 +32,19 @@ export const DealTerms: FC<DealTermsProps> = (props) => {
       <S.InfoWrapper>
         <S.Title>
           {transformedSoftCapAmount === transformedTotalSupplyAmount
-            ? transformedTotalSupplyAmount
-            : `${transformedSoftCapAmount} - ${transformedTotalSupplyAmount}`}
+            ? `${transformedTotalSupplyAmount} TON`
+            : `${transformedSoftCapAmount} TON - ${transformedTotalSupplyAmount} TON`}
         </S.Title>
         <S.Label className="text-gray-light">Funding goal</S.Label>
       </S.InfoWrapper>
       <Line />
       <S.InfoWrapper>
-        <S.Title>{dayjs(icoInfo.endTime).toString()}</S.Title>
+        <S.Title>{dayjs(icoInfo.endTime * 1000).toString()}</S.Title>
         <S.Label className="text-gray-light">Deadline</S.Label>
       </S.InfoWrapper>
       <Line />
       <S.InfoWrapper>
-        <S.Title>${tonPerJetton}</S.Title>
+        <S.Title>{tonPerJetton} TON</S.Title>
         <S.Label className="text-gray-light">Price per token</S.Label>
       </S.InfoWrapper>
     </S.Wrapper>

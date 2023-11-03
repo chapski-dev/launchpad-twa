@@ -1,8 +1,6 @@
 import { FC, useMemo } from 'react'
-import { ParticipantFullInfo, TnC } from '@ton-and-company/sdk/dist/core/sdk'
-import { useTonConnectUI } from '@tonconnect/ui-react'
+import { ParticipantFullInfo } from '@ton-and-company/sdk/dist/core/sdk'
 import dayjs from 'dayjs'
-import { Address } from 'ton-core'
 import { Container } from 'ui/Container/Container'
 import { SvgLockFlat } from 'ui/icons'
 import { toHumanNumber } from 'utils/toHumanNumber'
@@ -28,9 +26,7 @@ const ParticipantStatusDictionary = {
 } as const
 
 export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
-  const { participantState, symbol, icoMasterAddress } = props
-
-  const [tonConnectUI] = useTonConnectUI()
+  const { participantState, symbol } = props
 
   const tranformedParticipantStatus = useMemo(() => {
     return ParticipantStatusDictionary[
@@ -204,39 +200,10 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
               <S.SaleProgressBlock>
                 <S.TrxsWrapper>
                   {lockedTrxs.map((lockedTx) => {
-                    const trxButtons = [
-                      {
-                        label: 'Early claim',
-                        onClick: async () => {
-                          const trxMessage = TnC.earlyClaim(
-                            Address.parse(icoMasterAddress)
-                          )
-
-                          const deployParams = {
-                            validUntil: Date.now() + 100000,
-                            messages: [trxMessage],
-                          }
-
-                          const trx = await tonConnectUI.sendTransaction(
-                            deployParams
-                          )
-
-                          if (trx.boc) {
-                            alert('Early claim successfully submitted')
-                          }
-                        },
-                      },
-                    ]
-
-                    const isButtonsShowed =
-                      participantState.sale_state.state === 'can-end' &&
-                      dayjs().isBefore(participantState.sale_state.endTime)
-
                     return (
                       <LockTransactionBlock
                         key={lockedTx.hash}
                         amount={toHumanNumber(BigInt(lockedTx.jetton_value))}
-                        buttons={isButtonsShowed ? trxButtons : []}
                         date={dayjs(lockedTx.time).toString()}
                         isLocked={true}
                         symbol={symbol}
@@ -249,13 +216,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
           )
       }
     }
-  }, [
-    icoMasterAddress,
-    participantState,
-    symbol,
-    tonConnectUI,
-    tranformedParticipantStatus,
-  ])
+  }, [participantState, symbol, tranformedParticipantStatus])
 
   return (
     <Container>
