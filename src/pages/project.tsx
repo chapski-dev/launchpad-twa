@@ -195,7 +195,7 @@ const Project: FC = () => {
 
     const trxMessage = TnC.pingRequest(
       Address.parse(project.icoMasterAddress),
-      (participantState as any)?.id
+      (participantState as any)?.user_id
     )
 
     const deployParams = {
