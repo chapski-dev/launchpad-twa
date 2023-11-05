@@ -80,7 +80,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
           <SvgLockFlat />
           <S.Description isLock>
             Sale will be started at{' '}
-            {dayjs(participantState.sale_state.startTime).toString()}
+            {dayjs(participantState.sale_state.startTime * 1000).toString()}
           </S.Description>
         </S.DescriptionWrapper>
       )
@@ -147,7 +147,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
                 {symbol} Locked by the{' '}
                 {participantState.unlock_transactions.length > 0 &&
                   dayjs(
-                    participantState.unlock_transactions[0].time
+                    participantState.unlock_transactions[0].time * 1000
                   ).toString()}
               </S.Description>
             </S.DescriptionWrapper>
@@ -167,8 +167,8 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
                 <S.SaleProgressTitleWrapper>
                   <S.SaleProgressTitle>Unlock schedule</S.SaleProgressTitle>
                   <S.SaleProgressChip>
-                    Unlocked {unlockedTrxs.length + 1}/
-                    {participantState.unlock_transactions.length + 1}
+                    Unlocked {unlockedTrxs.length}/
+                    {participantState.unlock_transactions.length}
                   </S.SaleProgressChip>
                 </S.SaleProgressTitleWrapper>
                 <S.TrxLine />
@@ -177,7 +177,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
                     <S.Description>
                       Next Part will unlock on{' '}
                       <span style={{ fontWeight: 700 }}>
-                        {dayjs(lockedTrxs[0].time).toString()}
+                        {dayjs(lockedTrxs[0].time * 1000).toString()}
                       </span>
                     </S.Description>
                   </S.DescriptionWrapper>
@@ -190,7 +190,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
                     <LockTransactionBlock
                       key={unlockedTx.hash}
                       amount={toHumanNumber(BigInt(unlockedTx.jetton_value))}
-                      date={dayjs(unlockedTx.time).toString()}
+                      date={dayjs(unlockedTx.time * 1000).toString()}
                       isLocked={false}
                       symbol={symbol}
                     />
@@ -204,7 +204,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
                       <LockTransactionBlock
                         key={lockedTx.hash}
                         amount={toHumanNumber(BigInt(lockedTx.jetton_value))}
-                        date={dayjs(lockedTx.time).toString()}
+                        date={dayjs(lockedTx.time * 1000).toString()}
                         isLocked={true}
                         symbol={symbol}
                       />
