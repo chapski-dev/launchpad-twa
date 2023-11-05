@@ -208,7 +208,7 @@ const Project: FC = () => {
     if (trx.boc) {
       alert('Early claim successfully submitted')
     }
-  }, [project, tonConnectUI])
+  }, [project, tonConnectUI, participantState])
 
   const markdown =
     project?.markdownDocument && JSON.parse(project?.markdownDocument)
