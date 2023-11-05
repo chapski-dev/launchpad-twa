@@ -184,6 +184,8 @@ const Project: FC = () => {
 
     return (
       participantState.sale_state.state === 'can-end' &&
+      participantState.distribution_mode !== 2 &&
+      participantState.unlock_transactions.length == 0 &&
       dayjs().isBefore(participantState.sale_state.endTime * 1000)
     )
   }, [participantState])
@@ -233,9 +235,7 @@ const Project: FC = () => {
                     network={project.network}
                     title={project.metadata.name}
                   />
-
                   <Line />
-
                   {userWalletAddress && participantState?.participated && (
                     <ParticipatedInfo
                       icoMasterAddress={project.icoMasterAddress}
@@ -243,19 +243,16 @@ const Project: FC = () => {
                       symbol={project.metadata.symbol}
                     />
                   )}
-
                   <Tokenomics
                     distributions={distributions}
                     icoFundDistributions={icoFundDistributions}
                     icoParams={icoParams}
                     totalSupply={project.totalSupply}
                   />
-
                   <InfoBlock
                     icoInfo={currentIcoInfo!}
                     mdContent={markdown?.content}
                   />
-
                   {!participantState?.participated &&
                     !isParticipateModalOpen && (
                       <MainButton
@@ -267,13 +264,13 @@ const Project: FC = () => {
                         }
                       />
                     )}
-
                   {isEarlyClaimButtonDisplayed && (
                     <MainButton
                       onClick={handleEarlyClaimButtonClick}
                       text="Early Claim"
                     />
                   )}
+                  ``
                 </S.Wrapper>
                 {participantState && isParticipateModalOpen && (
                   <ParticipateModal
