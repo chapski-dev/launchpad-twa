@@ -184,7 +184,7 @@ const Project: FC = () => {
 
     return (
       participantState.sale_state.state === 'can-end' &&
-      dayjs().isBefore(participantState.sale_state.endTime)
+      dayjs().isBefore(participantState.sale_state.endTime * 1000)
     )
   }, [participantState])
 
