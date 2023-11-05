@@ -1651,8 +1651,8 @@
     "@babel/runtime" "^7.12.5"
 
 "@ton-and-company/sdk@git+https://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@github.com/tokenova-fi/ton-contracts-sdk":
-  version "0.0.35"
-  resolved "git+https://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@github.com/tokenova-fi/ton-contracts-sdk#6f2025f0480f0d31688f3549d38b4f3f83c005d7"
+  version "0.0.36"
+  resolved "git+https://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@github.com/tokenova-fi/ton-contracts-sdk#e01e45e01b41e806d46b38d646fa3348c7580294"
   dependencies:
     ton "^13.5.0"
     ton-crypto "^3.2.0"
@@ -3283,7 +3283,12 @@ flatted@^3.2.7:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.7.tgz#609f39207cb614b89d0765b477cb2d437fbf9787"
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
-follow-redirects@^1.14.7, follow-redirects@^1.15.0:
+follow-redirects@^1.14.7:
+  version "1.15.3"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.3.tgz#fe2f3ef2690afce7e82ed0b44db08165b207123a"
+  integrity sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==
+
+follow-redirects@^1.15.0:
   version "1.15.2"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
   integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
@@ -6091,9 +6096,9 @@ zod@3.21.4:
   integrity sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==
 
 zod@^3.21.4:
-  version "3.22.2"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.22.2.tgz#3add8c682b7077c05ac6f979fea6998b573e157b"
-  integrity sha512-wvWkphh5WQsJbVk1tbx1l1Ly4yg+XecD+Mq280uBGt9wa5BKSWf4Mhp6GmrkPixhMxmabYY7RbzlwVP32pbGCg==
+  version "3.22.4"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.22.4.tgz#f31c3a9386f61b1f228af56faa9255e845cf3fff"
+  integrity sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==
 
 zwitch@^2.0.0:
   version "2.0.4"

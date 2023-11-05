@@ -193,7 +193,10 @@ const Project: FC = () => {
       return
     }
 
-    const trxMessage = TnC.earlyClaim(Address.parse(project.icoMasterAddress))
+    const trxMessage = TnC.pingRequest(
+      Address.parse(project.icoMasterAddress),
+      (participantState as any)?.id
+    )
 
     const deployParams = {
       validUntil: Date.now() + 100000,
@@ -268,7 +271,7 @@ const Project: FC = () => {
                   {isEarlyClaimButtonDisplayed && (
                     <MainButton
                       onClick={handleEarlyClaimButtonClick}
-                      text="Eearly claim"
+                      text="Early Claim"
                     />
                   )}
                 </S.Wrapper>
