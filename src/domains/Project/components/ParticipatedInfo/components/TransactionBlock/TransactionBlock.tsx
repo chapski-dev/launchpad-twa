@@ -26,7 +26,8 @@ export const TransactionBlock: FC<TransactionBlockProps> = (props) => {
               <S.RefundChip>Refund</S.RefundChip>
             ) : (
               <S.Label>
-                {rate} TON/{symbol}
+                {rate} TON
+                {/* /{symbol} */}
               </S.Label>
             )}
           </S.LabelWrapper>

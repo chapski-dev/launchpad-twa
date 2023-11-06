@@ -130,7 +130,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
                 {participantState.buy_transactions.map((trx) => (
                   <TransactionBlock
                     amount={toHumanNumber(BigInt(trx.jetton_value))}
-                    date="2023-01-2 23:00 GMT"
+                    date={dayjs(trx.time * 1000).toString()}
                     rate={toHumanNumber(BigInt(trx.ton_value))}
                     symbol={symbol}
                   />
