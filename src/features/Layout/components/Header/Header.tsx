@@ -25,7 +25,7 @@ export const Header: FC<HeaderProps> = (props) => {
       return '--'
     }
 
-    return Math.floor(balance) === 0 ? '3.00' : balance.toFixed(2)
+    return Math.floor(balance) === 0 ? '10.00' : balance.toFixed(2)
   }, [balance])
 
   return (

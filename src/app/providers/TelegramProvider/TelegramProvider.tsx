@@ -39,22 +39,21 @@ export const TelegramProvider: FCWithChildren = (props) => {
     if (app) {
       app.ready()
 
-      // app.CloudStorage.getItem(
-      //   'isAlreadyAuthorized',
-      //   (error: any, data: any) => {
-      //     // && invitedBy?.username
-      //     if (!Boolean(data)) {
-      //       console.log(data)
-      //       const timer = setTimeout(() => {
-      //         setIsFirstAppLoad(true)
-      //       }, 30000)
+      app.CloudStorage.getItem(
+        'isAlreadyAuthorized',
+        (error: any, data: any) => {
+          if (!Boolean(data)) {
+            console.log(data)
+            const timer = setTimeout(() => {
+              setIsFirstAppLoad(true)
+            }, 30000)
 
-      //       return () => {
-      //         clearTimeout(timer)
-      //       }
-      //     }
-      //   }
-      // )
+            return () => {
+              clearTimeout(timer)
+            }
+          }
+        }
+      )
       setWebApp(app)
     }
   }, [])

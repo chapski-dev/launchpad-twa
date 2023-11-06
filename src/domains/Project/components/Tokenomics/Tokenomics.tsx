@@ -60,15 +60,13 @@ export const Tokenomics: FC<IDistributionManagmentProps> = (props) => {
   const stats = useMemo(() => {
     const distributionsStats = currentDistributions.map((distribution, idx) => {
       return {
-        label: distribution.target + ' distribution',
+        label: distribution.target,
         value: distribution.value,
         percent: Number(
           ((Number(distribution.value) / totalSupply) * 100).toFixed(2)
         ),
         color: colors[idx],
-        link: distribution.address
-          ? tonAddressExplorerLink + distribution.address
-          : null,
+        link: null,
       }
     })
 

@@ -301,7 +301,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
       return '--'
     }
 
-    return Math.floor(+balance) === 0 ? '3.00' : Number(balance).toFixed(2)
+    return Math.floor(+balance) === 0 ? '10.00' : Number(balance).toFixed(2)
   }, [balance])
 
   return (
