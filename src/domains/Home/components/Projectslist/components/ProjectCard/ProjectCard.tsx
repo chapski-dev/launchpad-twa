@@ -77,10 +77,10 @@ export const ProjectCard: FC<ProjectCardProps> = (props) => {
         <S.Title>{title}</S.Title>
         <S.Description>{description}</S.Description>
         <S.FlexWrapper>
-          <S.Label>
+          {/* <S.Label>
             TSM <S.Label $isBold>100</S.Label>
           </S.Label>
-          <S.Dot />
+          <S.Dot /> */}
           <S.Label>
             {/* Sale Progress <S.Label $isBold>100%</S.Label> */}
             {currentSaleProgressLabel}
