@@ -119,7 +119,10 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
         )
       : await TnC.initUser(
           Address.parse(icoMasterAddress),
-          (Number(currentJettonsBuyAmountTON) + 0.85).toString()
+          (
+            Number(currentJettonsBuyAmountTON) +
+            Number(toHumanNumber(icoInfo.protocolFee))
+          ).toString()
         )
 
     const deployParams = {
@@ -384,7 +387,9 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
                 Min {toHumanNumber(icoInfo.minParticipation)} {symbol}, Max{' '}
                 {toHumanNumber(icoInfo.maxParticipation)} {symbol}
               </S.Label>
-              <S.Label>Max TX cost = 0.85 TON</S.Label>
+              <S.Label>{`Max TX cost = ${toHumanNumber(
+                icoInfo.protocolFee
+              )} TON`}</S.Label>
             </S.RateWrapper>
           </S.AmountWrapper>
         </S.Wrapper>
