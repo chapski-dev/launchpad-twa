@@ -22,7 +22,7 @@ export const TransactionBlock: FC<TransactionBlockProps> = (props) => {
         <S.InfoWrapper>
           <S.LabelWrapper>
             <S.Label isBold>
-              {amount} {symbol}
+              {amount} {isRefund ? 'TON' : symbol}
             </S.Label>
             {isRefund ? (
               <S.RefundChip>Refund</S.RefundChip>
