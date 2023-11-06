@@ -63,6 +63,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
             </S.SaleProgressBlock>
             <S.TrxLine />
             <TransactionBlock
+              // hash={trx.hash}
               amount={toHumanNumber(BigInt(2290706000))}
               date="2023-01-2 23:00 GMT"
               isRefund
@@ -129,6 +130,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
               <S.TrxsWrapper>
                 {participantState.buy_transactions.map((trx) => (
                   <TransactionBlock
+                    hash={trx.hash}
                     amount={toHumanNumber(BigInt(trx.jetton_value))}
                     date={dayjs(trx.time * 1000).toString()}
                     rate={toHumanNumber(BigInt(trx.ton_value))}
@@ -189,6 +191,7 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
                   {unlockedTrxs.map((unlockedTx) => (
                     <LockTransactionBlock
                       key={unlockedTx.hash}
+                      hash={unlockedTx.hash}
                       amount={toHumanNumber(BigInt(unlockedTx.jetton_value))}
                       date={dayjs(unlockedTx.time * 1000).toString()}
                       isLocked={false}

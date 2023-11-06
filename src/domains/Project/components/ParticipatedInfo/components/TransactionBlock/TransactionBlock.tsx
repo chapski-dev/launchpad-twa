@@ -1,12 +1,14 @@
 import { FC } from 'react'
 import { SvgSuccessTrx, SvgTrxLink } from 'ui/icons'
 import * as S from './style'
+import { Link } from '../../style'
 
 type TransactionBlockProps = {
   symbol: string
   date: string
   amount: string
   rate: string
+  hash?: string
   isRefund?: boolean
 }
 
@@ -34,7 +36,9 @@ export const TransactionBlock: FC<TransactionBlockProps> = (props) => {
           <S.DateLabel>{date}</S.DateLabel>
         </S.InfoWrapper>
       </S.LeftSideWrapper>
-      <SvgTrxLink />
+      <Link href={`https://testnet.tonscan.org/tx/${hash}`} target="_blank">
+        <SvgTrxLink />
+      </Link>
     </S.Wrapper>
   )
 }

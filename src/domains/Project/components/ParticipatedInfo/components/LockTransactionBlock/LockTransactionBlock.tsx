@@ -34,7 +34,7 @@ export const LockTransactionBlock: FC<LockTransactionBlockProps> = (props) => {
           </S.InfoWrapper>
         </S.LeftSideWrapper>
         {!isLocked && (
-          <Link href={`https://testnet.tonscan.org/tx/${hash}`}>
+          <Link href={`https://testnet.tonscan.org/tx/${hash}`} target="_blank">
             <SvgTrxLink />
           </Link>
         )}
