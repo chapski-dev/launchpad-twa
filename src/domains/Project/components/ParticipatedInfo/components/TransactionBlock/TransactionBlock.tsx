@@ -13,7 +13,7 @@ type TransactionBlockProps = {
 }
 
 export const TransactionBlock: FC<TransactionBlockProps> = (props) => {
-  const { symbol, date, amount, rate, isRefund } = props
+  const { symbol, date, amount, rate, isRefund, hash } = props
 
   return (
     <S.Wrapper>
