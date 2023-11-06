@@ -62,14 +62,19 @@ export const ParticipatedInfo: FC<ParticipiantProps> = (props) => {
               />
             </S.SaleProgressBlock>
             <S.TrxLine />
-            <TransactionBlock
-              // hash={trx.hash}
-              amount={toHumanNumber(BigInt(2290706000))}
-              date="2023-01-2 23:00 GMT"
-              isRefund
-              rate="0.1"
-              symbol={symbol}
-            />
+
+            {participantState.refund_tx && (
+              <TransactionBlock
+                hash={participantState.refund_tx.hash}
+                amount={toHumanNumber(
+                  BigInt(participantState.refund_tx.ton_value)
+                )}
+                date={dayjs(participantState.refund_tx.time * 1000).toString()}
+                isRefund
+                rate="0.1"
+                symbol={symbol}
+              />
+            )}
           </S.SaleProgressBlock>
         </>
       )

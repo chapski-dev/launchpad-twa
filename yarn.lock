@@ -1652,7 +1652,7 @@
 
 "@ton-and-company/sdk@git+https://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@github.com/tokenova-fi/ton-contracts-sdk":
   version "0.0.36"
-  resolved "git+https://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@github.com/tokenova-fi/ton-contracts-sdk#e01e45e01b41e806d46b38d646fa3348c7580294"
+  resolved "git+https://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@github.com/tokenova-fi/ton-contracts-sdk#94080e1b0949a304fd34c392d8f867b71f8652a6"
   dependencies:
     ton "^13.5.0"
     ton-crypto "^3.2.0"
