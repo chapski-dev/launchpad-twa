@@ -215,11 +215,11 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
         webApp?.initData
       )
 
-      if (claimBonusData.ok) {
-        setIsTrxChecking(false)
+      // if (claimBonusData.ok) {
+      //   setIsTrxChecking(false)
 
-        buyJettons()
-      }
+      //   buyJettons()
+      // }
 
       let currentClaimAttempts = 0
 
