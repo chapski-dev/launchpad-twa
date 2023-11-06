@@ -1,12 +1,14 @@
 import { FC } from 'react'
 import { SvgUnlock, SvgLock, SvgTrxLink } from 'ui/icons'
 import * as S from './style'
+import { Link } from '../../style'
 
 type LockTransactionBlockProps = {
   symbol: string
   date: string
   amount: string
   isLocked: boolean
+  hash?: string
   buttons?: {
     label: string
     onClick: () => void
@@ -14,7 +16,7 @@ type LockTransactionBlockProps = {
 }
 
 export const LockTransactionBlock: FC<LockTransactionBlockProps> = (props) => {
-  const { symbol, date, amount, isLocked, buttons } = props
+  const { symbol, date, amount, isLocked, buttons, hash } = props
 
   return (
     <S.Container>
@@ -31,7 +33,11 @@ export const LockTransactionBlock: FC<LockTransactionBlockProps> = (props) => {
             <S.DateLabel>{date}</S.DateLabel>
           </S.InfoWrapper>
         </S.LeftSideWrapper>
-        {!isLocked && <SvgTrxLink />}
+        {!isLocked && (
+          <Link href={`https://testnet.tonscan.org/tx/${hash}`}>
+            <SvgTrxLink />
+          </Link>
+        )}
       </S.Wrapper>
       {buttons &&
         buttons.length > 0 &&
