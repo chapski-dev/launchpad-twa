@@ -78,7 +78,8 @@ export const Tokenomics: FC<IDistributionManagmentProps> = (props) => {
           (Number(icoParams.jettonsAmount) / totalSupply) * 100
         ),
         color: colors[distributionsStats.length],
-        link: tonAddressExplorerLink + icoParams.address,
+        link: null,
+        // link: tonAddressExplorerLink + icoParams.address,
       }
 
       return [...distributionsStats, icoStats]
