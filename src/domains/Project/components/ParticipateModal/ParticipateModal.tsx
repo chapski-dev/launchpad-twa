@@ -61,7 +61,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
   const [isTrxSigning, setIsTrxSigning] = useState<boolean>(false)
 
-  const { balance } = useProfileContext()
+  const { balance, refetchProfileBalance } = useProfileContext()
 
   const { webApp } = useTelegram()
 
@@ -161,6 +161,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
           refetchProjectParticipantInfo()
 
+          refetchProfileBalance!()
+
           return
         } else {
           currentAttempts++
@@ -174,13 +176,15 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
     setIsTrxSigning(false)
   }, [
-    balance,
-    currentJettonsBuyAmountTON,
     icoMasterAddress,
+    balance,
     participantState,
-    tonConnectUI,
     userWalletAddress,
+    currentJettonsBuyAmountTON,
+    icoInfo.protocolFee,
+    tonConnectUI,
     refetchProjectParticipantInfo,
+    refetchProfileBalance,
   ])
 
   const handleBuyJettonsClick = useCallback(async () => {

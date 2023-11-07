@@ -3,7 +3,7 @@ import { useTonAddress } from '@tonconnect/ui-react'
 import { useRouter } from 'next/router'
 import { AppRoutes } from 'constants/app'
 
-import { useTelegram } from 'hooks/useTelegram/useTelegram'
+import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
 import { SvgToncoinIcon } from 'ui/icons'
 import * as S from './style'
 
@@ -18,7 +18,7 @@ export const Header: FC<HeaderProps> = (props) => {
 
   const userWalletAddress = useTonAddress()
 
-  const { balance } = useTelegram()
+  const { balance } = useProfileContext()
 
   const currentBalance = useMemo(() => {
     if (typeof balance === 'undefined') {

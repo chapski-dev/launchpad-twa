@@ -50,15 +50,13 @@ const Home: FC = () => {
 
   const debaunceSearchValue = useDebounce(searchValue)
 
-  const { invitedBy } = useProfileContext()
+  const { invitedBy, balance } = useProfileContext()
 
-  const { webApp, isFirstAppLoad, balance } = useTelegram()
+  const { webApp, isFirstAppLoad } = useTelegram()
 
   const isConnectionRestored = useIsConnectionRestored()
 
   const userWalletAddress = useTonAddress()
-
-  console.log(userWalletAddress)
 
   const handleSearchInputChange = useCallback((value: string) => {
     setSearchValue(value)

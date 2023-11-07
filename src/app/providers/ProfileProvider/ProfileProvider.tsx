@@ -10,10 +10,11 @@ import { getBalance } from 'utils/getBalance'
 
 export type ProfileContextType = {
   profileInfo?: any
-  balance?: string
+  balance?: number
   invitedBy?: {
     username: string
   } | null
+  refetchProfileBalance?: () => void
 }
 
 export const ProfileContext = createContext<ProfileContextType>({})
@@ -43,7 +44,7 @@ export const ProfileProvider: FCWithChildren = (props) => {
     }
   )
 
-  const { data: balance } = useQuery(
+  const { data: balance, refetch: refetchProfileBalance } = useQuery(
     ['userBalance'],
     () => getBalance(userWalletAddress, 'testnet'),
     {
@@ -101,10 +102,11 @@ export const ProfileProvider: FCWithChildren = (props) => {
 
   const value = {
     profileInfo,
-    balance: balance?.toFixed(2),
+    balance,
     invitedBy: {
       username: invitedByProfileInfo?.telegram,
     },
+    refetchProfileBalance,
   }
 
   return (
