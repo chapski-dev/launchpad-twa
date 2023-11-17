@@ -19,8 +19,6 @@ export const ProgressBlock: FC<ProgressBlockProps> = (props) => {
     return Math.floor((+minAmount / +maxAmount) * 100)
   }, [maxAmount, minAmount])
 
-  console.log(minAmount, maxAmount)
-
   return (
     <S.Wrapper>
       <S.Label className="text-sm text-gray-light">

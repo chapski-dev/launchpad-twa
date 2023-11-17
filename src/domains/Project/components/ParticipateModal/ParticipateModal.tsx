@@ -12,11 +12,12 @@ import {
   ICOInfo,
   ParticipantFullInfo,
 } from '@ton-and-company/sdk/dist/core/sdk'
-import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
+import { useTonAddress } from '@tonconnect/ui-react'
 import { useQuery } from 'react-query'
 import { Address } from 'ton-core'
 import { MainButton } from 'features/MainButton'
 import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
+import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { SvgToncoinIcon } from 'ui/icons'
 import { Modal } from 'ui/Modal/Modal'
@@ -65,7 +66,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
   const { webApp } = useTelegram()
 
-  const [tonConnectUI] = useTonConnectUI()
+  const { sendTransaction } = useSendTransaction()
 
   const userWalletAddress = useTonAddress()
 
@@ -125,13 +126,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
           ).toString()
         )
 
-    const deployParams = {
-      validUntil: Date.now() + 100000,
-      messages: [trxMessage],
-    }
-
     setIsTrxSigning(true)
-    const trx = await tonConnectUI.sendTransaction(deployParams)
+    const trx = await sendTransaction(trxMessage)
 
     if (trx.boc) {
       setIsTrxSigning(false)
@@ -182,7 +178,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     userWalletAddress,
     currentJettonsBuyAmountTON,
     icoInfo.protocolFee,
-    tonConnectUI,
+    sendTransaction,
     refetchProjectParticipantInfo,
     refetchProfileBalance,
   ])
@@ -217,16 +213,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     if (+balance === 0 && !checkUserBonusData.requested) {
       setIsTrxChecking(true)
 
-      const claimBonusData = await TnC.claimBonus(
-        userWalletAddress,
-        webApp?.initData
-      )
-
-      // if (claimBonusData.ok) {
-      //   setIsTrxChecking(false)
-
-      //   buyJettons()
-      // }
+      await TnC.claimBonus(userWalletAddress, webApp?.initData)
 
       let currentClaimAttempts = 0
 
@@ -271,6 +258,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
         return
       }
 
+      const { tonPerJetton } = icoInfo
+
       if (amountInputName === 'jetton') {
         setCurrentJettonsBuyAmount(
           amountInputValue.length > 6
@@ -278,9 +267,9 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
             : amountInputValue
         )
         setCurrentJettonsBuyAmountTON(
-          `${Number(amountInputValue) * icoInfo.tonPerJetton}`.length > 6
-            ? (Number(amountInputValue) * icoInfo.tonPerJetton).toFixed(2)
-            : `${Number(amountInputValue) * icoInfo.tonPerJetton}`
+          `${Number(amountInputValue) * tonPerJetton}`.length > 6
+            ? (Number(amountInputValue) * tonPerJetton).toFixed(2)
+            : `${Number(amountInputValue) * tonPerJetton}`
         )
 
         return
@@ -292,9 +281,9 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
           : amountInputValue
       )
       setCurrentJettonsBuyAmount(
-        `${Number(amountInputValue) / icoInfo.tonPerJetton}`.length > 6
-          ? (Number(amountInputValue) / icoInfo.tonPerJetton).toFixed(2)
-          : `${Number(amountInputValue) / icoInfo.tonPerJetton}`
+        `${Number(amountInputValue) / tonPerJetton}`.length > 6
+          ? (Number(amountInputValue) / tonPerJetton).toFixed(2)
+          : `${Number(amountInputValue) / tonPerJetton}`
       )
     },
     [icoInfo]

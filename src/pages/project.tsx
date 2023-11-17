@@ -18,6 +18,7 @@ import * as S from 'domains/Project/style'
 import { BackButton } from 'features/BackButton'
 import { Layout } from 'features/Layout/Layout'
 import { MainButton } from 'features/MainButton'
+import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
@@ -31,6 +32,8 @@ const Project: FC = () => {
   const userWalletAddress = useTonAddress()
 
   const [tonConnectUI] = useTonConnectUI()
+
+  const { sendTransaction } = useSendTransaction()
 
   const { webApp } = useTelegram()
 
@@ -47,23 +50,28 @@ const Project: FC = () => {
   } = useQuery(['icoProject'], () => getICOProjectById(id as string), {
     enabled: Boolean(id),
     select: useCallback((data: any) => {
+      const distributions: any[] =
+        data.tokenomics.find(({ name }: any) => name === 'distribution')
+          ?.value || []
+
+      const icoParams = data.tokenomics.find(
+        ({ name }: any) => name === 'ico'
+      )?.value
+
+      const icoFundDistributions =
+        data.tokenomics.find(({ name }: any) => name === 'icoDistribution')
+          ?.value || []
+
       const getTotalSupply = () => {
-        const distributions: any[] = data.tokenomics.find(
-          ({ name }: any) => name === 'distribution'
-        )?.value
-
-        const ico = data.tokenomics.find(
-          ({ name }: any) => name === 'ico'
-        )?.value
-
         if (distributions) {
           const totalByDistributions = distributions.reduce<number>(
             (acc, curr) => Number(acc) + Number(curr.value),
             0
           )
 
-          if (ico) {
-            const totalSupply = totalByDistributions + Number(ico.jettonsAmount)
+          if (icoParams) {
+            const totalSupply =
+              totalByDistributions + Number(icoParams.jettonsAmount)
 
             return totalSupply
           }
@@ -75,6 +83,12 @@ const Project: FC = () => {
       return {
         ...data,
         totalSupply: getTotalSupply(),
+        icoParams: icoParams || null,
+        markdownInfo: data.markdownDocument
+          ? JSON.parse(data.markdownDocument)
+          : null,
+        distributions,
+        icoFundDistributions,
       }
     }, []),
   })
@@ -133,33 +147,6 @@ const Project: FC = () => {
     webApp,
   ])
 
-  const icoParams = useMemo(() => {
-    if (!project) {
-      return
-    }
-
-    return project.tokenomics.find(({ name }: any) => name === 'ico')?.value
-  }, [project])
-
-  const distributions = useMemo(() => {
-    if (!project) {
-      return
-    }
-
-    return project.tokenomics.find(({ name }: any) => name === 'distribution')
-      ?.value
-  }, [project])
-
-  const icoFundDistributions = useMemo(() => {
-    if (!project) {
-      return
-    }
-
-    return project.tokenomics.find(
-      ({ name }: any) => name === 'icoDistribution'
-    )?.value
-  }, [project])
-
   const isLoading = useMemo(() => {
     if (userWalletAddress) {
       return (
@@ -175,8 +162,6 @@ const Project: FC = () => {
     userWalletAddress,
   ])
 
-  console.log(participantState)
-
   const isEarlyClaimButtonDisplayed = useMemo(() => {
     if (!participantState || !participantState?.participated) {
       return false
@@ -185,7 +170,7 @@ const Project: FC = () => {
     return (
       participantState.sale_state.state === 'can-end' &&
       participantState.distribution_mode !== 2 &&
-      participantState.unlock_transactions.length == 0 &&
+      participantState.unlock_transactions.length === 0 &&
       dayjs().isBefore(participantState.sale_state.endTime * 1000)
     )
   }, [participantState])
@@ -200,20 +185,12 @@ const Project: FC = () => {
       (participantState as any)?.user_id
     )
 
-    const deployParams = {
-      validUntil: Date.now() + 100000,
-      messages: [trxMessage],
-    }
-
-    const trx = await tonConnectUI.sendTransaction(deployParams)
+    const trx = await sendTransaction(trxMessage)
 
     if (trx.boc) {
       alert('Early claim successfully submitted')
     }
-  }, [project, tonConnectUI, participantState])
-
-  const markdown =
-    project?.markdownDocument && JSON.parse(project?.markdownDocument)
+  }, [project, participantState, sendTransaction])
 
   return (
     <>
@@ -244,14 +221,14 @@ const Project: FC = () => {
                     />
                   )}
                   <Tokenomics
-                    distributions={distributions}
-                    icoFundDistributions={icoFundDistributions}
-                    icoParams={icoParams}
+                    distributions={project.distributions}
+                    icoFundDistributions={project.icoFundDistributions}
+                    icoParams={project.icoParams}
                     totalSupply={project.totalSupply}
                   />
                   <InfoBlock
                     icoInfo={currentIcoInfo!}
-                    mdContent={markdown?.content}
+                    mdContent={project.markdownInfo?.content}
                   />
                   {!participantState?.participated &&
                     !isParticipateModalOpen && (

@@ -1,11 +1,5 @@
 import { Address, beginCell, Cell, Contract, ContractProvider } from 'ton-core'
 
-export type MainContractConfig = {
-  number: number
-  address: Address
-  owner_address: Address
-}
-
 export class MainContract implements Contract {
   constructor(
     readonly address: Address,

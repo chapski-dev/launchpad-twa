@@ -13,8 +13,6 @@ export const SuccessBlock: FC<SuccessBlockProps> = (props) => {
     <S.Wrapper>
       <S.ContentWrapper>
         <S.CompleteIconWrapper>
-          {/* <S.TickIcon /> */}
-          {/* <S.CompleteIcon /> */}
           <S.CompleteWrapper>
             <S.CompletePingIcon />
             <S.CompleteIcon />

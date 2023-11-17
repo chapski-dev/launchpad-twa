@@ -1,5 +1,4 @@
 import { FC, useMemo, useState } from 'react'
-import { tonAddressExplorerLink } from 'constants/app'
 import { Container } from 'ui/Container/Container'
 import { Tabs } from 'ui/Tabs/Tabs'
 import { ChartBlock, StatBlock } from './components'
@@ -17,7 +16,7 @@ const colors = [
 type IDistributionManagmentProps = {
   distributions: any[]
   totalSupply: number
-  icoParams?: any
+  icoParams: any | null
   icoFundDistributions: any[]
 }
 
@@ -79,7 +78,6 @@ export const Tokenomics: FC<IDistributionManagmentProps> = (props) => {
         ),
         color: colors[distributionsStats.length],
         link: null,
-        // link: tonAddressExplorerLink + icoParams.address,
       }
 
       return [...distributionsStats, icoStats]

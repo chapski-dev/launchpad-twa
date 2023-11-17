@@ -72,10 +72,3 @@ export const FlexWrapper = styled.div`
   align-items: center;
   gap: 8px;
 `
-
-export const Dot = styled.div`
-  border-radius: 50%;
-  width: 2px;
-  height: 2px;
-  background-color: ${({ theme }) => theme.color.hint};
-`

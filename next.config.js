@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     appDir: false,
+    legacyBrowsers: false,
   },
   images: {
     remotePatterns: [

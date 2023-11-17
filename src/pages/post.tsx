@@ -64,7 +64,6 @@ const Post = () => {
             alt="post_image"
             onLoad={() => setIsPostImageLoaded(true)}
             src={launchpadWebAppUrl + post.frontmatter.socialImage}
-            // src={'/images/testnetPostImage.png'}
           />
           {isPostImageLoaded && (
             <>
