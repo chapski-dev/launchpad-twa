@@ -1,0 +1,77 @@
+import { UIWallet } from '@tonconnect/ui-react'
+
+export const includeWallets: UIWallet[] = [
+  {
+    name: 'Tonkeeper',
+    appName: 'tonkeeper',
+    imageUrl: 'https://tonkeeper.com/assets/tonconnect-icon.png',
+    aboutUrl: 'https://tonkeeper.com',
+    tondns: 'tonkeeper.ton',
+    platforms: ['ios', 'android', 'chrome', 'firefox'],
+    bridgeUrl: 'https://bridge.tonapi.io/bridge',
+    universalLink: 'https://app.tonkeeper.com/ton-connect',
+    jsBridgeKey: 'tonkeeper',
+  },
+  {
+    name: 'OpenMask',
+    appName: 'openmask',
+    imageUrl:
+      'https://raw.githubusercontent.com/OpenProduct/openmask-extension/main/public/openmask-logo-288.png',
+    aboutUrl: 'https://www.openmask.app/',
+    platforms: ['chrome'],
+    jsBridgeKey: 'openmask',
+  },
+  {
+    name: 'MyTonWallet',
+    appName: 'mytonwallet',
+    imageUrl: 'https://mytonwallet.io/icon-256.png',
+    aboutUrl: 'https://mytonwallet.io',
+    platforms: ['chrome', 'windows', 'macos', 'linux'],
+    jsBridgeKey: 'mytonwallet',
+    bridgeUrl: 'https://tonconnectbridge.mytonwallet.org/bridge/',
+    universalLink: 'https://connect.mytonwallet.org',
+  },
+  {
+    name: 'Tonhub',
+    appName: 'tonhub',
+    imageUrl: 'https://tonhub.com/tonconnect_logo.png',
+    aboutUrl: 'https://tonhub.com',
+    platforms: ['ios', 'android'],
+    jsBridgeKey: 'tonhub',
+    bridgeUrl: 'https://connect.tonhubapi.com/tonconnect',
+    universalLink: 'https://tonhub.com/ton-connect',
+  },
+  {
+    name: 'TonFlow',
+    appName: 'tonflow',
+    imageUrl: 'https://tonflow.net/assets/images/tonflow_ico_192.png',
+    aboutUrl: 'https://tonflow.net',
+    platforms: ['chrome'],
+    jsBridgeKey: 'tonflow',
+  },
+  {
+    name: 'DeWallet',
+    appName: 'dewallet',
+    imageUrl: 'https://app.delabwallet.com/logo_black.png',
+    aboutUrl: 'https://delabwallet.com',
+    platforms: ['chrome'],
+    jsBridgeKey: 'dewallet',
+  },
+  {
+    name: 'XTONWallet',
+    appName: 'xtonwallet',
+    imageUrl: 'https://xtonwallet.com/assets/img/icon-256-back.png',
+    aboutUrl: 'https://xtonwallet.com',
+    platforms: ['chrome', 'firefox'],
+    jsBridgeKey: 'xtonwallet',
+  },
+  {
+    name: 'TON Wallet',
+    appName: 'tonwallet',
+    imageUrl: 'https://wallet.ton.org/assets/ui/qr-logo.png',
+    aboutUrl:
+      'https://chrome.google.com/webstore/detail/ton-wallet/nphplpgoakhhjchkkhmiggakijnkhfnd',
+    platforms: ['chrome'],
+    jsBridgeKey: 'tonwallet',
+  },
+]

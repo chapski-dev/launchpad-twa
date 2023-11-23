@@ -1,6 +1,7 @@
 import { TonConnectUIProvider } from '@tonconnect/ui-react'
 
 import { FCWithChildren } from 'types/app'
+import { includeWallets } from './wallets'
 
 export const TonConnectProvider: FCWithChildren = (props) => {
   const { children } = props
@@ -10,6 +11,9 @@ export const TonConnectProvider: FCWithChildren = (props) => {
       manifestUrl={MANIFEST_URL}
       uiPreferences={{
         theme: 'SYSTEM',
+      }}
+      walletsListConfiguration={{
+        includeWallets: includeWallets,
       }}
     >
       <>{children}</>
