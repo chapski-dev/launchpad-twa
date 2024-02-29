@@ -16,11 +16,11 @@ export const ImgBlock = styled.div`
 export const InfoBlock = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 1px;
 `
 
 export const Name = styled.span`
-  font-size: 17px;
+  font-size: 16px;
   color: ${({ theme }) => theme.color.text};
 `
 
@@ -30,7 +30,7 @@ export const Verified = styled.span`
 `
 
 export const Pending = styled.span`
-  font-size: 15px;
+  font-size: 14px;
   color: ${({ theme }) => theme.color.warning};
 `
 
