@@ -1,48 +1,30 @@
-import { FC, useMemo } from 'react'
-import { useTonAddress } from '@tonconnect/ui-react'
-import { useRouter } from 'next/router'
-import { AppRoutes } from 'constants/app'
-
-import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
-import { SvgToncoinIcon } from 'ui/icons'
+import { ChangeEvent, FC, useCallback, useState } from 'react'
+import { SvgLoop } from 'ui/icons'
+import { ProfileBlock } from './components/ProfileBlock/ProfileBlock'
 import * as S from './style'
 
-type HeaderProps = {
-  onSearchButtonClick: () => void
-}
-
-export const Header: FC<HeaderProps> = (props) => {
-  const { onSearchButtonClick } = props
-
-  const router = useRouter()
-
-  const userWalletAddress = useTonAddress()
-
-  const { balance } = useProfileContext()
-
-  const currentBalance = useMemo(() => {
-    if (typeof balance === 'undefined') {
-      return '--'
-    }
-
-    return Math.floor(balance) === 0 ? '10.00' : balance.toFixed(2)
-  }, [balance])
+export const Header: FC = () => {
+  const [searchValue, setSearchValue] = useState<string>('')
+  const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false)
+  const handleSearchInputChange = useCallback(
+    (evt: ChangeEvent<HTMLInputElement>) => {
+      setSearchValue(evt.target.value)
+    },
+    []
+  )
 
   return (
-    <S.Wrapper>
-      {router.pathname === AppRoutes.Home && (
-        <S.SearchButton onClick={onSearchButtonClick}>
-          <S.SearchIcon />
-        </S.SearchButton>
-      )}
-
-      <S.ConnectWalletButton isConnected={Boolean(userWalletAddress)} />
-      {userWalletAddress && (
-        <S.BalanceBlock>
-          {currentBalance}
-          <SvgToncoinIcon />
-        </S.BalanceBlock>
-      )}
-    </S.Wrapper>
+    <S.FlexWrapper>
+      <S.UserInfoWrapper>
+        <ProfileBlock />
+      </S.UserInfoWrapper>
+      <S.Input
+        icon={<SvgLoop />}
+        onBlur={() => setIsSearchFocused(false)}
+        onChange={handleSearchInputChange}
+        onFocus={() => setIsSearchFocused(true)}
+        placeholder="Search"
+      />
+    </S.FlexWrapper>
   )
 }

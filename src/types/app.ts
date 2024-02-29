@@ -10,6 +10,12 @@ declare module 'styled-components' {
       link: string
       btn: string
       btnText: string
+      success: string
+      warning: string
+    }
+    gradient: {
+      g1: string
+      g2: string
     }
   }
 }
