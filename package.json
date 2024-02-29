@@ -38,6 +38,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.8",
+    "husky": "^9.0.11",
     "prettier": "^2.7.1"
   },
   "scripts": {
@@ -45,7 +46,9 @@
     "build": "next build --no-lint",
     "start": "next start",
     "generate-svg": "svgr --config-file .svgrrc.js src/assets/icons/ && eslint src/ui/icons/** --fix",
-    "deadcode-check": "npx --yes ts-prune -s \"pages/[**/]?(_app|_document|_error|index)|store/(index|sagas)|styles/global\""
+    "deadcode-check": "npx --yes ts-prune -s \"pages/[**/]?(_app|_document|_error|index)|store/(index|sagas)|styles/global\"",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./",
+    "prepare": "husky"
   },
   "eslintConfig": {
     "extends": [
