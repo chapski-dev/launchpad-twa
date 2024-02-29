@@ -1,28 +1,44 @@
-import { FC } from 'react'
+import { FC, ReactElement } from 'react'
 import { SvgRightArrow, SvgToncoinIcon, SvgWalleticon } from 'ui/icons'
 import { Modal } from 'ui/Modal/Modal'
 import * as S from './style'
 
-export const ConnectWalletPopup: FC = () => {
+type ConnectWalletPopupProps = {
+  onClose: () => void
+}
+
+type WalletItemsProps = {
+  svg: ReactElement
+  title: string
+}
+
+const WALLET_ITEMS: WalletItemsProps[] = [
+  {
+    svg: <SvgToncoinIcon height={32} width={32} />,
+    title: 'TON Connect',
+  },
+  {
+    svg: <SvgWalleticon />,
+    title: 'WalletConnect',
+  },
+]
+
+export const ConnectWalletPopup: FC<ConnectWalletPopupProps> = ({
+  onClose,
+}) => {
   return (
-    <Modal onClose={() => {}} title="Connect wallet">
+    <Modal onClose={onClose} title="Connect wallet">
       <S.Wrapper>
-        <S.Connect>
-          <S.LeftBlock>
-            <SvgToncoinIcon height={32} width={32} /> TON Connect
-          </S.LeftBlock>
-          <S.RightBlock>
-            <SvgRightArrow />
-          </S.RightBlock>
-        </S.Connect>
-        <S.Connect>
-          <S.LeftBlock>
-            <SvgWalleticon /> WalletConnect
-          </S.LeftBlock>
-          <S.RightBlock>
-            <SvgRightArrow />
-          </S.RightBlock>
-        </S.Connect>
+        {WALLET_ITEMS.map(({ svg, title }, idx) => (
+          <S.ItemWrapper key={idx}>
+            <S.LeftBlock>
+              {svg} {title}
+            </S.LeftBlock>
+            <S.RightBlock>
+              <SvgRightArrow />
+            </S.RightBlock>
+          </S.ItemWrapper>
+        ))}
       </S.Wrapper>
     </Modal>
   )

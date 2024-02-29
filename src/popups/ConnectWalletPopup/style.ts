@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
   padding: 16px;
 `
 
-export const Connect = styled.div`
+export const ItemWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
