@@ -1,4 +1,5 @@
 export { default as SvgArrow } from './Arrow'
+export { default as SvgLoop } from './Loop'
 export { default as SvgClose } from './Close'
 export { default as SvgCloseIcon } from './CloseIcon'
 export { default as SvgCompleteIcon } from './CompleteIcon'

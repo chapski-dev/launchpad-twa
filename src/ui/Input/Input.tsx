@@ -21,6 +21,7 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   max?: number
   min?: number
   actionElement?: ReactNode
+  icon?: ReactNode
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -36,6 +37,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     min,
     type,
     actionElement,
+    icon,
     ...otherInputProps
   } = props
 
@@ -60,6 +62,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
 
   return (
     <S.InputWrapper className={className}>
+      {icon}
       <S.Input
         ref={ref}
         disabled={disabled}
