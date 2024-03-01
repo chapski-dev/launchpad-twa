@@ -9,7 +9,6 @@ export const Input = styled.input<{ error?: boolean; disabled?: boolean }>`
   width: 100%;
   outline: none;
   border: none;
-  padding: 14px 0;
   border-radius: 10px;
   border: ${({ error }) => error && `1px solid red`};
 
