@@ -11,6 +11,9 @@ export const theme: DefaultTheme = {
     bgSecondary: `var(--tg-theme-secondary-bg-color)`,
     success: '#62c56d',
     warning: '#FBBC05',
+    white: '#fff',
+    black: '#000',
+    redAlert: 'rgb(255,0,0)',
   },
   gradient: {
     g1: 'linear-gradient(312deg, #82d3ff 0.46%, #ffa1ec 100%)',

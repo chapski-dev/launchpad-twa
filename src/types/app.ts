@@ -12,6 +12,9 @@ declare module 'styled-components' {
       btnText: string
       success: string
       warning: string
+      white: string
+      black: string
+      redAlert: string
     }
     gradient: {
       g1: string
