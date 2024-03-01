@@ -4,7 +4,8 @@ import { Modal } from 'ui/Modal/Modal'
 import * as S from './style'
 
 type ConnectWalletPopupProps = {
-  onClose: () => void
+  onClose: (val: boolean) => void
+  open: boolean;
 }
 
 type WalletItemsProps = {
@@ -25,9 +26,10 @@ const WALLET_ITEMS: WalletItemsProps[] = [
 
 export const ConnectWalletPopup: FC<ConnectWalletPopupProps> = ({
   onClose,
+  open,
 }) => {
   return (
-    <Modal onClose={onClose} title="Connect wallet">
+    <Modal onClose={onClose} open={open} title="Connect wallet">
       <S.Wrapper>
         {WALLET_ITEMS.map(({ svg, title }, idx) => (
           <S.ItemWrapper key={idx}>
