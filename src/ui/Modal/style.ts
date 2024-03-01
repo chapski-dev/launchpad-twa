@@ -2,29 +2,46 @@ import { rgba } from 'polished'
 import { styled } from 'styled-components'
 import { SvgClose } from 'ui/icons'
 
-export const WrapModal = styled.div`
-  position: fixed;
+export const Overlay = styled.div`
+  background-color: rgba(0, 0, 0, 0.55);
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  width: 100%;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-direction: column;
-  background: rgba(0, 0, 0, 0.32);
-  transition: height 0.3s ease;
+  position: fixed;
+  transition: opacity .3s linear;
+  opacity: 0;
+  &.open {
+    opacity: 0.5
+  }
 `
 
-export const CardWrapper = styled.div`
+
+export const Modal = styled.div`
   width: 100%;
   border-radius: 16px 16px 0px 0px;
   display: flex;
   flex-direction: column;
   background-color: ${({ theme }) => theme.color.bg};
-  transition: height 0.3s ease;
+
+  position: fixed;
+  bottom: -101vh;
+  width: 100%;
+  box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.15);
+  left: 0;
+  padding: 0 12px 12px;
+  animation-duration: .2s;
+  transition: all .3s ease-out;
+  -webkit-transition: all .3s ease-out;
+  overflow-y: scroll;
+  max-height: 95vh;
+  &.open {
+    bottom: 0;
+    animation-duration: .2s;
+    transition: all .3s ease-out;
+    -webkit-transition: all .3s ease-out;
+  }
+
 `
 
 export const Header = styled.div`
@@ -44,6 +61,7 @@ export const Title = styled.h4`
 `
 
 export const Close = styled(SvgClose)`
+  cursor: pointer;
   path {
     fill: ${({ theme }) => theme.color.text};
   }

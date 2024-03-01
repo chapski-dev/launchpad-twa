@@ -249,19 +249,18 @@ const Project: FC = () => {
                   )}
                   ``
                 </S.Wrapper>
-                {participantState && isParticipateModalOpen && (
                   <ParticipateModal
                     icoInfo={currentIcoInfo!}
                     icoMasterAddress={project?.icoMasterAddress}
                     jettonImage={project?.metadata.image}
-                    onClose={toggleParticipateModal}
+                    onClose={setIsParticipateModakOpen}
+                    open={!!(participantState && isParticipateModalOpen)}
                     participantState={participantState}
                     refetchProjectParticipantInfo={
                       refetchProjectParticipantInfo
                     }
                     symbol={project?.metadata.symbol}
                   />
-                )}
               </>
             )
           )}
