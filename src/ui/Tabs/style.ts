@@ -1,4 +1,3 @@
-import { rgba } from 'polished'
 import { styled } from 'styled-components'
 
 export const Wrapper = styled.div`
@@ -7,7 +6,7 @@ export const Wrapper = styled.div`
   gap: 16px;
   width: 100%;
   max-width: 100%;
-  overflox-x: scroll;
+  overflow-x: scroll;
   overflow-y: hidden;
 
   &::-webkit-scrollbar {
@@ -20,6 +19,7 @@ export const TabItem = styled.div<{ $isDisabled?: boolean }>`
   flex-direction: column;
   gap: 6px;
   opacity: ${({ $isDisabled }) => $isDisabled && 0.6};
+  cursor: pointer;
 `
 
 export const TabItemLabel = styled.span<{
@@ -32,7 +32,7 @@ export const TabItemLabel = styled.span<{
   color: ${({ theme, $isActive }) =>
     $isActive ? theme.color.btn : theme.color.hint};
   cursor: ${({ $isActive, $isDisabled }) =>
-    $isActive ? 'auto' : $isDisabled ? 'not-allowed' : 'pointer'};
+    $isActive ? 'pointer' : $isDisabled ? 'not-allowed' : 'pointer'};
   transition: all 0.3s;
 `
 

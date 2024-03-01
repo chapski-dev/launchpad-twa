@@ -27,12 +27,13 @@ import * as S from './style'
 
 type ParticipateModalProps = {
   symbol: string
-  onClose: () => void
+  onClose: (open: boolean) => void
   jettonImage: string
   icoMasterAddress: string
   icoInfo: ICOInfo
-  participantState: ParticipantFullInfo
+  participantState?: ParticipantFullInfo
   refetchProjectParticipantInfo: () => void
+  open: boolean;
 }
 
 export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
@@ -44,6 +45,8 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     icoInfo,
     participantState,
     refetchProjectParticipantInfo,
+    open,
+    
   } = props
 
   const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
@@ -185,7 +188,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
 
   const handleBuyJettonsClick = useCallback(async () => {
     if (isSuccessBlockDisplayed) {
-      onClose()
+      onClose(false)
 
       return
     }
@@ -298,7 +301,7 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
   }, [balance])
 
   return (
-    <Modal onClose={onClose} title={`Buy ${symbol} jettons`}>
+    <Modal onClose={onClose} open={open} title={`Buy ${symbol} jettons`}>
       {isSuccessBlockDisplayed ? (
         <SuccessBlock amount={currentJettonsBuyAmount} symbol={symbol} />
       ) : (

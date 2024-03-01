@@ -1,12 +1,13 @@
-import { ReactElement, useCallback, useEffect, useRef } from 'react'
-import ReactDOM from 'react-dom'
+import { ReactElement, useCallback, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { FCWithChildren } from 'types/app'
 import * as S from './style'
 
 type ModalProps = {
   className?: string
-  onClose: () => void
+  onClose: (open: boolean) => void
   title: string | ReactElement
+  open: boolean;
 }
 
 const PORTAL_TARGET = 'portal'
@@ -16,35 +17,30 @@ const portalElement =
   (document.getElementById(PORTAL_TARGET) as HTMLElement)
 
 export const Modal: FCWithChildren<ModalProps> = (props) => {
-  const { children, className, onClose, title } = props
+  const { children, className, onClose, title, open } = props
 
-  const outsideRef = useRef(null)
+  const [mounted, setMounted] = useState(false);
 
-  const handleWrapperClick = (
-    evt: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
-    if (evt.target === outsideRef.current) {
-      onClose()
+  const handleClose = useCallback(() => {
+    setMounted(false);
+    setTimeout(() => onClose(false), 450);
+  }, [onClose]);
+
+  useEffect(() => {
+    if (open) {
+      setMounted(true);
     }
-  }
+  }, [open]);
+
 
   const handleKeyDown = useCallback(
     ({ key }: KeyboardEvent) => {
       if (key === 'Escape') {
-        onClose()
+        handleClose();
       }
     },
-    [onClose]
+    [handleClose]
   )
-
-  useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = 'hidden'
-      return () => {
-        document.body.style.overflow = 'auto'
-      }
-    }
-  }, [])
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -53,20 +49,25 @@ export const Modal: FCWithChildren<ModalProps> = (props) => {
     }
   }, [handleKeyDown])
 
+  if (!open) return null
+
   if (portalElement) {
-    return ReactDOM.createPortal(
-      <S.WrapModal ref={outsideRef} onClick={handleWrapperClick}>
-        <S.CardWrapper className={className}>
+    return createPortal(
+      <>
+        <S.Overlay
+          className={`${className || ''} ${mounted ? 'open' : ''}`}
+          onClick={handleClose}
+        />
+        <S.Modal className={mounted ? `open` : ''}>
           <S.Header>
             <S.Title>{title}</S.Title>
-            <S.Close onClick={onClose} />
+            <S.Close onClick={handleClose} />
           </S.Header>
           {children}
-        </S.CardWrapper>
-      </S.WrapModal>,
+        </S.Modal>
+      </>,
       portalElement
     )
   }
 
-  return null
 }

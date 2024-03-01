@@ -6,7 +6,7 @@ import * as S from './style'
 export const ProfileBlock: FC = () => {
   const { user } = useTelegram()
 
-  const [statusVerified, setstatusVerified] = useState(false)
+  const [statusVerified] = useState(false);
 
   return (
     <S.Wrapper>
