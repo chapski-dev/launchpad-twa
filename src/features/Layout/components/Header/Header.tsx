@@ -5,7 +5,7 @@ import * as S from './style'
 
 export const Header: FC = () => {
   const [searchValue, setSearchValue] = useState<string>('')
-  const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false)
+  const [, setIsSearchFocused] = useState<boolean>(false)
   const handleSearchInputChange = useCallback(
     (evt: ChangeEvent<HTMLInputElement>) => {
       setSearchValue(evt.target.value)
@@ -24,6 +24,7 @@ export const Header: FC = () => {
         onChange={handleSearchInputChange}
         onFocus={() => setIsSearchFocused(true)}
         placeholder="Search"
+        value={searchValue}
       />
     </S.FlexWrapper>
   )
