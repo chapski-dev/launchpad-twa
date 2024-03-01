@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useEffect, useRef, useState } from 'react'
+import { ReactElement, useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { FCWithChildren } from 'types/app'
 import * as S from './style'
@@ -55,10 +55,10 @@ export const Modal: FCWithChildren<ModalProps> = (props) => {
     return createPortal(
       <>
         <S.Overlay
-          className={mounted ? `open` : ''}
+          className={`${className || ''} ${mounted ? 'open' : ''}`}
           onClick={handleClose}
         />
-        <S.Modal className={className}>
+        <S.Modal className={mounted ? `open` : ''}>
           <S.Header>
             <S.Title>{title}</S.Title>
             <S.Close onClick={handleClose} />
