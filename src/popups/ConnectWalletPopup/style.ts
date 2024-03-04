@@ -1,10 +1,12 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 8px;
   padding: 16px;
+  width: 100%;
 `
 
 export const ItemWrapper = styled.div`
