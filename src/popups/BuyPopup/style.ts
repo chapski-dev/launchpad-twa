@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { theme } from 'assets/style/theme'
 
 export const Wrapper = styled.div`
   display: flex;
@@ -17,8 +16,6 @@ export const AllocationChainBlock = styled.div`
   align-items: center;
   justify-content: space-between;
 `
-
-export const SwithItem = styled.div``
 
 export const AmountBlock = styled.div`
   display: flex;
@@ -59,8 +56,12 @@ export const TonCountBox = styled.div`
   padding: 16px 12px;
 `
 
-export const TonCount = styled.div``
-export const Chain = styled.div``
+export const TonCount = styled.div`
+  font-size: 20px;
+`
+export const Chain = styled.div`
+  font-size: 20px;
+`
 
 export const XTonCountBox = styled.div`
   position: relative;
@@ -69,10 +70,11 @@ export const XTonCountBox = styled.div`
   justify-content: space-between;
   padding: 16px 12px;
   background: ${({ theme }) => theme.color.bgSecondary};
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-radius: 0 0 10px 10px;
 `
-export const XTonCount = styled.div``
+export const XTonCount = styled.div`
+  font-size: 20px;
+`
 
 export const Triangle = styled.div`
   position: absolute;
