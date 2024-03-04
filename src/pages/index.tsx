@@ -11,7 +11,6 @@ import { Layout } from 'features/Layout/Layout'
 import { useDebounce } from 'hooks/useDebounce/useDebounce'
 import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
-import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup'
 import { Container } from 'ui/Container/Container'
 import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons'
 import { TabItem, Tabs } from 'ui/Tabs/Tabs'
@@ -119,7 +118,6 @@ const Home: FC = () => {
                 src={'/images/testnetLaunch.png'}
               />
             </Container>
-            <ConnectWalletPopup onClose={() => {}} open={true} />
             {isPromoImageLoaded && (
               <>
                 <Container>
