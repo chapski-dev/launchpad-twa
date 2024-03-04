@@ -1,4 +1,4 @@
-import { FC, ReactElement, useState } from 'react'
+import { FC, ReactElement, useMemo, useState } from 'react'
 import { SvgCheck, SvgPending, SvgRightArrow } from 'ui/icons'
 import * as S from './style'
 
@@ -15,16 +15,18 @@ export const Task: FC<TaskProps> = (props) => {
 
   const [taskStatus, setTaskStatus] = useState(status)
 
-  const renderSVG = (status: 'success' | 'pending' | 'not_started') => {
-    switch (status) {
-      case 'success':
-        return <SvgCheck />
-      case 'pending':
-        return <SvgPending />
-      case 'not_started':
-        return <SvgRightArrow />
+  const renderSVG = useMemo(() => {
+    return (status: 'success' | 'pending' | 'not_started') => {
+      switch (status) {
+        case 'success':
+          return <SvgCheck />
+        case 'pending':
+          return <SvgPending />
+        case 'not_started':
+          return <SvgRightArrow />
+      }
     }
-  }
+  }, [])
 
   return (
     <S.Wrapper $taskStatus={taskStatus} onClick={onClick}>

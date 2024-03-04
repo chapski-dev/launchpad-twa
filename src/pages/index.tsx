@@ -12,16 +12,8 @@ import { useDebounce } from 'hooks/useDebounce/useDebounce'
 import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Container } from 'ui/Container/Container'
-import {
-  SvgIdentificationCard,
-  SvgTglogo,
-  SvgTokenovaIcon,
-  SvgTonstarterIcon,
-  SvgWalletImg,
-  SvgXcomlogo,
-} from 'ui/icons'
+import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons'
 import { TabItem, Tabs } from 'ui/Tabs/Tabs'
-import { Task } from 'ui/Task/Task'
 
 const mockTabs = [
   {
