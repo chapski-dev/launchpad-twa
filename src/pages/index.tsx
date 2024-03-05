@@ -128,6 +128,13 @@ const Home: FC = () => {
                       tabs={mockTabs}
                     />
                   </S.HeaderWrapper>
+                  <button
+                    onClick={() => {
+                      router.push(AppRoutes.VestingDistribution)
+                    }}
+                  >
+                    VestingDistribution
+                  </button>
                 </Container>
                 <Container>{currentHomeContent}</Container>
               </>
