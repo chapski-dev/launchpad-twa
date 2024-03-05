@@ -1,4 +1,3 @@
-export { default as SvgIdentificationCard } from './IdentificationCard'
 export { default as SvgWalletImg } from './WalletImg'
 export { default as SvgArrow } from './Arrow'
 export { default as SvgCheck } from './Check'
