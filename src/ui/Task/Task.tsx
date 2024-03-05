@@ -15,6 +15,8 @@ export const Task: FC<TaskProps> = (props) => {
 
   const [taskStatus] = useState(status)
 
+  console.log(setTaskStatus)
+
   const renderSVG = useMemo(() => {
     return (status: 'success' | 'pending' | 'not_started') => {
       switch (status) {

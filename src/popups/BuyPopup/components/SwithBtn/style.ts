@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 
 export const ToggleWrapper = styled.div`
   cursor: pointer;
@@ -29,7 +29,8 @@ export const ActiveToggleBtn = styled.button<{ $isActive?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.color.text};
+  color: ${({ $isActive, theme }) =>
+    $isActive ? theme.color.white : theme.color.text};
   cursor: ${({ $isActive }) => ($isActive ? 'auto' : 'pointer')};
   transition: 0.25s;
   font-size: 16px;
