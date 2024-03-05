@@ -16,5 +16,5 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     background-color: ${({ theme }) => theme.color.bg};
   }
-
+  
 `
