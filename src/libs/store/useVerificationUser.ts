@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 export interface State {
-  verified: boolean;
+  verified: boolean
 }
 
 export type Actions = {
@@ -10,5 +10,5 @@ export type Actions = {
 
 export const useVerificationUserStore = create<State & Actions>((set) => ({
   verified: false,
-  setVerified: (qty: boolean) => set(() => ({ 'verified': qty })),
-}));
+  setVerified: (qty: boolean) => set(() => ({ verified: qty })),
+}))

@@ -141,9 +141,9 @@ const Home: FC = () => {
             )}
           </S.Wrapper>
         </Layout>
-        {isFirstAppLoad && invitedBy?.username && (
+        {/* {isFirstAppLoad && invitedBy?.username && (
           <S.InvitedAlertBlock userName={invitedBy.username} />
-        )}
+        )} */}
       </main>
     </>
   )
