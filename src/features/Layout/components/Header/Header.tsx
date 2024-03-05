@@ -1,4 +1,6 @@
 import { ChangeEvent, FC, useCallback, useState } from 'react'
+import { useRouter } from 'next/router'
+import { AppRoutes } from 'constants/app'
 import { SvgLoop } from 'ui/icons'
 import { ProfileBlock } from './components/ProfileBlock/ProfileBlock'
 import * as S from './style'
@@ -13,9 +15,11 @@ export const Header: FC = () => {
     []
   )
 
+  const router = useRouter()
+
   return (
     <S.FlexWrapper>
-      <S.UserInfoWrapper>
+      <S.UserInfoWrapper onClick={() => router.push(AppRoutes.Profile)}>
         <ProfileBlock />
       </S.UserInfoWrapper>
       <S.Input

@@ -7,8 +7,8 @@ import * as S from './style'
 export const ProfileBlock: FC = () => {
   const { user } = useTelegram()
 
-  const { verified} = useVerificationUserStore();
-  
+  const { verified } = useVerificationUserStore()
+
   return (
     <S.Wrapper>
       <S.ProfileBox>

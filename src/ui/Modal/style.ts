@@ -29,12 +29,11 @@ export const Modal = styled.div`
   width: 100%;
   box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.15);
   left: 0;
-  padding: 0 12px 12px;
   animation-duration: 0.2s;
   transition: all 0.3s ease-out;
   -webkit-transition: all 0.3s ease-out;
-  overflow-y: scroll;
   max-height: 95vh;
+  overflow-y: scroll;
   &.open {
     bottom: 0;
     animation-duration: 0.2s;

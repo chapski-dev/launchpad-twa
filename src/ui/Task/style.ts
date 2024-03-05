@@ -1,5 +1,4 @@
-import styled from 'styled-components'
-import { theme } from 'assets/style/theme'
+import { styled } from 'styled-components'
 
 export const Wrapper = styled.div<{ $taskStatus?: string }>`
   display: flex;
