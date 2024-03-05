@@ -15,6 +15,7 @@ declare module 'styled-components' {
       white: string
       black: string
       redAlert: string
+      pink: string
     }
     gradient: {
       g1: string

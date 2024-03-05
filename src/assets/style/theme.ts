@@ -14,6 +14,7 @@ export const theme: DefaultTheme = {
     white: '#fff',
     black: '#000',
     redAlert: 'rgb(255,0,0)',
+    pink: '#F03F9F',
   },
   gradient: {
     g1: 'linear-gradient(312deg, #82d3ff 0.46%, #ffa1ec 100%)',

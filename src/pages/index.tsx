@@ -150,6 +150,13 @@ const Home: FC = () => {
                       tabs={mockTabs}
                     />
                   </S.HeaderWrapper>
+                  <button
+                    onClick={() => {
+                      router.push(AppRoutes.VestingDistribution)
+                    }}
+                  >
+                    VestingDistribution
+                  </button>
                 </Container>
                 <Container>{currentHomeContent}</Container>
               </>
@@ -162,6 +169,7 @@ const Home: FC = () => {
         </Layout>
         {isFirstAppLoad && invitedBy?.username && (
           <S.InvitedAlertBlock userName={invitedBy.username} />
+
         )}
         <ConnectWalletPopup
           onClose={toggleConnectWalletPopup}
