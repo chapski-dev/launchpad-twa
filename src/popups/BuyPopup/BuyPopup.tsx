@@ -9,9 +9,11 @@ type BuyPopupProps = {
   open: boolean
 }
 
-const CHAIN = ['TON', 'ETH']
+const CHAIN_TABS = ['TON', 'ETH']
 
-export const BuyPopup: FC<BuyPopupProps> = ({ onClose, open }) => {
+export const BuyPopup: FC<BuyPopupProps> = (props) => {
+  const { onClose, open } = props
+
   const [activeChain, setActiveChain] = useState<string>('TON')
 
   return (
@@ -22,7 +24,7 @@ export const BuyPopup: FC<BuyPopupProps> = ({ onClose, open }) => {
           <SwithBtn
             activeChain={activeChain}
             onChange={setActiveChain}
-            tabs={CHAIN}
+            tabs={CHAIN_TABS}
           />
         </S.AllocationChainBlock>
         <S.AmountBlock>

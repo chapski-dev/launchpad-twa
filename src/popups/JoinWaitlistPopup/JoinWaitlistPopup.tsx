@@ -12,12 +12,14 @@ type BuyPopupProps = {
 
 const CHAIN = ['TON', 'ETH']
 
-export const JoinWaitlistPopup: FC<BuyPopupProps> = () => {
+export const JoinWaitlistPopup: FC<BuyPopupProps> = (props) => {
+  const { onClose, open } = props
+
   const [activeChain, setActiveChain] = useState<string>('TON')
 
   return (
     <>
-      <Modal onClose={() => {}} open={true} title="Buy XTON">
+      <Modal onClose={onClose} open={open} title="Buy XTON">
         <S.Wrapper>
           <S.Chain>
             <S.Title>Source Chain</S.Title>
