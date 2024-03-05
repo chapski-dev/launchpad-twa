@@ -7,13 +7,13 @@ import {
   useRef,
   useState,
 } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { TnC } from '@ton-and-company/sdk'
 import {
   ICOInfo,
   ParticipantFullInfo,
 } from '@ton-and-company/sdk/dist/core/sdk'
 import { useTonAddress } from '@tonconnect/ui-react'
-import { useQuery } from 'react-query'
 import { Address } from 'ton-core'
 import { MainButton } from 'features/MainButton'
 import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
@@ -33,7 +33,7 @@ type ParticipateModalProps = {
   icoInfo: ICOInfo
   participantState?: ParticipantFullInfo
   refetchProjectParticipantInfo: () => void
-  open: boolean;
+  open: boolean
 }
 
 export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
@@ -46,7 +46,6 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
     participantState,
     refetchProjectParticipantInfo,
     open,
-    
   } = props
 
   const [currentJettonsBuyAmount, setCurrentJettonsBuyAmount] =
@@ -76,7 +75,10 @@ export const ParticipateModal: FC<ParticipateModalProps> = (props) => {
   const jettonsInputRef = useRef<HTMLInputElement | null>(null)
   const tonInputRef = useRef<HTMLInputElement | null>(null)
 
-  const { data: tonPrice } = useQuery(['currentTonPrice'], () => TnC.tonPrice())
+  const { data: tonPrice } = useQuery({
+    queryKey: ['currentTonPrice'],
+    queryFn: () => TnC.tonPrice(),
+  })
 
   useEffect(() => {
     if (typeof document !== 'undefined') {

@@ -1,5 +1,6 @@
 import { ReactElement, useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { FCWithChildren } from 'types/app'
 import * as S from './style'
 
@@ -7,7 +8,7 @@ type ModalProps = {
   className?: string
   onClose: (open: boolean) => void
   title: string | ReactElement
-  open: boolean;
+  open: boolean
 }
 
 const PORTAL_TARGET = 'portal'
@@ -19,24 +20,26 @@ const portalElement =
 export const Modal: FCWithChildren<ModalProps> = (props) => {
   const { children, className, onClose, title, open } = props
 
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(false)
+
+  const { webApp } = useTelegram()
 
   const handleClose = useCallback(() => {
-    setMounted(false);
-    setTimeout(() => onClose(false), 450);
-  }, [onClose]);
+    setMounted(false)
+    setTimeout(() => onClose(false), 450)
+  }, [onClose])
 
   useEffect(() => {
     if (open) {
-      setMounted(true);
+      webApp.expand()
+      setMounted(true)
     }
-  }, [open]);
-
+  }, [open, webApp])
 
   const handleKeyDown = useCallback(
     ({ key }: KeyboardEvent) => {
       if (key === 'Escape') {
-        handleClose();
+        handleClose()
       }
     },
     [handleClose]
@@ -69,5 +72,4 @@ export const Modal: FCWithChildren<ModalProps> = (props) => {
       portalElement
     )
   }
-
 }

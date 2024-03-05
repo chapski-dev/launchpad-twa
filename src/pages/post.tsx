@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import matter from 'gray-matter'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useQuery } from 'react-query'
 import { getPostByFilename } from 'api'
 import { PostFileType } from 'api/types'
 import { launchpadWebAppUrl } from 'constants/app'
@@ -31,22 +31,20 @@ const Post = () => {
     data: post,
     isLoading: isPostLoading,
     isSuccess: isPostLoaded,
-  } = useQuery(
-    ['post', fileName],
-    () => getPostByFilename({ fileName: fileName as string }),
-    {
-      enabled: !!fileName,
-      select: useCallback((data: PostFileType) => {
-        const { data: frontmatter, content } = matter(data.content)
+  } = useQuery({
+    queryKey: ['post', fileName],
+    queryFn: () => getPostByFilename({ fileName: fileName as string }),
+    enabled: !!fileName,
+    select: useCallback((data: PostFileType) => {
+      const { data: frontmatter, content } = matter(data.content)
 
-        return {
-          fileName: data.filename,
-          frontmatter,
-          content,
-        }
-      }, []),
-    }
-  )
+      return {
+        fileName: data.filename,
+        frontmatter,
+        content,
+      }
+    }, []),
+  })
 
   if (isPostLoading) {
     return <Loader type="postPage" />

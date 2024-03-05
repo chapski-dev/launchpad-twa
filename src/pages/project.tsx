@@ -1,10 +1,10 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { TnC } from '@ton-and-company/sdk'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import dayjs from 'dayjs'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useQuery } from 'react-query'
 import { Address } from 'ton-core'
 import { getICOProjectById } from 'api'
 import {
@@ -47,7 +47,9 @@ const Project: FC = () => {
     data: project,
     isLoading: isProjectLoading,
     isSuccess: isProjectLoaded,
-  } = useQuery(['icoProject'], () => getICOProjectById(id as string), {
+  } = useQuery({
+    queryKey: ['icoProject', id],
+    queryFn: () => getICOProjectById(id as string),
     enabled: Boolean(id),
     select: useCallback((data: any) => {
       const distributions: any[] =
@@ -97,18 +99,17 @@ const Project: FC = () => {
     data: participantState,
     isLoading: isParticipantStateLoading,
     refetch: refetchProjectParticipantInfo,
-  } = useQuery(
-    ['participantState'],
-    () => TnC.getParticipantState(userWalletAddress, project?.icoMasterAddress),
-    {
-      enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
-    }
-  )
+  } = useQuery({
+    queryKey: ['participantState'],
+    queryFn: () =>
+      TnC.getParticipantState(userWalletAddress, project?.icoMasterAddress),
+    enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
+  })
 
   const { data: currentIcoInfo, isLoading: isCurrentIcoInfoLoading } = useQuery(
-    ['currentIcoInfo'],
-    () => TnC.icoInfo(project?.icoMasterAddress),
     {
+      queryKey: ['currentIcoInfo'],
+      queryFn: () => TnC.icoInfo(project?.icoMasterAddress),
       enabled: Boolean(project?.icoMasterAddress),
     }
   )
@@ -249,18 +250,16 @@ const Project: FC = () => {
                   )}
                   ``
                 </S.Wrapper>
-                  <ParticipateModal
-                    icoInfo={currentIcoInfo!}
-                    icoMasterAddress={project?.icoMasterAddress}
-                    jettonImage={project?.metadata.image}
-                    onClose={setIsParticipateModakOpen}
-                    open={!!(participantState && isParticipateModalOpen)}
-                    participantState={participantState}
-                    refetchProjectParticipantInfo={
-                      refetchProjectParticipantInfo
-                    }
-                    symbol={project?.metadata.symbol}
-                  />
+                <ParticipateModal
+                  icoInfo={currentIcoInfo!}
+                  icoMasterAddress={project?.icoMasterAddress}
+                  jettonImage={project?.metadata.image}
+                  onClose={setIsParticipateModakOpen}
+                  open={!!(participantState && isParticipateModalOpen)}
+                  participantState={participantState}
+                  refetchProjectParticipantInfo={refetchProjectParticipantInfo}
+                  symbol={project?.metadata.symbol}
+                />
               </>
             )
           )}

@@ -3,6 +3,8 @@ import { useIsConnectionRestored, useTonAddress } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { useAccount } from 'wagmi'
+
 import { AppRoutes } from 'constants/app'
 import { PostsList, ProjectList } from 'domains/Home/components'
 import { Loader } from 'domains/Home/components/Projectslist/style'
@@ -11,6 +13,9 @@ import { Layout } from 'features/Layout/Layout'
 import { useDebounce } from 'hooks/useDebounce/useDebounce'
 import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
+import { BuyPopup } from 'popups/BuyPopup/BuyPopup'
+import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup'
+import { Button } from 'ui/Button/Button'
 import { Container } from 'ui/Container/Container'
 import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons'
 import { TabItem, Tabs } from 'ui/Tabs/Tabs'
@@ -46,6 +51,15 @@ const Home: FC = () => {
   const [searchValue, setSearchValue] = useState<string>('')
   const [isPromoImageLoaded, setIsPromoImageLoaded] = useState<boolean>(false)
 
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
+    useState<boolean>(false)
+
+  const [isBuyPopupOpen, setIsBuyPopupOpen] = useState<boolean>(false)
+
+  const { address: walletConnectAddress } = useAccount()
+
+  // const { disconnect } = useDisconnect()
+
   const router = useRouter()
 
   const debaunceSearchValue = useDebounce(searchValue)
@@ -60,6 +74,14 @@ const Home: FC = () => {
 
   const handleSearchInputChange = useCallback((value: string) => {
     setSearchValue(value)
+  }, [])
+
+  const toggleConnectWalletPopup = useCallback(() => {
+    setIsConnectWalletPopupOpen((prev) => !prev)
+  }, [])
+
+  const toggleBuyPopup = useCallback(() => {
+    setIsBuyPopupOpen((prev) => !prev)
   }, [])
 
   useEffect(() => {
@@ -132,11 +154,20 @@ const Home: FC = () => {
                 <Container>{currentHomeContent}</Container>
               </>
             )}
+            <Button onClick={toggleConnectWalletPopup}>
+              {walletConnectAddress ? 'Wallet info' : 'Connect Wallet'}
+            </Button>
+            <Button onClick={toggleBuyPopup}>Buy XTON Popup</Button>
           </S.Wrapper>
         </Layout>
         {isFirstAppLoad && invitedBy?.username && (
           <S.InvitedAlertBlock userName={invitedBy.username} />
         )}
+        <ConnectWalletPopup
+          onClose={toggleConnectWalletPopup}
+          open={isConnectWalletPopupOpen}
+        />
+        <BuyPopup onClose={toggleBuyPopup} open={isBuyPopupOpen} />
       </main>
     </>
   )
