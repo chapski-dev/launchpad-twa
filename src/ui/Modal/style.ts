@@ -29,7 +29,6 @@ export const Modal = styled.div`
   width: 100%;
   box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.15);
   left: 0;
-  padding: 0 12px 12px;
   animation-duration: .2s;
   transition: all .3s ease-out;
   -webkit-transition: all .3s ease-out;
