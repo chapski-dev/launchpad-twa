@@ -1,6 +1,6 @@
 import { FC, useCallback } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import matter from 'gray-matter'
-import { useQuery } from 'react-query'
 
 import { getPosts } from 'api'
 import { PostFileType } from 'api/types'
@@ -13,7 +13,9 @@ export const PostsList: FC = () => {
     data: posts,
     isLoading: isPostsLoading,
     isSuccess: isPostsLoaded,
-  } = useQuery(['posts'], () => getPosts(), {
+  } = useQuery({
+    queryKey: ['posts'],
+    queryFn: () => getPosts(),
     select: useCallback((data: PostFileType[]) => {
       const formatedPostsData = data.map((post: PostFileType) => {
         const { data: frontmatter } = matter(post.content)

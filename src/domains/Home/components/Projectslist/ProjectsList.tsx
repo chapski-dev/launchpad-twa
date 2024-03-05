@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import { getICOJettons } from 'api'
 import { ProjectCard } from './components'
 import * as S from './style'
@@ -15,9 +15,10 @@ export const ProjectList: FC<ProjectListProps> = (props) => {
     data: projects,
     isLoading: isProjectsLoading,
     isSuccess: isProjectsLoaded,
-  } = useQuery(['icoProjects', search], () =>
-    getICOJettons({ search, isFake: true })
-  )
+  } = useQuery({
+    queryKey: ['icoProjects'],
+    queryFn: () => getICOJettons({ search, isFake: true }),
+  })
 
   if (isProjectsLoading) {
     return <S.Loader type="projectCard" />

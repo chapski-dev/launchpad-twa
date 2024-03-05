@@ -1,6 +1,6 @@
 import { createContext, useEffect } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
-import { useMutation, useQuery } from 'react-query'
 import { getProfile, saveProfile } from 'api'
 import { ProfileInfoType } from 'api/types'
 import { Chains } from 'constants/blockchain'
@@ -28,41 +28,34 @@ export const ProfileProvider: FCWithChildren = (props) => {
 
   const { webApp, user } = useTelegram()
 
-  const { data: profileInfo, isLoading: isProfileInfoLoading } = useQuery(
-    ['profileInfo'],
-    () => getProfile({ telegram: user?.username }),
-    {
-      enabled: Boolean(user?.username),
-    }
-  )
+  const { data: profileInfo, isLoading: isProfileInfoLoading } = useQuery({
+    queryKey: ['profileInfo'],
+    queryFn: () => getProfile({ telegram: user?.username }),
+    enabled: Boolean(user?.username),
+  })
 
-  const { data: invitedByProfileInfo } = useQuery(
-    ['invitedByProfileInfo'],
-    () => getProfile({ referral_code: profileInfo?.referral_id }),
-    {
-      enabled: Boolean(profileInfo?.referral_id),
-    }
-  )
+  const { data: invitedByProfileInfo } = useQuery({
+    queryKey: ['referralProfileInfo'],
+    queryFn: () => getProfile({ referral_code: profileInfo?.referral_id }),
+    enabled: Boolean(profileInfo?.referral_id),
+  })
 
-  const { data: balance, refetch: refetchProfileBalance } = useQuery(
-    ['userBalance'],
-    () => getBalance(userWalletAddress, 'testnet'),
-    {
-      enabled: !!userWalletAddress,
-    }
-  )
+  const { data: balance, refetch: refetchProfileBalance } = useQuery({
+    queryKey: ['userBalance'],
+    queryFn: () => getBalance(userWalletAddress, 'testnet'),
+    enabled: !!userWalletAddress,
+  })
 
-  const { mutate: saveProfileInfo } = useMutation(
-    ['saveProfile'],
-    (profileData: ProfileInfoType) => saveProfile(profileData),
-    {
-      onSuccess: () => {
-        if (webApp) {
-          webApp.CloudStorage.setItem('isAlreadyAuthorized', 'true')
-        }
-      },
+  const { data: savedProfileData, mutate: saveProfileInfo } = useMutation({
+    mutationKey: ['saveProfile'],
+    mutationFn: (profileData: ProfileInfoType) => saveProfile(profileData),
+  })
+
+  useEffect(() => {
+    if (webApp && savedProfileData) {
+      webApp.CloudStorage.setItem('isAlreadyAuthorized', 'true')
     }
-  )
+  }, [savedProfileData, webApp])
 
   useEffect(() => {
     if (webApp && user) {

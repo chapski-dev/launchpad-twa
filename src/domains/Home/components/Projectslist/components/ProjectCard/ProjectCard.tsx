@@ -1,8 +1,8 @@
 import { FC, useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { TnC } from '@ton-and-company/sdk'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
-import { useQuery } from 'react-query'
 import { AppRoutes } from 'constants/app'
 import { toHumanNumber } from 'utils/toHumanNumber'
 import * as S from './style'
@@ -22,9 +22,10 @@ export const ProjectCard: FC<ProjectCardProps> = (props) => {
 
   const router = useRouter()
 
-  const { data: icoInfo } = useQuery(['icoInfo', icoMasterAddress], () =>
-    TnC.icoInfo(icoMasterAddress)
-  )
+  const { data: icoInfo } = useQuery({
+    queryKey: ['icoInfo', icoMasterAddress],
+    queryFn: () => TnC.icoInfo(icoMasterAddress),
+  })
 
   const handleProjectCardClick = () => {
     router.push({
