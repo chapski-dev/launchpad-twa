@@ -13,7 +13,7 @@ type TaskProps = {
 export const Task: FC<TaskProps> = (props) => {
   const { title, description, icon, onClick, status } = props
 
-  const [taskStatus, setTaskStatus] = useState(status)
+  const [taskStatus] = useState(status)
 
   console.log(setTaskStatus)
 
