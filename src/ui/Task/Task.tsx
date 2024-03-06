@@ -8,10 +8,11 @@ type TaskProps = {
   icon: ReactElement
   onClick?: () => void
   status: 'success' | 'pending' | 'not_started'
+  className?: string
 }
 
 export const Task: FC<TaskProps> = (props) => {
-  const { title, description, icon, onClick, status } = props
+  const { title, description, icon, onClick, status, className } = props
 
   const [taskStatus] = useState(status)
 
@@ -29,7 +30,7 @@ export const Task: FC<TaskProps> = (props) => {
   }, [])
 
   return (
-    <S.Wrapper $taskStatus={taskStatus} onClick={onClick}>
+    <S.Wrapper className={className} $taskStatus={taskStatus} onClick={onClick}>
       <S.LeftBlock>
         <S.Icon $taskStatus={taskStatus}>{icon}</S.Icon>
         <S.Info>
