@@ -35,10 +35,10 @@ export const JoinWaitlistPopup: FC<BuyPopupProps> = (props) => {
                 <SvgWalletImg />
                 Connected Wallet
               </S.NameBlock>
-              <S.WalletAdressBlock>
+              <S.WalletAddressBlock>
                 <SvgToncoinIcon />
                 {} FG4Y...FW42
-              </S.WalletAdressBlock>
+              </S.WalletAddressBlock>
             </S.WalletInfo>
             <S.Description>
               You will be joining waitlist with the specified wallet and you can

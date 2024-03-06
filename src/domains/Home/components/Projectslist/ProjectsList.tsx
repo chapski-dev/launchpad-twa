@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getICOJettons } from 'api'
 import { ProjectCard } from './components'
 import * as S from './style'
+import { WaitList } from '../WaitList/WaitList'
 
 type ProjectListProps = {
   search: string
@@ -27,6 +28,7 @@ export const ProjectList: FC<ProjectListProps> = (props) => {
   if (isProjectsLoaded) {
     return (
       <S.Wrapper>
+        <WaitList address="FG4Y...FW42" />
         {projects?.length > 0 ? (
           projects.map((project: any, idx: number) => (
             <ProjectCard
