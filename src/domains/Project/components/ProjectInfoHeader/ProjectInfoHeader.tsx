@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { Chains } from 'constants/blockchain'
+import { WaitList } from 'domains/Project/components/ProjectInfoHeader/components/WaitList/WaitList'
 import { Container } from 'ui/Container/Container'
 import { Chip } from './components/Chip/Chip'
 import * as S from './style'
@@ -26,6 +27,7 @@ export const ProjectInfoHeader: FC<ProjectInfoHeaderProps> = (props) => {
             {/* <Chip text={Chains[network].toUpperCase()} /> */}
           </S.TagsWrapper>
         </S.InfoWrapper>
+        <WaitList address="FG4Y...FW42" />
       </S.Wrapper>
     </Container>
   )

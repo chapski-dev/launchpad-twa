@@ -1,6 +1,6 @@
 import { FC, useState } from 'react'
 import { MainButton } from 'features/MainButton'
-import { SwithBtn } from 'popups/BuyPopup/components/SwithBtn/SwithBtn'
+import { SwithBtn } from 'popups/BuyPopup/components/SwitchBtn/SwitchBtn'
 import { SvgToncoinIcon, SvgWalletImg } from 'ui/icons'
 import { Modal } from 'ui/Modal'
 import * as S from './style'

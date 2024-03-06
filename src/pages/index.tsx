@@ -2,10 +2,7 @@ import { FC, useState, useCallback, useMemo, useEffect } from 'react'
 import { useIsConnectionRestored, useTonAddress } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import { useAccount } from 'wagmi'
-
-import { AppRoutes } from 'constants/app'
 import { PostsList, ProjectList, StoriesBlock } from 'domains/Home/components'
 import { Loader } from 'domains/Home/components/Projectslist/style'
 import * as S from 'domains/Home/style'
@@ -59,8 +56,6 @@ const Home: FC = () => {
   const { address: walletConnectAddress } = useAccount()
 
   // const { disconnect } = useDisconnect()
-
-  const router = useRouter()
 
   const debaunceSearchValue = useDebounce(searchValue)
 
@@ -142,13 +137,6 @@ const Home: FC = () => {
                       tabs={mockTabs}
                     />
                   </S.HeaderWrapper> */}
-                  <button
-                    onClick={() => {
-                      router.push(AppRoutes.VestingDistribution)
-                    }}
-                  >
-                    VestingDistribution
-                  </button>
                 </Container>
                 <Container>{currentHomeContent}</Container>
               </>

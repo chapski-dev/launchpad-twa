@@ -1,26 +1,30 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { TnC } from '@ton-and-company/sdk'
-import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
-import dayjs from 'dayjs'
+import { useTonAddress } from '@tonconnect/ui-react'
+// import dayjs from 'dayjs'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { Address } from 'ton-core'
+// import { Address } from 'ton-core'
 import { getICOProjectById } from 'api'
+import { AppRoutes } from 'constants/app'
 import {
   InfoBlock,
   ParticipatedInfo,
   ProjectInfoHeader,
   Tokenomics,
-  ParticipateModal,
+  // ParticipateModal,
 } from 'domains/Project/components'
 import * as S from 'domains/Project/style'
 import { BackButton } from 'features/BackButton'
 import { Layout } from 'features/Layout/Layout'
+// import { MainButton } from 'features/MainButton'
+// import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
 import { MainButton } from 'features/MainButton'
-import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
+import { BuyPopup } from 'popups/BuyPopup/BuyPopup'
+import { Button } from 'ui/Button/Button'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
 
@@ -34,9 +38,9 @@ const Project: FC = () => {
 
   const userWalletAddress = useTonAddress()
 
-  const [tonConnectUI] = useTonConnectUI()
+  // const [tonConnectUI] = useTonConnectUI()
 
-  const { sendTransaction } = useSendTransaction()
+  // const { sendTransaction } = useSendTransaction()
 
   const { webApp } = useTelegram()
 
@@ -101,7 +105,7 @@ const Project: FC = () => {
   const {
     data: participantState,
     isLoading: isParticipantStateLoading,
-    refetch: refetchProjectParticipantInfo,
+    // refetch: refetchProjectParticipantInfo,
   } = useQuery({
     queryKey: ['participantState'],
     queryFn: () =>
@@ -121,35 +125,35 @@ const Project: FC = () => {
     setIsParticipateModakOpen((prev) => !prev)
   }
 
-  const handleMainButtonClick = useCallback(() => {
-    if (!userWalletAddress) {
-      if (!webApp) {
-        return
-      }
+  // const handleMainButtonClick = useCallback(() => {
+  //   if (!userWalletAddress) {
+  //     if (!webApp) {
+  //       return
+  //     }
 
-      webApp?.expand()
+  //     webApp?.expand()
 
-      tonConnectUI.connectWallet()
+  //     tonConnectUI.connectWallet()
 
-      return
-    }
+  //     return
+  //   }
 
-    if (participantState?.participated) {
-      alert('You have already participated in this project')
+  //   if (participantState?.participated) {
+  //     alert('You have already participated in this project')
 
-      return
-    }
+  //     return
+  //   }
 
-    if (!isParticipateModalOpen) {
-      toggleParticipateModal()
-    }
-  }, [
-    isParticipateModalOpen,
-    participantState?.participated,
-    tonConnectUI,
-    userWalletAddress,
-    webApp,
-  ])
+  //   if (!isParticipateModalOpen) {
+  //     toggleParticipateModal()
+  //   }
+  // }, [
+  //   isParticipateModalOpen,
+  //   participantState?.participated,
+  //   tonConnectUI,
+  //   userWalletAddress,
+  //   webApp,
+  // ])
 
   const isLoading = useMemo(() => {
     if (userWalletAddress) {
@@ -166,35 +170,35 @@ const Project: FC = () => {
     userWalletAddress,
   ])
 
-  const isEarlyClaimButtonDisplayed = useMemo(() => {
-    if (!participantState || !participantState?.participated) {
-      return false
-    }
+  // const isEarlyClaimButtonDisplayed = useMemo(() => {
+  //   if (!participantState || !participantState?.participated) {
+  //     return false
+  //   }
 
-    return (
-      participantState.sale_state.state === 'can-end' &&
-      participantState.distribution_mode !== 2 &&
-      participantState.unlock_transactions.length === 0 &&
-      dayjs().isBefore(participantState.sale_state.endTime * 1000)
-    )
-  }, [participantState])
+  //   return (
+  //     participantState.sale_state.state === 'can-end' &&
+  //     participantState.distribution_mode !== 2 &&
+  //     participantState.unlock_transactions.length === 0 &&
+  //     dayjs().isBefore(participantState.sale_state.endTime * 1000)
+  //   )
+  // }, [participantState])
 
-  const handleEarlyClaimButtonClick = useCallback(async () => {
-    if (!project) {
-      return
-    }
+  // const handleEarlyClaimButtonClick = useCallback(async () => {
+  //   if (!project) {
+  //     return
+  //   }
 
-    const trxMessage = TnC.pingRequest(
-      Address.parse(project.icoMasterAddress),
-      (participantState as any)?.user_id
-    )
+  //   const trxMessage = TnC.pingRequest(
+  //     Address.parse(project.icoMasterAddress),
+  //     (participantState as any)?.user_id
+  //   )
 
-    const trx = await sendTransaction(trxMessage)
+  //   const trx = await sendTransaction(trxMessage)
 
-    if (trx.boc) {
-      alert('Early claim successfully submitted')
-    }
-  }, [project, participantState, sendTransaction])
+  //   if (trx.boc) {
+  //     alert('Early claim successfully submitted')
+  //   }
+  // }, [project, participantState, sendTransaction])
 
   return (
     <>
@@ -225,6 +229,13 @@ const Project: FC = () => {
                         symbol={project.metadata.symbol}
                       />
                     )}
+                    <Button
+                      onClick={() => {
+                        router.push(AppRoutes.VestingDistribution)
+                      }}
+                    >
+                      Vesting Distiribution page
+                    </Button>
                     <Tokenomics
                       distributions={project.distributions}
                       icoFundDistributions={project.icoFundDistributions}
@@ -235,7 +246,17 @@ const Project: FC = () => {
                       icoInfo={currentIcoInfo!}
                       mdContent={project.markdownInfo?.content}
                     />
-                    {!participantState?.participated &&
+                    <BuyPopup
+                      onClose={toggleParticipateModal}
+                      open={isParticipateModalOpen}
+                    />
+                    {!isParticipateModalOpen && (
+                      <MainButton
+                        onClick={toggleParticipateModal}
+                        text="Buy XTON"
+                      />
+                    )}
+                    {/* {!participantState?.participated &&
                       !isParticipateModalOpen && (
                         <MainButton
                           onClick={handleMainButtonClick}
@@ -251,9 +272,9 @@ const Project: FC = () => {
                         onClick={handleEarlyClaimButtonClick}
                         text="Early Claim"
                       />
-                    )}
+                    )} */}
                   </S.Wrapper>
-                  {currentIcoInfo && (
+                  {/* {currentIcoInfo && (
                     <ParticipateModal
                       icoInfo={currentIcoInfo!}
                       icoMasterAddress={project?.icoMasterAddress}
@@ -266,7 +287,7 @@ const Project: FC = () => {
                       }
                       symbol={project?.metadata.symbol}
                     />
-                  )}
+                  )} */}
                 </>
               )
             )}

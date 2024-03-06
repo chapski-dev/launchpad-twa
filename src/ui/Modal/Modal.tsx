@@ -36,6 +36,16 @@ export const Modal: FCWithChildren<ModalProps> = (props) => {
     }
   }, [open, webApp])
 
+  useEffect(() => {
+    if (typeof document !== 'undefined' && open) {
+      document.body.style.overflow = 'hidden'
+
+      return () => {
+        document.body.style.overflow = 'auto'
+      }
+    }
+  }, [open])
+
   const handleKeyDown = useCallback(
     ({ key }: KeyboardEvent) => {
       if (key === 'Escape') {

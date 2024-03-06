@@ -8,7 +8,7 @@ type SwithBtnProps = {
   tabs: string[]
 }
 
-export const SwithBtn: FC<SwithBtnProps> = (props) => {
+export const SwitchBtn: FC<SwithBtnProps> = (props) => {
   const { activeChain, onChange, className, tabs } = props
 
   return (
