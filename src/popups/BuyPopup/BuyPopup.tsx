@@ -11,10 +11,10 @@ type BuyPopupProps = {
 }
 
 const CHAIN_TABS = ['TON', 'ETH']
-const BALANCE = 100;
-const TON_PRICE = 0.02;
-const MIN_TON = 20;
-const MAX_TON = 50;
+const BALANCE = 100
+const TON_PRICE = 0.02
+const MIN_TON = 20
+const MAX_TON = 50
 
 export const BuyPopup: FC<BuyPopupProps> = (props) => {
   const { onClose, open } = props
@@ -24,35 +24,36 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
   const [formState, setFormState] = useState({
     ton: 1,
     xton: 4.5,
-  });
+  })
 
-  const handleSetValue = (type: 'ton' | 'xton') => (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+  const handleSetValue =
+    (type: 'ton' | 'xton') => (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
 
-    switch (type) {
-      case 'xton':
-        setFormState({
-          ton: Number((Number(value) * TON_PRICE).toFixed(2)),
-          xton: Number(value),
-        })
-        break;
+      switch (type) {
+        case 'xton':
+          setFormState({
+            ton: Number((Number(value) * TON_PRICE).toFixed(2)),
+            xton: Number(value),
+          })
+          break
 
-      case 'ton':
-        setFormState({
-          ton: Number(value),
-          xton: Number((Number(value) / TON_PRICE).toFixed(2))
-        })
-        break;
+        case 'ton':
+          setFormState({
+            ton: Number(value),
+            xton: Number((Number(value) / TON_PRICE).toFixed(2)),
+          })
+          break
+      }
     }
-  }
 
   const handleSetMax = () => {
     setFormState({
       xton: Number((Number(MAX_TON) * TON_PRICE).toFixed(2)),
-      ton: MAX_TON
+      ton: MAX_TON,
     })
   }
-  const wainting = true;
+  const wainting = true
 
   return (
     <Modal onClose={onClose} open={open} title="Buy XTON">
@@ -77,7 +78,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
           <S.RecountBlock>
             <S.Input
               actionElement={<S.Chain children="TON" />}
-              className='ton-input'
+              className="ton-input"
               max={MAX_TON}
               min={MIN_TON}
               onChange={handleSetValue('ton')}
@@ -112,4 +113,3 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
     </Modal>
   )
 }
-
