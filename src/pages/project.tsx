@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { TnC } from '@ton-and-company/sdk'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import dayjs from 'dayjs'
+import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Address } from 'ton-core'
@@ -22,6 +23,8 @@ import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
+
+const inter = Inter({ subsets: ['latin'] })
 
 const Project: FC = () => {
   const [isParticipateModalOpen, setIsParticipateModakOpen] =
@@ -198,73 +201,78 @@ const Project: FC = () => {
       <Head>
         <title>Project</title>
       </Head>
-      <BackButton onClick={() => router.back()} />
-      {webApp && (
-        <Layout>
-          {isLoading ? (
-            <Loader type="projectPage" />
-          ) : (
-            isProjectLoaded && (
-              <>
-                <S.Wrapper>
-                  <ProjectInfoHeader
-                    description={project.metadata.description}
-                    image={project.metadata.image}
-                    network={project.network}
-                    title={project.metadata.name}
-                  />
-                  <Line />
-                  {userWalletAddress && participantState?.participated && (
-                    <ParticipatedInfo
-                      icoMasterAddress={project.icoMasterAddress}
-                      participantState={participantState}
-                      symbol={project.metadata.symbol}
+      <main className={inter.className}>
+        <BackButton onClick={() => router.back()} />
+        {webApp && (
+          <Layout>
+            {isLoading ? (
+              <Loader type="projectPage" />
+            ) : (
+              isProjectLoaded && (
+                <>
+                  <S.Wrapper>
+                    <ProjectInfoHeader
+                      description={project.metadata.description}
+                      image={project.metadata.image}
+                      network={project.network}
+                      title={project.metadata.name}
                     />
-                  )}
-                  <Tokenomics
-                    distributions={project.distributions}
-                    icoFundDistributions={project.icoFundDistributions}
-                    icoParams={project.icoParams}
-                    totalSupply={project.totalSupply}
-                  />
-                  <InfoBlock
-                    icoInfo={currentIcoInfo!}
-                    mdContent={project.markdownInfo?.content}
-                  />
-                  {!participantState?.participated &&
-                    !isParticipateModalOpen && (
-                      <MainButton
-                        onClick={handleMainButtonClick}
-                        text={
-                          userWalletAddress
-                            ? 'Buy ' + project?.metadata.symbol
-                            : 'Connect Wallet'
-                        }
+                    <Line />
+                    {userWalletAddress && participantState?.participated && (
+                      <ParticipatedInfo
+                        icoMasterAddress={project.icoMasterAddress}
+                        participantState={participantState}
+                        symbol={project.metadata.symbol}
                       />
                     )}
-                  {isEarlyClaimButtonDisplayed && (
-                    <MainButton
-                      onClick={handleEarlyClaimButtonClick}
-                      text="Early Claim"
+                    <Tokenomics
+                      distributions={project.distributions}
+                      icoFundDistributions={project.icoFundDistributions}
+                      icoParams={project.icoParams}
+                      totalSupply={project.totalSupply}
+                    />
+                    <InfoBlock
+                      icoInfo={currentIcoInfo!}
+                      mdContent={project.markdownInfo?.content}
+                    />
+                    {!participantState?.participated &&
+                      !isParticipateModalOpen && (
+                        <MainButton
+                          onClick={handleMainButtonClick}
+                          text={
+                            userWalletAddress
+                              ? 'Buy ' + project?.metadata.symbol
+                              : 'Connect Wallet'
+                          }
+                        />
+                      )}
+                    {isEarlyClaimButtonDisplayed && (
+                      <MainButton
+                        onClick={handleEarlyClaimButtonClick}
+                        text="Early Claim"
+                      />
+                    )}
+                  </S.Wrapper>
+                  {currentIcoInfo && (
+                    <ParticipateModal
+                      icoInfo={currentIcoInfo!}
+                      icoMasterAddress={project?.icoMasterAddress}
+                      jettonImage={project?.metadata.image}
+                      onClose={setIsParticipateModakOpen}
+                      open={!!(participantState && isParticipateModalOpen)}
+                      participantState={participantState}
+                      refetchProjectParticipantInfo={
+                        refetchProjectParticipantInfo
+                      }
+                      symbol={project?.metadata.symbol}
                     />
                   )}
-                  ``
-                </S.Wrapper>
-                <ParticipateModal
-                  icoInfo={currentIcoInfo!}
-                  icoMasterAddress={project?.icoMasterAddress}
-                  jettonImage={project?.metadata.image}
-                  onClose={setIsParticipateModakOpen}
-                  open={!!(participantState && isParticipateModalOpen)}
-                  participantState={participantState}
-                  refetchProjectParticipantInfo={refetchProjectParticipantInfo}
-                  symbol={project?.metadata.symbol}
-                />
-              </>
-            )
-          )}
-        </Layout>
-      )}
+                </>
+              )
+            )}
+          </Layout>
+        )}
+      </main>
     </>
   )
 }

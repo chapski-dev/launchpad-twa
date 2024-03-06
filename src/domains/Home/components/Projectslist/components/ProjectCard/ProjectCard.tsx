@@ -43,7 +43,7 @@ export const ProjectCard: FC<ProjectCardProps> = (props) => {
 
     const currentSuppliedAmount = Number(toHumanNumber(icoInfo.supplied))
 
-    const currentSoftCapAmount = Number(toHumanNumber(icoInfo.softCap))
+    const currentSoftCapAmount = Number(toHumanNumber(icoInfo?.softCap))
 
     const currentTotalSupplyAmount = Number(toHumanNumber(icoInfo.totalSupply))
 

@@ -33,7 +33,7 @@ export const InfoBlock: FC<InfoBlockProps> = (props) => {
       case 'about':
         return mdContent && <MarkdownRenderer mdContent={mdContent} />
       case 'deal_tearms':
-        return <DealTerms icoInfo={icoInfo} />
+        return icoInfo && <DealTerms icoInfo={icoInfo} />
     }
   }, [activeTab.value, mdContent, icoInfo])
 

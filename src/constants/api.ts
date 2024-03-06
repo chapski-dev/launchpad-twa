@@ -1,4 +1,4 @@
-export const LAUNCHPAD_BASE_API_URL = 'https://front-staging.tokenova.fi/'
+export const LAUNCHPAD_BASE_API_URL = 'https://tokenova.fi/'
 
 export const ApiRoutes = {
   GetICOProjects: '/api/jettons/getICOJettons',

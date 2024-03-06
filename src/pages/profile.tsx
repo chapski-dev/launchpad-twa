@@ -1,8 +1,10 @@
-import { FC } from 'react'
+import { FC, useCallback, useState } from 'react'
+import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { BackButton } from 'features/BackButton'
 import { ProfileBlock } from 'features/Layout/components/Header/components/ProfileBlock/ProfileBlock'
+import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup'
 import { Container } from 'ui/Container/Container'
 import {
   SvgIdentificationCard,
@@ -13,7 +15,16 @@ import {
 import { Task } from 'ui/Task/Task'
 import * as S from '../domains/Profile/style/index'
 
+const inter = Inter({ subsets: ['latin'] })
+
 const Profile: FC = () => {
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
+    useState<boolean>(false)
+
+  const toggleConnectWalletPopup = useCallback(() => {
+    setIsConnectWalletPopupOpen((prev) => !prev)
+  }, [])
+
   const router = useRouter()
 
   return (
@@ -22,7 +33,7 @@ const Profile: FC = () => {
         <title>Profile</title>
       </Head>
       <BackButton onClick={() => router.back()} />
-      <main>
+      <main className={inter.className}>
         <S.Wrapper>
           <Container>
             <ProfileBlock />
@@ -37,7 +48,8 @@ const Profile: FC = () => {
               <Task
                 description="Description for Task 2"
                 icon={<SvgWalletImg />}
-                status="success"
+                onClick={toggleConnectWalletPopup}
+                status="not_started"
                 title="Connect wallet"
               />
               <Task
@@ -67,6 +79,10 @@ const Profile: FC = () => {
             </S.TaskWrapper>
           </Container>
         </S.Wrapper>
+        <ConnectWalletPopup
+          onClose={toggleConnectWalletPopup}
+          open={isConnectWalletPopupOpen}
+        />
       </main>
     </>
   )

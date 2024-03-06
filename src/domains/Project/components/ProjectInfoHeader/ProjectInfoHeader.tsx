@@ -12,7 +12,7 @@ type ProjectInfoHeaderProps = {
 }
 
 export const ProjectInfoHeader: FC<ProjectInfoHeaderProps> = (props) => {
-  const { image, title, description, network } = props
+  const { image, title, description } = props
 
   return (
     <Container>
@@ -23,7 +23,7 @@ export const ProjectInfoHeader: FC<ProjectInfoHeaderProps> = (props) => {
           <S.Description>{description}</S.Description>
           <S.TagsWrapper>
             <Chip text="DEMO PROJECT" />
-            <Chip text={Chains[network].toUpperCase()} />
+            {/* <Chip text={Chains[network].toUpperCase()} /> */}
           </S.TagsWrapper>
         </S.InfoWrapper>
       </S.Wrapper>
