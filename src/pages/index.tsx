@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { useAccount } from 'wagmi'
 
 import { AppRoutes } from 'constants/app'
-import { PostsList, ProjectList } from 'domains/Home/components'
+import { PostsList, ProjectList, StoriesBlock } from 'domains/Home/components'
 import { Loader } from 'domains/Home/components/Projectslist/style'
 import * as S from 'domains/Home/style'
 import { Layout } from 'features/Layout/Layout'
@@ -18,7 +18,7 @@ import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup
 import { Button } from 'ui/Button/Button'
 import { Container } from 'ui/Container/Container'
 import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons'
-import { TabItem, Tabs } from 'ui/Tabs/Tabs'
+import { TabItem } from 'ui/Tabs/Tabs'
 
 const mockTabs = [
   {
@@ -47,7 +47,7 @@ const mockTabs = [
 const inter = Inter({ subsets: ['latin'] })
 
 const Home: FC = () => {
-  const [selectedTab, setSelectedTab] = useState<TabItem>(mockTabs[0])
+  const [selectedTab] = useState<TabItem>(mockTabs[0])
   const [searchValue, setSearchValue] = useState<string>('')
   const [isPromoImageLoaded, setIsPromoImageLoaded] = useState<boolean>(false)
 
@@ -64,9 +64,9 @@ const Home: FC = () => {
 
   const debaunceSearchValue = useDebounce(searchValue)
 
-  const { invitedBy, balance } = useProfileContext()
+  const { balance } = useProfileContext()
 
-  const { webApp, isFirstAppLoad } = useTelegram()
+  const { webApp } = useTelegram()
 
   const isConnectionRestored = useIsConnectionRestored()
 
@@ -102,15 +102,6 @@ const Home: FC = () => {
     }
   }, [debaunceSearchValue, selectedTab.value])
 
-  const handePromoClick = useCallback(() => {
-    router.push({
-      pathname: AppRoutes.Post,
-      query: {
-        fileName: 'testnetcoins_post.md',
-      },
-    })
-  }, [router])
-
   if (
     !webApp ||
     !isConnectionRestored ||
@@ -133,23 +124,24 @@ const Home: FC = () => {
         <Layout onSearch={handleSearchInputChange}>
           <S.Wrapper>
             <Container>
-              <S.PromoImage
+              <StoriesBlock />
+              {/* <S.PromoImage
                 alt="testnet_promo_image"
                 onClick={handePromoClick}
                 onLoad={() => setIsPromoImageLoaded(true)}
                 src={'/images/testnetLaunch.png'}
-              />
+              /> */}
             </Container>
             {isPromoImageLoaded && (
               <>
                 <Container>
-                  <S.HeaderWrapper>
+                  {/* <S.HeaderWrapper>
                     <Tabs
                       activeTab={selectedTab}
                       onChange={setSelectedTab}
                       tabs={mockTabs}
                     />
-                  </S.HeaderWrapper>
+                  </S.HeaderWrapper> */}
                   <button
                     onClick={() => {
                       router.push(AppRoutes.VestingDistribution)
@@ -167,10 +159,9 @@ const Home: FC = () => {
             <Button onClick={toggleBuyPopup}>Buy XTON Popup</Button>
           </S.Wrapper>
         </Layout>
-        {isFirstAppLoad && invitedBy?.username && (
+        {/* {isFirstAppLoad && invitedBy?.username && (
           <S.InvitedAlertBlock userName={invitedBy.username} />
-
-        )}
+        )} */}
         <ConnectWalletPopup
           onClose={toggleConnectWalletPopup}
           open={isConnectWalletPopupOpen}

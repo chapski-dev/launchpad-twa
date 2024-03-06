@@ -1,1 +1,5 @@
-export { TelegramProvider, TelegramContext } from './TelegramProvider'
+export {
+  TelegramProvider,
+  TelegramContext,
+  useTelegramContext,
+} from './TelegramProvider'

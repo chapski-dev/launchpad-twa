@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import Stories from 'react-insta-stories'
+import { theme } from 'assets/style/theme'
 
 type StoriesViewerProps = {
   stories: {
@@ -20,13 +21,13 @@ export const StoriesViewer: FC<StoriesViewerProps> = (props) => {
       preloadCount={2}
       stories={stories}
       storyContainerStyles={{
-        backgroundColor: '#fff',
+        backgroundColor: theme.color.bg,
       }}
       storyInnerContainerStyles={{
-        backgroundColor: '#fff',
+        backgroundColor: theme.color.bg,
       }}
       storyStyles={{
-        backgroundColor: '#fff',
+        backgroundColor: theme.color.bg,
       }}
       width={'100vw'}
     />
