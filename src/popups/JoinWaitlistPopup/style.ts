@@ -40,7 +40,7 @@ export const NameBlock = styled.span`
   padding: 12px;
 `
 
-export const WalletAdressBlock = styled.div`
+export const WalletAddressBlock = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
