@@ -5,15 +5,18 @@ export const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: ${({ theme }) => theme.color.bgSecondary};
-  height: 112px;
   border-radius: 10px;
 `
 
 export const TitleBlock = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-between;
   width: 100%;
+  border-bottom: 1px solid ${({ theme }) => theme.color.bg};
+
+  svg {
+    color: white;
+  }
 `
 
 export const Title = styled.span`
@@ -24,6 +27,18 @@ export const Title = styled.span`
   font-weight: 600;
   padding: 12px;
   gap: 6px;
+
+  svg {
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    path {
+      animation: spin 5s linear infinite;
+    }
+  }
 `
 
 export const WalletAddress = styled.div`
@@ -32,22 +47,24 @@ export const WalletAddress = styled.div`
   justify-content: space-between;
   background-color: ${({ theme }) => theme.color.bg};
   color: ${({ theme }) => theme.color.text};
-  padding: 3px;
+  padding: 6px 8px;
   font-weight: 600;
   margin-right: 8px;
-  margin-top: 4px;
+  margin-top: 10px;
+  margin-bottom: 8px;
   border-radius: 4px;
   gap: 4px;
   font-size: 14px;
 
   svg {
-    width: 25px;
+    width: 30px;
   }
 `
 
 export const Description = styled.span`
   width: 100%;
-  padding: 24px 12px 0 12px;
+  padding: 12px 12px 12px 12px;
+  line-height: 180%;
   font-size: 14px;
   color: ${({ theme }) => theme.color.text};
 `
