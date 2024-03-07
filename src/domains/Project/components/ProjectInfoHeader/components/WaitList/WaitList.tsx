@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { SvgWalletImg } from 'ui/icons'
+import { SvgSpinnerLoader, SvgWalletImg } from 'ui/icons'
 import * as S from './style'
 
 type WaitListProps = {
@@ -11,7 +11,7 @@ export const WaitList: FC<WaitListProps> = ({ address }) => {
     <S.Wrapper>
       <S.TitleBlock>
         <S.Title>
-          <S.LoaderWaitList />
+          <SvgSpinnerLoader />
           Waitlist
         </S.Title>
         <S.WalletAddress>
