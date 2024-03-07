@@ -31,7 +31,7 @@ import { Loader } from 'ui/Loader/Loader'
 const inter = Inter({ subsets: ['latin'] })
 
 const Project: FC = () => {
-  const [isParticipateModalOpen, setIsParticipateModakOpen] =
+  const [isParticipateModalOpen, setIsParticipateModalOpen] =
     useState<boolean>(false)
 
   const router = useRouter()
@@ -122,7 +122,8 @@ const Project: FC = () => {
   )
 
   const toggleParticipateModal = () => {
-    setIsParticipateModakOpen((prev) => !prev)
+    console.log('click')
+    setIsParticipateModalOpen((prev) => !prev)
   }
 
   // const handleMainButtonClick = useCallback(() => {
@@ -199,6 +200,8 @@ const Project: FC = () => {
   //     alert('Early claim successfully submitted')
   //   }
   // }, [project, participantState, sendTransaction])
+
+  console.log(isParticipateModalOpen)
 
   return (
     <>

@@ -6,11 +6,11 @@ import { PostsList, ProjectList, StoriesBlock } from 'domains/Home/components'
 import { Loader } from 'domains/Home/components/Projectslist/style'
 import * as S from 'domains/Home/style'
 import { Layout } from 'features/Layout/Layout'
+
 import { useDebounce } from 'hooks/useDebounce/useDebounce'
 import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
-import { BuyPopup } from 'popups/BuyPopup/BuyPopup'
-import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup'
+
 import { Container } from 'ui/Container/Container'
 import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons'
 import { TabItem } from 'ui/Tabs/Tabs'
@@ -46,11 +46,6 @@ const Home: FC = () => {
   const [searchValue, setSearchValue] = useState<string>('')
   const [isPromoImageLoaded, setIsPromoImageLoaded] = useState<boolean>(false)
 
-  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
-    useState<boolean>(false)
-
-  const [isBuyPopupOpen, setIsBuyPopupOpen] = useState<boolean>(false)
-
   // const { disconnect } = useDisconnect()
 
   const debaunceSearchValue = useDebounce(searchValue)
@@ -65,14 +60,6 @@ const Home: FC = () => {
 
   const handleSearchInputChange = useCallback((value: string) => {
     setSearchValue(value)
-  }, [])
-
-  const toggleConnectWalletPopup = useCallback(() => {
-    setIsConnectWalletPopupOpen((prev) => !prev)
-  }, [])
-
-  const toggleBuyPopup = useCallback(() => {
-    setIsBuyPopupOpen((prev) => !prev)
   }, [])
 
   useEffect(() => {
@@ -92,6 +79,8 @@ const Home: FC = () => {
         return <PostsList />
     }
   }, [debaunceSearchValue, selectedTab.value])
+
+  console.log('est')
 
   if (
     !webApp ||
@@ -142,11 +131,6 @@ const Home: FC = () => {
         {/* {isFirstAppLoad && invitedBy?.username && (
           <S.InvitedAlertBlock userName={invitedBy.username} />
         )} */}
-        <ConnectWalletPopup
-          onClose={toggleConnectWalletPopup}
-          open={isConnectWalletPopupOpen}
-        />
-        <BuyPopup onClose={toggleBuyPopup} open={isBuyPopupOpen} />
       </main>
     </>
   )

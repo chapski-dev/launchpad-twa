@@ -1,7 +1,6 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import Stories from 'react-insta-stories'
 import { theme } from 'assets/style/theme'
-import { BackButton } from 'features/BackButton'
 
 type StoriesViewerProps = {
   stories: {
@@ -14,9 +13,28 @@ type StoriesViewerProps = {
 export const StoriesViewer: FC<StoriesViewerProps> = (props) => {
   const { stories, onClose } = props
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const tg = (window as any)?.Telegram.WebApp
+
+      tg.BackButton.show()
+
+      tg.onEvent('backButtonClicked', () => {
+        onClose?.()
+      })
+
+      return () => {
+        tg.offEvent('backButtonClicked', () => {
+          onClose?.()
+        })
+
+        tg.BackButton.hide()
+      }
+    }
+  }, [onClose])
+
   return (
     <>
-      <BackButton onClick={onClose} />
       <Stories
         defaultInterval={3000}
         height={'100vh'}
