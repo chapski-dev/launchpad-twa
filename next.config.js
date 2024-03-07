@@ -27,6 +27,14 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/js/telegram-web-app.js',
+        destination: 'https://telegram.org/js/telegram-web-app.js',
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig

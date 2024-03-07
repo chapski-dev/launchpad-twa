@@ -2,7 +2,6 @@ import { FC, useState, useCallback, useMemo, useEffect } from 'react'
 import { useIsConnectionRestored, useTonAddress } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
-import { useAccount } from 'wagmi'
 import { PostsList, ProjectList, StoriesBlock } from 'domains/Home/components'
 import { Loader } from 'domains/Home/components/Projectslist/style'
 import * as S from 'domains/Home/style'
@@ -12,7 +11,6 @@ import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { BuyPopup } from 'popups/BuyPopup/BuyPopup'
 import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup'
-import { Button } from 'ui/Button/Button'
 import { Container } from 'ui/Container/Container'
 import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons'
 import { TabItem } from 'ui/Tabs/Tabs'
@@ -52,8 +50,6 @@ const Home: FC = () => {
     useState<boolean>(false)
 
   const [isBuyPopupOpen, setIsBuyPopupOpen] = useState<boolean>(false)
-
-  const { address: walletConnectAddress } = useAccount()
 
   // const { disconnect } = useDisconnect()
 
@@ -141,10 +137,6 @@ const Home: FC = () => {
                 <Container>{currentHomeContent}</Container>
               </>
             )}
-            <Button onClick={toggleConnectWalletPopup}>
-              {walletConnectAddress ? 'Wallet info' : 'Connect Wallet'}
-            </Button>
-            <Button onClick={toggleBuyPopup}>Buy XTON Popup</Button>
           </S.Wrapper>
         </Layout>
         {/* {isFirstAppLoad && invitedBy?.username && (

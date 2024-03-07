@@ -30,7 +30,7 @@ export const Task: FC<TaskProps> = (props) => {
   }, [])
 
   return (
-    <S.Wrapper className={className} $taskStatus={taskStatus} onClick={onClick}>
+    <S.Wrapper $taskStatus={taskStatus} className={className} onClick={onClick}>
       <S.LeftBlock>
         <S.Icon $taskStatus={taskStatus}>{icon}</S.Icon>
         <S.Info>
