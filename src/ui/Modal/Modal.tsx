@@ -82,4 +82,6 @@ export const Modal: FCWithChildren<ModalProps> = (props) => {
       portalElement
     )
   }
+
+  return null
 }

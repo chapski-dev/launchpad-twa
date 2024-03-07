@@ -37,7 +37,7 @@ export const Layout: FCWithChildren<LayoutProps> = (props) => {
           placeholder="Search"
         />
       ) : (
-        <Header onSearchButtonClick={toggleSearchInput} />
+        <Header />
       )}
       {children}
     </S.Wrapper>
