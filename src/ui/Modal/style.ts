@@ -33,7 +33,6 @@ export const Modal = styled.div`
   transition: all 0.3s ease-out;
   -webkit-transition: all 0.3s ease-out;
   max-height: 95vh;
-  overflow-y: scroll;
   &.open {
     bottom: 0;
     animation-duration: 0.2s;
@@ -63,4 +62,8 @@ export const Close = styled(SvgClose)`
   path {
     fill: ${({ theme }) => theme.color.text};
   }
+`
+
+export const Content = styled.div`
+  overflow-y: scroll;
 `

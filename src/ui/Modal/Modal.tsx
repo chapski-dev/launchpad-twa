@@ -76,7 +76,9 @@ export const Modal: FCWithChildren<ModalProps> = (props) => {
             <S.Title>{title}</S.Title>
             <S.Close onClick={handleClose} />
           </S.Header>
+          <S.Content>
           {children}
+          </S.Content>
         </S.Modal>
       </>,
       portalElement
