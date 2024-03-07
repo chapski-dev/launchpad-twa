@@ -249,11 +249,21 @@ const Project: FC = () => {
                     <BuyPopup
                       onClose={toggleParticipateModal}
                       open={isParticipateModalOpen}
+                      //TODO: убрать после демо
+                      status={
+                        project.metadata.name === 'NebulaNet'
+                          ? 'join_waitlist'
+                          : undefined
+                      }
                     />
                     {!isParticipateModalOpen && (
                       <MainButton
                         onClick={toggleParticipateModal}
-                        text="Buy XTON"
+                        text={
+                          project.metadata.name === 'NebulaNet'
+                            ? 'Join Waitlist'
+                            : 'Buy XTON'
+                        }
                       />
                     )}
                     {/* {!participantState?.participated &&
