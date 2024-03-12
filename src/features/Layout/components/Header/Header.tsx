@@ -1,35 +1,32 @@
-import { ChangeEvent, FC, useCallback, useState } from 'react'
-import { useRouter } from 'next/router'
-import { AppRoutes } from 'constants/app'
-import { SvgLoop } from 'ui/icons'
-import { ProfileBlock } from './components/ProfileBlock/ProfileBlock'
-import * as S from './style'
+import { FC } from 'react';
+import { useRouter } from 'next/router';
+import { AppRoutes } from 'constants/app';
+import { SvgLoop } from 'ui/icons';
+import { ProfileBlock } from './components/ProfileBlock/ProfileBlock';
+import * as S from './style';
 
-export const Header: FC = () => {
-  const [searchValue, setSearchValue] = useState<string>('')
-  const [, setIsSearchFocused] = useState<boolean>(false)
-  const handleSearchInputChange = useCallback(
-    (evt: ChangeEvent<HTMLInputElement>) => {
-      setSearchValue(evt.target.value)
-    },
-    []
-  )
+type HeaderProps = {
+  onSearch: ((searchValue: string) => void) | undefined;
+  searchValue?: string;
+};
+export const Header: FC<HeaderProps> = (props) => {
+  const { onSearch, searchValue } = props;
 
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <S.FlexWrapper>
       <S.UserInfoWrapper onClick={() => router.push(AppRoutes.Profile)}>
         <ProfileBlock />
       </S.UserInfoWrapper>
-      <S.Input
-        icon={<SvgLoop />}
-        onBlur={() => setIsSearchFocused(false)}
-        onChange={handleSearchInputChange}
-        onFocus={() => setIsSearchFocused(true)}
-        placeholder="Search"
-        value={searchValue}
-      />
+      {router.pathname === AppRoutes.Home && (
+        <S.Input
+          icon={<SvgLoop />}
+          onChange={(e) => onSearch!(e.target.value)}
+          placeholder="Search"
+          value={searchValue}
+        />
+      )}
     </S.FlexWrapper>
-  )
-}
+  );
+};

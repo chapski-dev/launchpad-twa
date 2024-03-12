@@ -1,54 +1,51 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { TnC } from '@ton-and-company/sdk'
-import { useTonAddress } from '@tonconnect/ui-react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useTonAddress } from '@tonconnect/ui-react';
 // import dayjs from 'dayjs'
-import { Inter } from 'next/font/google'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
+import { Inter } from 'next/font/google';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 // import { Address } from 'ton-core'
-import { getICOProjectById } from 'api'
-import { AppRoutes } from 'constants/app'
+import { getICOProjectById } from 'api';
+import { AppRoutes } from 'constants/app';
 import {
-  InfoBlock,
-  ParticipatedInfo,
   ProjectInfoHeader,
-  Tokenomics,
   // ParticipateModal,
-} from 'domains/Project/components'
-import * as S from 'domains/Project/style'
-import { BackButton } from 'features/BackButton'
-import { Layout } from 'features/Layout/Layout'
+} from 'domains/Project/components';
+import * as S from 'domains/Project/style';
+import { BackButton } from 'features/BackButton';
+import { Layout } from 'features/Layout/Layout';
 // import { MainButton } from 'features/MainButton'
 // import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
-import { MainButton } from 'features/MainButton'
-import { useTelegram } from 'hooks/useTelegram/useTelegram'
-import { BuyPopup } from 'popups/BuyPopup/BuyPopup'
-import { Button } from 'ui/Button/Button'
-import { Line } from 'ui/Line/Line'
-import { Loader } from 'ui/Loader/Loader'
+import { MainButton } from 'features/MainButton';
+import { useTelegram } from 'hooks/useTelegram/useTelegram';
+import { BuyPopup } from 'popups/BuyPopup/BuyPopup';
+import { Button } from 'ui/Button/Button';
+import { Container } from 'ui/Container/Container';
+import { Line } from 'ui/Line/Line';
+import { Loader } from 'ui/Loader/Loader';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 const Project: FC = () => {
   const [isParticipateModalOpen, setIsParticipateModalOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const userWalletAddress = useTonAddress()
+  const userWalletAddress = useTonAddress();
 
   // const [tonConnectUI] = useTonConnectUI()
 
   // const { sendTransaction } = useSendTransaction()
 
-  const { webApp } = useTelegram()
+  const { webApp } = useTelegram();
 
-  const { id } = router.query
+  const { id } = router.query;
 
   useEffect(() => {
-    webApp?.expand()
-  }, [webApp])
+    webApp?.expand();
+  }, [webApp]);
 
   const {
     data: project,
@@ -61,33 +58,33 @@ const Project: FC = () => {
     select: useCallback((data: any) => {
       const distributions: any[] =
         data.tokenomics.find(({ name }: any) => name === 'distribution')
-          ?.value || []
+          ?.value || [];
 
       const icoParams = data.tokenomics.find(
         ({ name }: any) => name === 'ico'
-      )?.value
+      )?.value;
 
       const icoFundDistributions =
         data.tokenomics.find(({ name }: any) => name === 'icoDistribution')
-          ?.value || []
+          ?.value || [];
 
       const getTotalSupply = () => {
         if (distributions) {
           const totalByDistributions = distributions.reduce<number>(
             (acc, curr) => Number(acc) + Number(curr.value),
             0
-          )
+          );
 
           if (icoParams) {
             const totalSupply =
-              totalByDistributions + Number(icoParams.jettonsAmount)
+              totalByDistributions + Number(icoParams.jettonsAmount);
 
-            return totalSupply
+            return totalSupply;
           }
 
-          return totalByDistributions
+          return totalByDistributions;
         }
-      }
+      };
 
       return {
         ...data,
@@ -98,33 +95,32 @@ const Project: FC = () => {
           : null,
         distributions,
         icoFundDistributions,
-      }
+      };
     }, []),
-  })
+  });
 
-  const {
-    data: participantState,
-    isLoading: isParticipantStateLoading,
-    // refetch: refetchProjectParticipantInfo,
-  } = useQuery({
-    queryKey: ['participantState'],
-    queryFn: () =>
-      TnC.getParticipantState(userWalletAddress, project?.icoMasterAddress),
-    enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
-  })
+  // const {
+  //   data: participantState,
+  //   isLoading: isParticipantStateLoading,
+  //   // refetch: refetchProjectParticipantInfo,
+  // } = useQuery({
+  //   queryKey: ['participantState'],
+  //   queryFn: () =>
+  //     TnC.getParticipantState(userWalletAddress, project?.icoMasterAddress),
+  //   enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
+  // })
 
-  const { data: currentIcoInfo, isLoading: isCurrentIcoInfoLoading } = useQuery(
-    {
-      queryKey: ['currentIcoInfo'],
-      queryFn: () => TnC.icoInfo(project?.icoMasterAddress),
-      enabled: Boolean(project?.icoMasterAddress),
-    }
-  )
+  // const { data: currentIcoInfo, isLoading: isCurrentIcoInfoLoading } = useQuery(
+  //   {
+  //     queryKey: ['currentIcoInfo'],
+  //     queryFn: () => TnC.icoInfo(project?.icoMasterAddress),
+  //     enabled: Boolean(project?.icoMasterAddress),
+  //   }
+  // )
 
   const toggleParticipateModal = () => {
-    console.log('click')
-    setIsParticipateModalOpen((prev) => !prev)
-  }
+    setIsParticipateModalOpen((prev) => !prev);
+  };
 
   // const handleMainButtonClick = useCallback(() => {
   //   if (!userWalletAddress) {
@@ -159,17 +155,17 @@ const Project: FC = () => {
   const isLoading = useMemo(() => {
     if (userWalletAddress) {
       return (
-        isProjectLoading || isParticipantStateLoading || isCurrentIcoInfoLoading
-      )
+        isProjectLoading
+      );
     }
 
-    return isProjectLoading
+    return isProjectLoading;
   }, [
-    isCurrentIcoInfoLoading,
-    isParticipantStateLoading,
+    // isCurrentIcoInfoLoading,
+    // isParticipantStateLoading,
     isProjectLoading,
     userWalletAddress,
-  ])
+  ]);
 
   // const isEarlyClaimButtonDisplayed = useMemo(() => {
   //   if (!participantState || !participantState?.participated) {
@@ -201,7 +197,6 @@ const Project: FC = () => {
   //   }
   // }, [project, participantState, sendTransaction])
 
-  console.log(isParticipateModalOpen)
 
   return (
     <>
@@ -218,58 +213,60 @@ const Project: FC = () => {
               isProjectLoaded && (
                 <>
                   <S.Wrapper>
-                    <ProjectInfoHeader
-                      description={project.metadata.description}
-                      image={project.metadata.image}
-                      network={project.network}
-                      title={project.metadata.name}
-                    />
-                    <Line />
-                    {userWalletAddress && participantState?.participated && (
+                    <Container>
+                      <ProjectInfoHeader
+                        description={project.description}
+                        image={project.image}
+                        // network={project.network}
+                        title={project.name}
+                      />
+                      <Line />
+                      {/* {userWalletAddress && participantState?.participated && (
                       <ParticipatedInfo
                         icoMasterAddress={project.icoMasterAddress}
                         participantState={participantState}
-                        symbol={project.metadata.symbol}
+                        symbol={project.symbol}
                       />
-                    )}
-                    <Button
-                      onClick={() => {
-                        router.push(AppRoutes.VestingDistribution)
-                      }}
-                    >
-                      Vesting Distiribution page
-                    </Button>
-                    <Tokenomics
+                    )} */}
+                      <Button
+                        onClick={() => {
+                          router.push(AppRoutes.VestingDistribution);
+                        }}
+                      >
+                        Vesting Distiribution page
+                      </Button>
+                      {/* // TODO: У project появился ключ tokenomics. Полагаю из него надо будет парсить инфу */}
+                      {/* <Tokenomics
                       distributions={project.distributions}
                       icoFundDistributions={project.icoFundDistributions}
                       icoParams={project.icoParams}
                       totalSupply={project.totalSupply}
-                    />
-                    <InfoBlock
+                    /> */}
+                      {/* <InfoBlock
                       icoInfo={currentIcoInfo!}
                       mdContent={project.markdownInfo?.content}
-                    />
-                    <BuyPopup
-                      onClose={toggleParticipateModal}
-                      open={isParticipateModalOpen}
-                      //TODO: убрать после демо
-                      status={
-                        project.metadata.name === 'NebulaNet'
-                          ? 'join_waitlist'
-                          : undefined
-                      }
-                    />
-                    {!isParticipateModalOpen && (
-                      <MainButton
-                        onClick={toggleParticipateModal}
-                        text={
-                          project.metadata.name === 'NebulaNet'
-                            ? 'Join Waitlist'
-                            : 'Buy XTON'
+                    /> */}
+                      <BuyPopup
+                        onClose={toggleParticipateModal}
+                        open={isParticipateModalOpen}
+                        //TODO: убрать после демо
+                        status={
+                          project.name === 'NebulaNet'
+                            ? 'join_waitlist'
+                            : undefined
                         }
                       />
-                    )}
-                    {/* {!participantState?.participated &&
+                      {!isParticipateModalOpen && (
+                        <MainButton
+                          onClick={toggleParticipateModal}
+                          text={
+                            project.name === 'NebulaNet'
+                              ? 'Join Waitlist'
+                              : 'Buy XTON'
+                          }
+                        />
+                      )}
+                      {/* {!participantState?.participated &&
                       !isParticipateModalOpen && (
                         <MainButton
                           onClick={handleMainButtonClick}
@@ -286,6 +283,7 @@ const Project: FC = () => {
                         text="Early Claim"
                       />
                     )} */}
+                    </Container>
                   </S.Wrapper>
                   {/* {currentIcoInfo && (
                     <ParticipateModal
@@ -308,7 +306,7 @@ const Project: FC = () => {
         )}
       </main>
     </>
-  )
-}
+  );
+};
 
-export default Project
+export default Project;

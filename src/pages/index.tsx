@@ -1,19 +1,19 @@
-import { FC, useState, useCallback, useMemo, useEffect } from 'react'
-import { useIsConnectionRestored, useTonAddress } from '@tonconnect/ui-react'
-import { Inter } from 'next/font/google'
-import Head from 'next/head'
-import { PostsList, ProjectList, StoriesBlock } from 'domains/Home/components'
-import { Loader } from 'domains/Home/components/Projectslist/style'
-import * as S from 'domains/Home/style'
-import { Layout } from 'features/Layout/Layout'
+import { FC, useState, useCallback, useMemo, useEffect } from 'react';
+import { useIsConnectionRestored, useTonAddress } from '@tonconnect/ui-react';
+import { Inter } from 'next/font/google';
+import Head from 'next/head';
+import { PostsList, ProjectList, StoriesBlock } from 'domains/Home/components';
+import { Loader } from 'domains/Home/components/Projectslist/style';
+import * as S from 'domains/Home/style';
+import { Layout } from 'features/Layout/Layout';
 
-import { useDebounce } from 'hooks/useDebounce/useDebounce'
-import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
-import { useTelegram } from 'hooks/useTelegram/useTelegram'
+import { useDebounce } from 'hooks/useDebounce/useDebounce';
+import { useProfileContext } from 'hooks/useProfileContext/useProfileContext';
+import { useTelegram } from 'hooks/useTelegram/useTelegram';
 
-import { Container } from 'ui/Container/Container'
-import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons'
-import { TabItem } from 'ui/Tabs/Tabs'
+import { Container } from 'ui/Container/Container';
+import { SvgTokenovaIcon, SvgTonstarterIcon } from 'ui/icons';
+import { TabItem } from 'ui/Tabs/Tabs';
 
 const mockTabs = [
   {
@@ -37,50 +37,48 @@ const mockTabs = [
   //   label: 'Blog',
   //   value: 'blog',
   // },
-]
+];
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 const Home: FC = () => {
-  const [selectedTab] = useState<TabItem>(mockTabs[0])
-  const [searchValue, setSearchValue] = useState<string>('')
-  const [isPromoImageLoaded, setIsPromoImageLoaded] = useState<boolean>(false)
+  const [selectedTab] = useState<TabItem>(mockTabs[0]);
+  const [searchValue, setSearchValue] = useState('');
+  const [isPromoImageLoaded, setIsPromoImageLoaded] = useState(false);
 
   // const { disconnect } = useDisconnect()
 
-  const debaunceSearchValue = useDebounce(searchValue)
+  const debaunceSearchValue = useDebounce(searchValue);
 
-  const { balance } = useProfileContext()
+  const { balance } = useProfileContext();
 
-  const { webApp } = useTelegram()
+  const { webApp } = useTelegram();
 
-  const isConnectionRestored = useIsConnectionRestored()
+  const isConnectionRestored = useIsConnectionRestored();
 
-  const userWalletAddress = useTonAddress()
+  const userWalletAddress = useTonAddress();
 
   const handleSearchInputChange = useCallback((value: string) => {
-    setSearchValue(value)
-  }, [])
+    setSearchValue(value);
+  }, []);
 
   useEffect(() => {
-    const promoImg = new Image()
-    promoImg.src = '/images/testnetLaunch.png'
+    const promoImg = new Image();
+    promoImg.src = '/images/testnetLaunch.png';
 
     promoImg.onload = () => {
-      setIsPromoImageLoaded(true)
-    }
-  }, [])
+      setIsPromoImageLoaded(true);
+    };
+  }, []);
 
   const currentHomeContent = useMemo(() => {
     switch (selectedTab.value) {
       case 'tokenova':
-        return <ProjectList search={debaunceSearchValue} />
+        return <ProjectList search={debaunceSearchValue} />;
       case 'blog':
-        return <PostsList />
+        return <PostsList />;
     }
-  }, [debaunceSearchValue, selectedTab.value])
-
-  console.log('est')
+  }, [debaunceSearchValue, selectedTab.value]);
 
   if (
     !webApp ||
@@ -92,7 +90,7 @@ const Home: FC = () => {
       <S.LoaderWrapper>
         <Loader type="homePage" />
       </S.LoaderWrapper>
-    )
+    );
   }
 
   return (
@@ -101,7 +99,7 @@ const Home: FC = () => {
         <title>Home</title>
       </Head>
       <main className={inter.className}>
-        <Layout onSearch={handleSearchInputChange}>
+        <Layout onSearch={handleSearchInputChange} searchValue={searchValue}>
           <S.Wrapper>
             <Container>
               <StoriesBlock />
@@ -123,7 +121,9 @@ const Home: FC = () => {
                     />
                   </S.HeaderWrapper> */}
                 </Container>
-                <Container>{currentHomeContent}</Container>
+                <Container>
+                  {currentHomeContent}
+                </Container>
               </>
             )}
           </S.Wrapper>
@@ -133,7 +133,7 @@ const Home: FC = () => {
         )} */}
       </main>
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
