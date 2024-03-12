@@ -1,29 +1,41 @@
 import { ApiRoutes } from 'constants/api'
-import { AXIOS_LAUNCHPAD_INSTANCE } from 'libs/axios-instance/axios-instance'
+import {
+  AXIOS_LAUNCHPAD_INSTANCE,
+  AXIOS_XAPI_LAUNCHPAD_INSTANCE,
+} from 'libs/axios-instance/axios-instance'
 import { ProfileInfoType } from './types'
 
-export const getICOJettons = async (params: {
-  search: string
-  isFake?: boolean
-}) => {
-  const { data } = await AXIOS_LAUNCHPAD_INSTANCE.get(
+export interface GetICOJettonsRes {
+  name: string
+  description: string
+  image: string
+  symbol: string
+  id: string
+}
+export const getICOJettons = (params?: { q: string }) =>
+  AXIOS_XAPI_LAUNCHPAD_INSTANCE.get<GetICOJettonsRes[]>(
     ApiRoutes.GetICOProjects,
     { params }
-  )
+  ).then((res) => res.data)
 
-  return data
+export interface GetICOProjectByIdRes {
+  id: string
+  name: string
+  description: string
+  image: string
+  symbol: string
+  page_data: string
+  tokenomics: Tokenomic[]
+}
+export interface Tokenomic {
+  name: string
+  amount: string
 }
 
-export const getICOProjectById = async (id: string) => {
-  const { data } = await AXIOS_LAUNCHPAD_INSTANCE.get(
-    ApiRoutes.GetICOProjectById,
-    {
-      params: { id, isFake: true },
-    }
-  )
-
-  return data
-}
+export const getICOProjectById = (id: string) =>
+  AXIOS_XAPI_LAUNCHPAD_INSTANCE.get<GetICOProjectByIdRes>(
+    `${ApiRoutes.GetICOProjectById}/${id}`
+  ).then((res) => res.data)
 
 export const getPosts = async () => {
   const { data } = await AXIOS_LAUNCHPAD_INSTANCE.get(ApiRoutes.GetBlogPosts)
