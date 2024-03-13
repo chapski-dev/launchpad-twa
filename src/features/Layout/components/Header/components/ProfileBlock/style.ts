@@ -1,4 +1,5 @@
 import { styled } from 'styled-components'
+import { GetXapiProfileResp } from 'api/types';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -26,14 +27,9 @@ export const Name = styled.span`
   color: ${({ theme }) => theme.color.text};
 `
 
-export const Verified = styled.span`
-  font-size: 15px;
-  color: ${({ theme }) => theme.color.success};
-`
-
-export const Pending = styled.span`
-  font-size: 14px;
-  color: ${({ theme }) => theme.color.warning};
+export const Status = styled.span<{ state?: GetXapiProfileResp['state'] }>`
+  font-size: ${({state}) => state === 'verified' ? '15px' : '14px' };
+  color: ${({ theme, state }) => state === 'verified' ? theme.color.success : theme.color.warning};
 `
 
 export const ProfileBox = styled.div`
