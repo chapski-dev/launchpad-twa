@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react'
 
 const WebApp =
-  typeof window !== 'undefined' ? (window as any).Telegram?.WebApp : undefined
+  typeof window !== 'undefined' ? window.Telegram?.WebApp : undefined
 
 interface MainButtonProps {
   disabled?: boolean
@@ -72,9 +72,9 @@ export const MainButton: FC<MainButtonProps> = ({
 
   useEffect(() => {
     if (onClick && mainButton) {
-      WebApp.MainButton.onClick(onClick)
+      WebApp?.MainButton.onClick(onClick)
       return () => {
-        WebApp.MainButton.offClick(onClick)
+        WebApp?.MainButton.offClick(onClick)
       }
     }
   }, [onClick])

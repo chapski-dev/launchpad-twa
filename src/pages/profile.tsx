@@ -1,10 +1,12 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback,  useState } from 'react';
 import { Inter } from 'next/font/google';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import Script from 'next/script';
 import { BackButton } from 'features/BackButton';
 import { ProfileBlock } from 'features/Layout/components/Header/components/ProfileBlock/ProfileBlock';
 import { useProfileContext } from 'hooks/useProfileContext/useProfileContext';
+import { useTelegram } from 'hooks/useTelegram/useTelegram';
 import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup';
 import { Button } from 'ui/Button/Button';
 import { Container } from 'ui/Container/Container';
@@ -23,13 +25,35 @@ const Profile: FC = () => {
 
   const router = useRouter();
 
+
+  const { user } = useTelegram();
+
   const { xapiProfileInfo, setXapiProfileFlag } = useProfileContext();
 
+  const loadBlockpassWidget = useCallback(() => {
+    const blockpass = new window.BlockpassKYCConnect(
+      'xton_6dc2e', // service client_id from the admin console
+      {
+        refId: user?.id?.toString() || '', // assign the local user_id of the connected user
+      }
+    );
+    blockpass?.startKYCConnect();
+
+    blockpass.on('KYCConnectSuccess', () => {
+      //add code that will trigger when data have been sent.
+    });
+
+  }, [user?.id]);
+  
   return (
     <>
       <Head>
         <title>Profile</title>
       </Head>
+      {/** инициализация BlockpassKYCConnect в нексте происходит именно так */}
+      <Script onLoad={loadBlockpassWidget} 
+        src="https://cdn.blockpass.org/widget/scripts/release/3.0.2/blockpass-kyc-connect.prod.js"
+      />
       <BackButton onClick={() => router.back()} />
       <main className={inter.className}>
         <S.Wrapper>
@@ -68,12 +92,14 @@ const Profile: FC = () => {
                 status={xapiProfileInfo?.wallets?.task?.done ? "done" : "not-started"}
                 title={xapiProfileInfo?.wallets?.task?.title}
               />
-              <Task
-                description={xapiProfileInfo?.kyc?.task?.description}
-                icon='kyc'
-                status={xapiProfileInfo?.kyc?.task?.state}
-                title={xapiProfileInfo?.kyc?.task?.title}
-              />
+              <div id="blockpass-kyc-connect"> {/** этот айди является обязательным тк либа тригерится на onClick по нему, удалять нелья!  */}
+                <Task
+                  description={xapiProfileInfo?.kyc?.task?.description}
+                  icon='kyc'
+                  status={xapiProfileInfo?.kyc?.task?.state}
+                  title={xapiProfileInfo?.kyc?.task?.title}
+                />
+              </div>
               {xapiProfileInfo?.social?.map((el) => (
                 <Task
                   description={el?.optional ? "Optional" : ''}

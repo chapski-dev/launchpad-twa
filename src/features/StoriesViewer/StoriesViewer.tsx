@@ -15,7 +15,7 @@ export const StoriesViewer: FC<StoriesViewerProps> = (props) => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const tg = (window as any)?.Telegram.WebApp
+      const tg = window?.Telegram.WebApp
 
       tg.BackButton.show()
 

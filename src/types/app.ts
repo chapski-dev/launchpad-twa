@@ -1,4 +1,6 @@
 import { FC, PropsWithChildren } from 'react'
+import { BlockpassKYCConnect, BlockpassKYCConnectOptions } from './BlockpassKYCConnect';
+import { Telegram } from './telegram';
 
 declare module 'styled-components' {
   export interface DefaultTheme {
@@ -23,5 +25,15 @@ declare module 'styled-components' {
     }
   }
 }
+
+declare global {
+  interface Window {
+    Telegram: Telegram;
+    BlockpassKYCConnect: {
+      new (clientId: string, options?: BlockpassKYCConnectOptions): BlockpassKYCConnect;
+    };
+  }
+}
+
 
 export type FCWithChildren<T = {}> = FC<PropsWithChildren<T>>
