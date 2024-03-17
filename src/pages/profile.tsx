@@ -15,6 +15,8 @@ import * as S from '../domains/Profile/style/index';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const BLOCKPASS_CLIENT_ID = process.env.BLOCKPASS_CLIENT_ID
+
 const Profile: FC = () => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState<boolean>(false);
@@ -32,7 +34,7 @@ const Profile: FC = () => {
 
   const loadBlockpassWidget = useCallback(() => {
     const blockpass = new window.BlockpassKYCConnect(
-      'xton_6dc2e', // service client_id from the admin console
+      BLOCKPASS_CLIENT_ID as string, // service client_id from the admin console
       {
         refId: user?.id?.toString() || '', // assign the local user_id of the connected user
       }
@@ -86,27 +88,27 @@ const Profile: FC = () => {
               <Task
                 description={xapiProfileInfo?.wallets?.task?.description}
                 done={xapiProfileInfo?.wallets?.task?.done}
-                icon='wallet'
                 onClick={toggleConnectWalletPopup}
                 optional={xapiProfileInfo?.wallets?.task?.optional}
                 status={xapiProfileInfo?.wallets?.task?.done ? "done" : "not-started"}
                 title={xapiProfileInfo?.wallets?.task?.title}
+                type='wallet'
               />
               <div id="blockpass-kyc-connect"> {/** этот айди является обязательным тк либа тригерится на onClick по нему, удалять нелья!  */}
                 <Task
                   description={xapiProfileInfo?.kyc?.task?.description}
-                  icon='kyc'
                   status={xapiProfileInfo?.kyc?.task?.state}
                   title={xapiProfileInfo?.kyc?.task?.title}
+                  type='kyc'
                 />
               </div>
               {xapiProfileInfo?.social?.map((el) => (
                 <Task
                   description={el?.optional ? "Optional" : ''}
-                  icon={el?.type as any}
                   optional={el?.optional}
                   status="not-started"
                   title={el?.title}
+                  type={el?.type}
                 />
               ))}
             </S.TaskWrapper>
