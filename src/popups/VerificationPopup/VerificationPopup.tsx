@@ -1,24 +1,25 @@
-import { FC, useCallback, useState } from 'react';
-import { useProfileContext } from 'hooks/useProfileContext/useProfileContext';
-import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup';
-import { Modal } from 'ui/Modal/Modal';
+import { FC, useCallback, useState } from 'react'
+import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
+import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup'
+import { Modal } from 'ui/Modal/Modal'
 
-import * as S from './style';
+import * as S from './style'
 
 type VerificatioPopupProps = {
   onClose: (open: boolean) => void
-  open: boolean;
-};
+  open: boolean
+}
 
 export const VerificationPopup: FC<VerificatioPopupProps> = (props) => {
-  const { open, onClose } = props;
-  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] = useState(false);
+  const { open, onClose } = props
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
+    useState(false)
 
   const toggleConnectWalletPopup = useCallback(() => {
-    setIsConnectWalletPopupOpen((prev) => !prev);
-  }, []);
+    setIsConnectWalletPopupOpen((prev) => !prev)
+  }, [])
 
-  const { xapiProfileInfo } = useProfileContext();
+  const { xapiProfileInfo } = useProfileContext()
 
   return (
     <>
@@ -32,17 +33,19 @@ export const VerificationPopup: FC<VerificatioPopupProps> = (props) => {
             <S.TaskCard
               description={xapiProfileInfo?.wallets?.task?.description}
               done={xapiProfileInfo?.wallets?.task?.done}
-              icon='wallet'
               onClick={toggleConnectWalletPopup}
               optional={xapiProfileInfo?.wallets?.task?.optional}
-              status={xapiProfileInfo?.wallets?.task?.done ? "done" : "not-started"}
+              status={
+                xapiProfileInfo?.wallets?.task?.done ? 'done' : 'not-started'
+              }
               title={xapiProfileInfo?.wallets?.task?.title}
+              type="wallet"
             />
             <S.TaskCard
               description={xapiProfileInfo?.kyc?.task?.description}
-              icon='kyc'
               status={xapiProfileInfo?.kyc?.task?.state}
               title={xapiProfileInfo?.kyc?.task?.title}
+              type="kyc"
             />
           </S.Content>
         </S.Wrap>
@@ -52,5 +55,5 @@ export const VerificationPopup: FC<VerificatioPopupProps> = (props) => {
         open={isConnectWalletPopupOpen}
       />
     </>
-  );
-};
+  )
+}
