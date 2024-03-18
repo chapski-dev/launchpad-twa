@@ -5,7 +5,7 @@ import * as S from './style';
 export type TaskProps = {
   title?: string;
   description?: string;
-  icon: 'telegram' | 'twitter' | 'wallet' | 'kyc';
+  type: 'telegram' | 'twitter' | 'wallet' | 'kyc';
   onClick?: () => void;
   status?: 'done' | 'pending' | 'not-started';
   className?: string;
@@ -14,8 +14,7 @@ export type TaskProps = {
 };
 
 export const Task: FC<TaskProps> = (props) => {
-  const { title, description, icon, onClick, status, className, optional, done } = props;
-
+  const { title, description, type, onClick, status, className, optional, done } = props;
 
   const renderStatusIcon = useMemo(() => {
     return (status?: TaskProps['status']) => {
@@ -33,8 +32,8 @@ export const Task: FC<TaskProps> = (props) => {
   }, []);
 
   const renderItemIcon = useMemo(() => {
-    return (icon?: TaskProps['icon']) => {
-      switch (icon) {
+    return (type?: TaskProps['type']) => {
+      switch (type) {
         case 'kyc':
           return <SvgIdentificationCard />;
         case 'telegram':
@@ -52,7 +51,7 @@ export const Task: FC<TaskProps> = (props) => {
   return (
     <S.Wrapper $status={status} className={className} onClick={onClick}>
       <S.LeftBlock>
-        <S.Icon $status={status}>{renderItemIcon(icon)}</S.Icon>
+        <S.Icon $status={status}>{renderItemIcon(type)}</S.Icon>
         <S.Info>
           <S.Title $status={status}>
             {title}

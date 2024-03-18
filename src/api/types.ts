@@ -13,7 +13,7 @@ export type ProfileInfoType = {
   telegramInitData: string
 }
 //* -------------- GetICOJettonsRes --------------
-export interface GetICOJettonsRes {
+export type GetICOJettonsRes = {
   name: string
   description: string
   image: string
@@ -21,7 +21,7 @@ export interface GetICOJettonsRes {
   id: string
 }
 //* -------------- GetICOProjectByIdRes --------------
-export interface GetICOProjectByIdRes {
+export type GetICOProjectByIdRes = {
   id: string
   name: string
   description: string
@@ -30,50 +30,50 @@ export interface GetICOProjectByIdRes {
   page_data: string
   tokenomics: Tokenomic[]
 }
-export interface Tokenomic {
+export type Tokenomic = {
   name: string
   amount: string
 }
 
 //* -------------- GetXapiProfileResp --------------
-export interface GetXapiProfileResp {
+export type GetXapiProfileResp = {
   state: 'unverified' | 'verified'
   wallets: Wallets
   kyc: Kyc
   social: Social[]
 }
 
-export interface Wallets {
+export type Wallets = {
   connected: Connected[]
   task: Task
 }
 
-export interface Connected {
+export type Connected = {
   type: string
   network: string
   address: string
 }
 
-export interface Task {
+export type Task = {
   title: string
   description: string
   optional: boolean
   done: boolean
 }
 
-export interface Kyc {
+export type Kyc = {
   task: KycTask
 }
 
-export interface KycTask {
+export type KycTask = {
   title: string
   description: string
   optional: boolean
   state: 'not-started' | 'pending' | 'done'
 }
 
-export interface Social {
-  type: string
+export type Social = {
+  type: 'telegram' | 'twitter'
   id: string
   address: string
   joined: boolean

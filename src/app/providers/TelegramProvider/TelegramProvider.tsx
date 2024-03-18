@@ -16,7 +16,7 @@ export const TelegramProvider: FCWithChildren = (props) => {
   const [webApp, setWebApp] = useState<WebApp | null>(null)
 
   useEffect(() => {
-    const app = (window as any).Telegram?.WebApp
+    const app = window.Telegram?.WebApp
 
     if (app) {
       app.ready()

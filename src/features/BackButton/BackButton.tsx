@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react'
 
 const WebApp =
-  typeof window !== 'undefined' ? (window as any).Telegram?.WebApp : undefined
+  typeof window !== 'undefined' ? window.Telegram?.WebApp : undefined
 
 interface BackButtonProps {
   onClick?: VoidFunction
