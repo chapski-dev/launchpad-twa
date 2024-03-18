@@ -18,8 +18,10 @@ import { Layout } from 'features/Layout/Layout';
 // import { MainButton } from 'features/MainButton'
 // import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
 import { MainButton } from 'features/MainButton';
+import { useProfileContext } from 'hooks/useProfileContext/useProfileContext';
 import { useTelegram } from 'hooks/useTelegram/useTelegram';
 import { BuyPopup } from 'popups/BuyPopup/BuyPopup';
+import { VerificationPopup } from 'popups/VerificationPopup/VerificationPopup';
 import { Button } from 'ui/Button/Button';
 import { Container } from 'ui/Container/Container';
 import { Line } from 'ui/Line/Line';
@@ -28,8 +30,9 @@ import { Loader } from 'ui/Loader/Loader';
 const inter = Inter({ subsets: ['latin'] });
 
 const Project: FC = () => {
-  const [isParticipateModalOpen, setIsParticipateModalOpen] =
-    useState<boolean>(false);
+  const [isParticipateModalOpen, setIsParticipateModalOpen] = useState(false);
+  const [verificationPopupOpen, setVerificationPopupOpen] = useState(false);
+
 
   const router = useRouter();
 
@@ -38,6 +41,8 @@ const Project: FC = () => {
   // const [tonConnectUI] = useTonConnectUI()
 
   // const { sendTransaction } = useSendTransaction()
+
+  const { xapiProfileInfo } = useProfileContext();
 
   const { webApp } = useTelegram();
 
@@ -119,7 +124,15 @@ const Project: FC = () => {
   // )
 
   const toggleParticipateModal = () => {
-    setIsParticipateModalOpen((prev) => !prev);
+    switch (xapiProfileInfo?.state) {
+      case 'verified':
+        setIsParticipateModalOpen((prev) => !prev);
+        break;
+
+      case 'unverified':
+        setVerificationPopupOpen((prev) => !prev);
+        break;
+    }
   };
 
   // const handleMainButtonClick = useCallback(() => {
@@ -255,6 +268,10 @@ const Project: FC = () => {
                             ? 'join_waitlist'
                             : undefined
                         }
+                      />
+                      <VerificationPopup
+                        onClose={toggleParticipateModal}
+                        open={verificationPopupOpen}
                       />
                       {!isParticipateModalOpen && (
                         <MainButton

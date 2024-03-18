@@ -1,17 +1,25 @@
-import { FC } from 'react'
-import { MainButton } from 'features/MainButton'
-import { SvgIdentificationCard, SvgWalletImg } from 'ui/icons'
-import { Modal } from 'ui/Modal/Modal'
+import { FC, useCallback, useState } from 'react';
+import { useProfileContext } from 'hooks/useProfileContext/useProfileContext';
+import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup';
+import { Modal } from 'ui/Modal/Modal';
 
-import * as S from './style'
+import * as S from './style';
 
 type VerificatioPopupProps = {
-  onClose: () => void
-  open: boolean
-}
+  onClose: (open: boolean) => void
+  open: boolean;
+};
 
 export const VerificationPopup: FC<VerificatioPopupProps> = (props) => {
-  const { open, onClose } = props
+  const { open, onClose } = props;
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] = useState(false);
+
+  const toggleConnectWalletPopup = useCallback(() => {
+    setIsConnectWalletPopupOpen((prev) => !prev);
+  }, []);
+
+  const { xapiProfileInfo } = useProfileContext();
+
   return (
     <>
       <Modal
@@ -22,21 +30,27 @@ export const VerificationPopup: FC<VerificatioPopupProps> = (props) => {
         <S.Wrap>
           <S.Content>
             <S.TaskCard
-              description="Ton, ETH"
-              icon={<SvgWalletImg />}
-              status="not_started"
-              title="Connect wallet"
+              description={xapiProfileInfo?.wallets?.task?.description}
+              done={xapiProfileInfo?.wallets?.task?.done}
+              icon='wallet'
+              onClick={toggleConnectWalletPopup}
+              optional={xapiProfileInfo?.wallets?.task?.optional}
+              status={xapiProfileInfo?.wallets?.task?.done ? "done" : "not-started"}
+              title={xapiProfileInfo?.wallets?.task?.title}
             />
             <S.TaskCard
-              description="We value the security of our investors"
-              icon={<SvgIdentificationCard />}
-              status="not_started"
-              title="Pass KYC"
+              description={xapiProfileInfo?.kyc?.task?.description}
+              icon='kyc'
+              status={xapiProfileInfo?.kyc?.task?.state}
+              title={xapiProfileInfo?.kyc?.task?.title}
             />
           </S.Content>
         </S.Wrap>
       </Modal>
-      <MainButton onClick={() => alert('Join Waitlist')} text="Join Waitlist" />
+      <ConnectWalletPopup
+        onClose={toggleConnectWalletPopup}
+        open={isConnectWalletPopupOpen}
+      />
     </>
-  )
-}
+  );
+};

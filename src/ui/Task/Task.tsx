@@ -1,47 +1,72 @@
-import { FC, ReactElement, useMemo, useState } from 'react'
-import { SvgCheck, SvgPending, SvgRightArrow } from 'ui/icons'
-import * as S from './style'
+import { FC, useMemo } from 'react';
+import { SvgCheck, SvgIdentificationCard, SvgPending, SvgRightArrow, SvgTglogo, SvgWalletImg, SvgXcomlogo } from 'ui/icons';
+import * as S from './style';
 
-type TaskProps = {
-  title: string
-  description: string
-  icon: ReactElement
-  onClick?: () => void
-  status: 'success' | 'pending' | 'not_started'
-  className?: string
-}
+export type TaskProps = {
+  title?: string;
+  description?: string;
+  icon: 'telegram' | 'twitter' | 'wallet' | 'kyc';
+  onClick?: () => void;
+  status?: 'done' | 'pending' | 'not-started';
+  className?: string;
+  optional?: boolean;
+  done?: boolean;
+};
 
 export const Task: FC<TaskProps> = (props) => {
-  const { title, description, icon, onClick, status, className } = props
+  const { title, description, icon, onClick, status, className, optional, done } = props;
 
-  const [taskStatus] = useState(status)
 
-  const renderSVG = useMemo(() => {
-    return (status: 'success' | 'pending' | 'not_started') => {
+  const renderStatusIcon = useMemo(() => {
+    return (status?: TaskProps['status']) => {
       switch (status) {
-        case 'success':
-          return <SvgCheck />
+        case 'done':
+          return <SvgCheck />;
         case 'pending':
-          return <SvgPending />
-        case 'not_started':
-          return <SvgRightArrow />
+          return <SvgPending />;
+        case 'not-started':
+          return <SvgRightArrow />;
+        default:
+          return null;
       }
-    }
-  }, [])
+    };
+  }, []);
+
+  const renderItemIcon = useMemo(() => {
+    return (icon?: TaskProps['icon']) => {
+      switch (icon) {
+        case 'kyc':
+          return <SvgIdentificationCard />;
+        case 'telegram':
+          return <SvgTglogo />;
+        case 'twitter':
+          return <SvgXcomlogo />;
+        case 'wallet':
+          return <SvgWalletImg />;
+        default:
+          return null;
+      }
+    };
+  }, []);
 
   return (
-    <S.Wrapper $taskStatus={taskStatus} className={className} onClick={onClick}>
+    <S.Wrapper $status={status} className={className} onClick={onClick}>
       <S.LeftBlock>
-        <S.Icon $taskStatus={taskStatus}>{icon}</S.Icon>
+        <S.Icon $status={status}>{renderItemIcon(icon)}</S.Icon>
         <S.Info>
-          <S.Title $taskStatus={taskStatus}>
+          <S.Title $status={status}>
             {title}
-            <S.Warning $taskStatus={taskStatus}>*</S.Warning>
+            {(!optional && !done) && <S.Required children="*" />}
           </S.Title>
-          <S.Description $taskStatus={taskStatus}>{description}</S.Description>
+          <S.Description
+            children={description}
+            $status={status}
+          />
         </S.Info>
       </S.LeftBlock>
-      <S.StatusSvg>{renderSVG(taskStatus)}</S.StatusSvg>
+      <S.StatusSvg>
+        {renderStatusIcon(status)}
+      </S.StatusSvg>
     </S.Wrapper>
-  )
-}
+  );
+};

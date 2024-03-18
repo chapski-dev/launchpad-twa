@@ -1,31 +1,29 @@
-import { FC, useCallback, useState } from 'react'
-import { Inter } from 'next/font/google'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { BackButton } from 'features/BackButton'
-import { ProfileBlock } from 'features/Layout/components/Header/components/ProfileBlock/ProfileBlock'
-import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup'
-import { Container } from 'ui/Container/Container'
-import {
-  SvgIdentificationCard,
-  SvgTglogo,
-  SvgWalletImg,
-  SvgXcomlogo,
-} from 'ui/icons'
-import { Task } from 'ui/Task/Task'
-import * as S from '../domains/Profile/style/index'
+import { FC, useCallback, useState } from 'react';
+import { Inter } from 'next/font/google';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { BackButton } from 'features/BackButton';
+import { ProfileBlock } from 'features/Layout/components/Header/components/ProfileBlock/ProfileBlock';
+import { useProfileContext } from 'hooks/useProfileContext/useProfileContext';
+import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup';
+import { Button } from 'ui/Button/Button';
+import { Container } from 'ui/Container/Container';
+import { Task } from 'ui/Task/Task';
+import * as S from '../domains/Profile/style/index';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 const Profile: FC = () => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
   const toggleConnectWalletPopup = useCallback(() => {
-    setIsConnectWalletPopupOpen((prev) => !prev)
-  }, [])
+    setIsConnectWalletPopupOpen((prev) => !prev);
+  }, []);
 
-  const router = useRouter()
+  const router = useRouter();
+
+  const { xapiProfileInfo, setXapiProfileFlag } = useProfileContext();
 
   return (
     <>
@@ -37,6 +35,22 @@ const Profile: FC = () => {
         <S.Wrapper>
           <Container>
             <ProfileBlock />
+            <Button
+              children="new"
+              onClick={() => setXapiProfileFlag('new')}
+            />
+            <Button
+              children="pending-kyc"
+              onClick={() => setXapiProfileFlag('pending-kyc')}
+            />
+            <Button
+              children="done"
+              onClick={() => setXapiProfileFlag('done')}
+            />
+            <Button
+              children="done2"
+              onClick={() => setXapiProfileFlag('done2')}
+            />
             <S.CompletingInfoBlock>
               <S.InfoTitle>Completing the profile creation</S.InfoTitle>
               <S.DescriptionInfo>
@@ -46,36 +60,29 @@ const Profile: FC = () => {
             </S.CompletingInfoBlock>
             <S.TaskWrapper>
               <Task
-                description="Description for Task 2"
-                icon={<SvgWalletImg />}
+                description={xapiProfileInfo?.wallets?.task?.description}
+                done={xapiProfileInfo?.wallets?.task?.done}
+                icon='wallet'
                 onClick={toggleConnectWalletPopup}
-                status="not_started"
-                title="Connect wallet"
+                optional={xapiProfileInfo?.wallets?.task?.optional}
+                status={xapiProfileInfo?.wallets?.task?.done ? "done" : "not-started"}
+                title={xapiProfileInfo?.wallets?.task?.title}
               />
               <Task
-                description="Description for Task 4"
-                icon={<SvgIdentificationCard />}
-                status="pending"
-                title="Pass KYC"
+                description={xapiProfileInfo?.kyc?.task?.description}
+                icon='kyc'
+                status={xapiProfileInfo?.kyc?.task?.state}
+                title={xapiProfileInfo?.kyc?.task?.title}
               />
-              <Task
-                description="Optional"
-                icon={<SvgTglogo />}
-                status="not_started"
-                title="Join Telegram channel"
-              />
-              <Task
-                description="Optional"
-                icon={<SvgXcomlogo />}
-                status="not_started"
-                title="Follow on X.com"
-              />
-              <Task
-                description="Optional"
-                icon={<SvgXcomlogo />}
-                status="not_started"
-                title="Follow on X.com"
-              />
+              {xapiProfileInfo?.social?.map((el) => (
+                <Task
+                  description={el?.optional ? "Optional" : ''}
+                  icon={el?.type as any}
+                  optional={el?.optional}
+                  status="not-started"
+                  title={el?.title}
+                />
+              ))}
             </S.TaskWrapper>
           </Container>
         </S.Wrapper>
@@ -85,7 +92,7 @@ const Profile: FC = () => {
         />
       </main>
     </>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;

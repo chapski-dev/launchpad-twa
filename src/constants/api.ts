@@ -7,5 +7,11 @@ export const ApiRoutes = {
   GetBlogPosts: '/api/blog/getPosts',
   GetBlogPostByFilename: '/api/blog/getPostByFilename',
   GetProfile: '/api/profile/getProfile',
+  UserProfile: '/user/profile',
   SaveProfile: '/api/profile/saveProfile',
+} as const
+
+export const XApiRoutes = {
+  LaunchpadProjects: '/launchpad/projects',
+  UserProfile: '/user/profile',
 } as const

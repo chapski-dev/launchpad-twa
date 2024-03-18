@@ -1,40 +1,19 @@
-import { ApiRoutes } from 'constants/api'
+import { ApiRoutes, XApiRoutes } from 'constants/api'
 import {
   AXIOS_LAUNCHPAD_INSTANCE,
   AXIOS_XAPI_LAUNCHPAD_INSTANCE,
 } from 'libs/axios-instance/axios-instance'
-import { ProfileInfoType } from './types'
+import { GetICOJettonsRes, GetICOProjectByIdRes, GetXapiProfileResp, ProfileInfoType } from './types'
 
-export interface GetICOJettonsRes {
-  name: string
-  description: string
-  image: string
-  symbol: string
-  id: string
-}
 export const getICOJettons = (params?: { q: string }) =>
   AXIOS_XAPI_LAUNCHPAD_INSTANCE.get<GetICOJettonsRes[]>(
-    ApiRoutes.GetICOProjects,
+    XApiRoutes.LaunchpadProjects,
     { params }
   ).then((res) => res.data)
 
-export interface GetICOProjectByIdRes {
-  id: string
-  name: string
-  description: string
-  image: string
-  symbol: string
-  page_data: string
-  tokenomics: Tokenomic[]
-}
-export interface Tokenomic {
-  name: string
-  amount: string
-}
-
 export const getICOProjectById = (id: string) =>
   AXIOS_XAPI_LAUNCHPAD_INSTANCE.get<GetICOProjectByIdRes>(
-    `${ApiRoutes.GetICOProjectById}/${id}`
+    `${XApiRoutes.LaunchpadProjects}/${id}`
   ).then((res) => res.data)
 
 export const getPosts = async () => {
@@ -67,6 +46,16 @@ export const getProfile = async (params: {
 export const saveProfile = async (profileData: ProfileInfoType) => {
   const { data } = await AXIOS_LAUNCHPAD_INSTANCE.post(ApiRoutes.SaveProfile, {
     ...profileData,
+  })
+
+  return data
+}
+
+export const getXapiProfile = async (params: {
+  flag: 'pending-kyc' | 'new' | 'done' | 'done2'
+}) => {
+  const { data } = await AXIOS_XAPI_LAUNCHPAD_INSTANCE.get<GetXapiProfileResp>(XApiRoutes.UserProfile, {
+    params,
   })
 
   return data
