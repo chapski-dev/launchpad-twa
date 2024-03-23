@@ -1,11 +1,14 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useTonAddress } from '@tonconnect/ui-react';
+import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react';
 // import dayjs from 'dayjs'
+
+import { SaleV1FunC } from '@xton/user-sdk';
+
 import { Inter } from 'next/font/google';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-// import { Address } from 'ton-core'
+import { Address } from 'ton-core';
 import { getICOProjectById } from 'api';
 import { AppRoutes } from 'constants/app';
 import {
@@ -19,6 +22,7 @@ import { Layout } from 'features/Layout/Layout';
 // import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
 import { MainButton } from 'features/MainButton';
 import { useProfileContext } from 'hooks/useProfileContext/useProfileContext';
+import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction';
 import { useTelegram } from 'hooks/useTelegram/useTelegram';
 import { BuyPopup } from 'popups/BuyPopup/BuyPopup';
 import { VerificationPopup } from 'popups/VerificationPopup/VerificationPopup';
@@ -32,7 +36,7 @@ const inter = Inter({ subsets: ['latin'] });
 const Project: FC = () => {
   const [isParticipateModalOpen, setIsParticipateModalOpen] = useState(false);
   const [verificationPopupOpen, setVerificationPopupOpen] = useState(false);
-
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -122,6 +126,79 @@ const Project: FC = () => {
   //     enabled: Boolean(project?.icoMasterAddress),
   //   }
   // )
+
+  const [TonConnectUI] = useTonConnectUI();
+  const { sendTransaction } = useSendTransaction();
+
+  const handleBuy = async () => {
+    /** 
+     * First part of flow (this is only for TON):
+    0. User clicks buy
+    1. You call queryWhitelist, get response
+    2. (выдает ошибку, принято решение заменить на createUserMessage) You call createUser, give whitelistpayload from previous one, give tonconnect, give sale address (give your own address, this is mock), some amount "0.01"
+    2. createUserMessage
+    3. buyUserMessage - they give you ConnectMessage, you can send them using tonconnect
+    4. accept transaction in ton wallet
+    5. get boc, call check transaction every 5 seconds to check results
+    --- If success, go to 6
+    6. getUserSaleAddress
+    7. call buyUser and amount
+    8. wait for user to confirm
+    9. wait for tx
+    10. getUserSaleStatus (mock routes class)
+     * */
+
+    try {
+      setLoading(true);
+      // Step 1:
+      const whitelist = await SaleV1FunC.queryWhitelist(Address.parse(userWalletAddress));
+      //! Step 2: (здесь как правило дропается ошибка на невалидный адрес, поэтому вроде как заменяем на createUserMessage)
+      // await SaleV1FunC.createUser(TonConnectUI, Address.parse(userWalletAddress), '0.01', whitelist);
+      // Step 2:
+      await SaleV1FunC.createUserMessage(Address.parse(userWalletAddress), '0.01', whitelist);
+      // Step 3:
+      const buyUserMessage = await SaleV1FunC.buyUserMessage(Address.parse(userWalletAddress), BigInt(9007199254740991));
+      // Step 4:
+      const { boc } = await sendTransaction(buyUserMessage);
+      
+      let currentAttempts = 0;
+      let success = false;
+
+      // Step 5: Функция для периодической проверки статуса транзакции
+      const checkTransactionStatus = async () => {
+        try {
+          if (currentAttempts >= 5) {
+            throw new Error('Exceeded maximum number of attempts to check your transaction.');
+          }
+
+          success = await SaleV1FunC.checkTransaction(boc);
+          if (!success) {
+            currentAttempts++;
+            setTimeout(checkTransactionStatus, 5000); // Повторно проверить через 5 секунд
+          }
+        } catch (error) {
+          setLoading(false);
+          alert(error);
+        }
+      };
+
+      if (boc) {
+        // Начать периодическую проверку статуса транзакции
+        setTimeout(checkTransactionStatus, 5000);
+      }
+
+      if (success) {
+        // Step 6 //!(проверить saleAddress: Address, userAddress: Address в методе getUserSaleAddress): 
+        await SaleV1FunC.getUserSaleAddress(Address.parse(userWalletAddress), Address.parse(userWalletAddress));
+        // Step 7: 
+        await SaleV1FunC.buyUser(TonConnectUI,Address.parse(userWalletAddress), BigInt(0.1))
+      }
+    } catch (error) {
+      alert(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleParticipateModal = () => {
     switch (xapiProfileInfo?.state) {
@@ -275,7 +352,8 @@ const Project: FC = () => {
                       />
                       {!isParticipateModalOpen && (
                         <MainButton
-                          onClick={toggleParticipateModal}
+                          onClick={handleBuy}
+                          progress={loading}
                           text={
                             project.name === 'NebulaNet'
                               ? 'Join Waitlist'
