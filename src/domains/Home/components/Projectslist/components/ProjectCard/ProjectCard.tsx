@@ -1,29 +1,29 @@
-import { FC, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { TnC } from '@ton-and-company/sdk';
-import dayjs from 'dayjs';
-import { useRouter } from 'next/router';
-import { AppRoutes } from 'constants/app';
-import { toHumanNumber } from 'utils/toHumanNumber';
-import * as S from './style';
+import { FC, useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { TnC } from '@ton-and-company/sdk'
+import dayjs from 'dayjs'
+import { useRouter } from 'next/router'
+import { AppRoutes } from 'constants/app'
+import { toHumanNumber } from 'utils/toHumanNumber'
+import * as S from './style'
 
 type ProjectCardProps = {
-  image: string;
-  title: string;
-  description: string;
-  id: string;
-  icoMasterAddress: string;
-};
+  image: string
+  title: string
+  description: string
+  id: string
+  icoMasterAddress: string
+}
 
 export const ProjectCard: FC<ProjectCardProps> = (props) => {
-  const { image, title, description, id, icoMasterAddress } = props;
+  const { image, title, description, id, icoMasterAddress } = props
 
-  const router = useRouter();
+  const router = useRouter()
 
   const { data: icoInfo } = useQuery({
     queryKey: ['icoInfo', icoMasterAddress],
     queryFn: () => TnC.icoInfo(icoMasterAddress),
-  });
+  })
 
   const handleProjectCardClick = () => {
     router.push({
@@ -31,41 +31,41 @@ export const ProjectCard: FC<ProjectCardProps> = (props) => {
       query: {
         id,
       },
-    });
-  };
+    })
+  }
 
   const currentSaleProgressLabel = useMemo(() => {
     if (!icoInfo) {
-      return '';
+      return ''
     }
 
-    const currentSuppliedAmount = Number(toHumanNumber(icoInfo.supplied));
+    const currentSuppliedAmount = Number(toHumanNumber(icoInfo.supplied))
 
-    const currentSoftCapAmount = Number(toHumanNumber(icoInfo?.softCap));
+    const currentSoftCapAmount = Number(toHumanNumber(icoInfo?.softCap))
 
-    const currentTotalSupplyAmount = Number(toHumanNumber(icoInfo.totalSupply));
+    const currentTotalSupplyAmount = Number(toHumanNumber(icoInfo.totalSupply))
 
     const isSaleSuccessfull = icoInfo.hasSoftCap
       ? currentSuppliedAmount >= currentSoftCapAmount
-      : currentSuppliedAmount === currentTotalSupplyAmount;
+      : currentSuppliedAmount === currentTotalSupplyAmount
 
     switch (true) {
       case icoInfo.state === 'in-progress':
         const saleProgressPercent = Math.floor(
           (currentSuppliedAmount / currentTotalSupplyAmount) * 100
-        );
+        )
 
-        return `Sale Progress ${saleProgressPercent}%`;
+        return `Sale Progress ${saleProgressPercent}%`
       case icoInfo.state === 'not-started':
         return `Sale will start in ${dayjs(icoInfo.startTime).format(
           'DD/MM/YYYY'
-        )}`;
+        )}`
       case icoInfo.state === 'failed':
-        return 'Sale Failed';
+        return 'Sale Failed'
       case icoInfo.saleMode === 1 && isSaleSuccessfull:
-        return 'Sale Successful';
+        return 'Sale Successful'
     }
-  }, [icoInfo]);
+  }, [icoInfo])
 
   return (
     <S.Wrapper onClick={handleProjectCardClick}>
@@ -78,5 +78,5 @@ export const ProjectCard: FC<ProjectCardProps> = (props) => {
         </S.FlexWrapper>
       </S.InfoWrapper>
     </S.Wrapper>
-  );
-};
+  )
+}

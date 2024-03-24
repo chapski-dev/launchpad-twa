@@ -18,6 +18,7 @@
     "@xton/user-sdk": "git+https://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@github.com/tokenova-fi/user-sdk",
     "axios": "^1.5.0",
     "dayjs": "^1.11.9",
+    "ethers": "^6.11.1",
     "gray-matter": "^4.0.3",
     "next": "^13.4.19",
     "polished": "^4.2.2",

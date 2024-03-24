@@ -1,7 +1,10 @@
 import { FC, useMemo, useState } from 'react'
-import { useTonAddress } from '@tonconnect/ui-react'
-import { SaleV1FunC } from '@xton/user-sdk'
+import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
+import { useWeb3Modal } from '@web3modal/scaffold-react'
+import { SaleV1FunC, SaleV1Solidity, ERC20 } from '@xton/user-sdk'
+import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import { Address } from 'ton-core'
+import { Config, useAccount, useConnectorClient } from 'wagmi'
 import { MainButton } from 'features/MainButton'
 import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
 import { Modal } from 'ui/Modal/Modal'
@@ -21,18 +24,29 @@ type BuyPopupProps = {
   status?: BuyStatus
 }
 
+const ETH_TEST_CONTRACT_ADDRESS = '0xdA158609D4B56C1850d76156EB914060F0b68e44'
+const ERC_20_CONTRACT_ADDRESS = '0x90f325c5f5F05AD6a17daf4fA5BF8F9d2AAccc2B'
+
 export const BuyPopup: FC<BuyPopupProps> = (props) => {
   const { onClose, open, status } = props
 
-  const [activeChain, setActiveChain] = useState<"TON" | "ETH">('TON');
+  const [activeChain, setActiveChain] = useState<'TON' | 'ETH'>('TON')
 
   const [currentStatus, setCurrentStatus] = useState<BuyStatus>(status || 'buy')
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const userWalletAddress = useTonAddress()
+  const [tonConnectUI] = useTonConnectUI()
+
+  const tonUserWalletAddress = useTonAddress()
 
   const { sendTransaction } = useSendTransaction()
+
+  const { open: openWeb3Modal } = useWeb3Modal()
+
+  const { address: ethUserWalletAddress, chainId } = useAccount()
+
+  const { data: client } = useConnectorClient<Config>({ chainId })
 
   // const [tonConnectUI] = useTonConnectUI()
 
@@ -74,11 +88,23 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
   const handleBuy = async () => {
     switch (activeChain) {
       case 'TON':
-        await handleBuyByTon();
-        break;
+        if (!tonUserWalletAddress) {
+          tonConnectUI.openModal()
+
+          return
+        }
+
+        await handleBuyByTon()
+        break
       case 'ETH':
-        await handleBuyByEth();
-        break;
+        if (!ethUserWalletAddress) {
+          openWeb3Modal()
+
+          return
+        }
+
+        await handleBuyByEth()
+        break
     }
   }
   const handleBuyByTon = async () => {
@@ -103,13 +129,13 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       setIsLoading(true)
       // Step 1:
       const whitelist = await SaleV1FunC.queryWhitelist(
-        Address.parse(userWalletAddress)
+        Address.parse(tonUserWalletAddress)
       )
 
       console.log(whitelist)
       // Step 2
       const createUserMessage = await SaleV1FunC.createUserMessage(
-        Address.parse(userWalletAddress),
+        Address.parse(tonUserWalletAddress),
         '0.01',
         whitelist
       )
@@ -145,13 +171,13 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
             //Step 5  (if trx status true)
             await SaleV1FunC.getUserSaleAddress(
-              Address.parse(userWalletAddress),
-              Address.parse(userWalletAddress)
+              Address.parse(tonUserWalletAddress),
+              Address.parse(tonUserWalletAddress)
             )
 
             //Step 6
             const buyUserMessage = await SaleV1FunC.buyUserMessage(
-              Address.parse(userWalletAddress),
+              Address.parse(tonUserWalletAddress),
               BigInt(10000000)
             )
 
@@ -200,7 +226,6 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
             return
           } catch (error) {
             setIsLoading(false)
-            console.log(error)
             alert(error)
 
             return
@@ -216,7 +241,79 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
     }
   }
 
-  const handleBuyByEth = async () => null;
+  const handleBuyByEth = async () => {
+    // Steps for normal solidity sale:
+    // 0. User clicks buy
+    // 1. You call queryWhitelist, get response
+    // 2. If ok, next step
+    // 3. erc20 = new ERC20(...), token: 0x90f325c5f5F05AD6a17daf4fA5BF8F9d2AAccc2B
+    // 4. erc20.approve(0xdA158609D4B56C1850d76156EB914060F0b68e44, some amount)
+    // 5. accept in wallet
+    // 6. waitfortx
+    // 7. new SaleV1Solidity
+    // 8. deposit (give arbitrary values, will fill in later)
+
+    // Step 1
+
+    const whiteList = await SaleV1Solidity.queryWhitelist(
+      ethUserWalletAddress as string,
+      1
+    )
+
+    if (whiteList && client) {
+      const { account, chain, transport } = client
+
+      const network = {
+        chainId: chain.id,
+        name: chain.name,
+        ensAddress: chain.contracts?.ensRegistry?.address,
+      }
+
+      const provider = new BrowserProvider(transport, network)
+
+      const signer = new JsonRpcSigner(provider, account.address)
+
+      // const SaleSolidity = new SaleV1Solidity(
+      //   ETH_TEST_CONTRACT_ADDRESS,
+      //   signer.provider
+      // )
+
+      const erc20 = new ERC20(ERC_20_CONTRACT_ADDRESS, provider)
+
+      const ercApproveMessage = await erc20.approve(
+        ETH_TEST_CONTRACT_ADDRESS,
+        1000
+      )
+
+      const trx = await signer.sendTransaction(ercApproveMessage)
+
+      console.log(trx)
+
+      try {
+        setIsLoading(true)
+      } catch (error) {
+        setIsLoading(false)
+        alert(error)
+        return
+      }
+    }
+
+    alert('Eth click !')
+  }
+
+  const currentMainBuutonText = useMemo(() => {
+    switch (true) {
+      case activeChain === 'TON' && !tonUserWalletAddress:
+      case activeChain === 'ETH' && !ethUserWalletAddress:
+        return 'Connect Wallet'
+      case currentStatus === 'buy':
+        return 'Buy XTON'
+      case currentStatus === 'join_waitlist':
+        return 'Join Waitlist'
+      default:
+        return 'Check next state'
+    }
+  }, [activeChain, currentStatus, ethUserWalletAddress, tonUserWalletAddress])
 
   return (
     <Modal
@@ -235,13 +332,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         <MainButton
           onClick={handleBuy}
           progress={isLoading}
-          text={
-            currentStatus === 'buy'
-              ? 'Buy XTON'
-              : currentStatus === 'join_waitlist'
-              ? 'Join Waitlist'
-              : 'Check next state'
-          }
+          text={currentMainBuutonText}
         />
       )}
     </Modal>
