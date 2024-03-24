@@ -3,9 +3,9 @@ import * as S from './style'
 
 type SwithBtnProps = {
   activeChain: string
-  onChange: (tab: string) => void
+  onChange: (tab: 'TON' | 'ETH') => void
   className?: string
-  tabs: string[]
+  tabs: ['TON', 'ETH']
 }
 
 export const SwitchBtn: FC<SwithBtnProps> = (props) => {

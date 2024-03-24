@@ -24,9 +24,11 @@ type BuyPopupProps = {
 export const BuyPopup: FC<BuyPopupProps> = (props) => {
   const { onClose, open, status } = props
 
+  const [activeChain, setActiveChain] = useState<"TON" | "ETH">('TON');
+
   const [currentStatus, setCurrentStatus] = useState<BuyStatus>(status || 'buy')
 
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const userWalletAddress = useTonAddress()
 
@@ -37,7 +39,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
   const currentBuyPopupState = useMemo(() => {
     switch (currentStatus) {
       case 'buy':
-        return <Buy />
+        return <Buy activeChain={activeChain} setActiveChain={setActiveChain} />
       case 'loader':
         return <Loader />
       case 'waiting':
@@ -47,9 +49,9 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       case 'join_waitlist':
         return <JoinWaitlist />
       default:
-        return <Buy />
+        return <Buy activeChain={activeChain} setActiveChain={setActiveChain} />
     }
-  }, [currentStatus])
+  }, [activeChain, currentStatus])
 
   // const handleClick = () => {
   //   switch (currentStatus) {
@@ -70,6 +72,16 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
   // }
 
   const handleBuy = async () => {
+    switch (activeChain) {
+      case 'TON':
+        await handleBuyByTon();
+        break;
+      case 'ETH':
+        await handleBuyByEth();
+        break;
+    }
+  }
+  const handleBuyByTon = async () => {
     /** 
      * First part of flow (this is only for TON):
     0. User clicks buy
@@ -203,6 +215,8 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       setIsLoading(false)
     }
   }
+
+  const handleBuyByEth = async () => null;
 
   return (
     <Modal
