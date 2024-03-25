@@ -46,7 +46,10 @@ const SaleState: FC = () => {
       dayjs(currentUserSaleState?.schedule?.start),
       'day'
     )
-  }, [])
+  }, [
+    currentUserSaleState?.schedule?.end,
+    currentUserSaleState?.schedule?.start,
+  ])
 
   return (
     <>
