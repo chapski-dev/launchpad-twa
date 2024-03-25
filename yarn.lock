@@ -3650,8 +3650,8 @@
     zod "3.22.4"
 
 "@xton/user-sdk@git+https://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@github.com/tokenova-fi/user-sdk":
-  version "0.0.6"
-  resolved "git+https://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@github.com/tokenova-fi/user-sdk#916bd9e6693faecaa422534ff28595a4fc19fdc1"
+  version "0.0.7"
+  resolved "git+https://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@github.com/tokenova-fi/user-sdk#417dc98a8ec01673e3f04a04ba5f90c68f5e0fe0"
   dependencies:
     "@orbs-network/ton-access" "^2.3.3"
     "@ton/core" "^0.56.2"

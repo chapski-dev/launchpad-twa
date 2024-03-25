@@ -3,8 +3,10 @@ import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { useWeb3Modal } from '@web3modal/scaffold-react'
 import { SaleV1FunC, SaleV1Solidity, ERC20 } from '@xton/user-sdk'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
+import { useRouter } from 'next/router'
 import { Address } from 'ton-core'
 import { Config, useAccount, useConnectorClient } from 'wagmi'
+import { AppRoutes } from 'constants/app'
 import { MainButton } from 'features/MainButton'
 import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
 import { Modal } from 'ui/Modal/Modal'
@@ -22,13 +24,14 @@ type BuyPopupProps = {
   onClose: (val: boolean) => void
   open: boolean
   status?: BuyStatus
+  projectId: string
 }
 
 const ETH_TEST_CONTRACT_ADDRESS = '0xdA158609D4B56C1850d76156EB914060F0b68e44'
 const ERC_20_CONTRACT_ADDRESS = '0x90f325c5f5F05AD6a17daf4fA5BF8F9d2AAccc2B'
 
 export const BuyPopup: FC<BuyPopupProps> = (props) => {
-  const { onClose, open, status } = props
+  const { onClose, open, status, projectId } = props
 
   const [activeChain, setActiveChain] = useState<'TON' | 'ETH'>('TON')
 
@@ -47,6 +50,8 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
   const { address: ethUserWalletAddress, chainId } = useAccount()
 
   const { data: client } = useConnectorClient<Config>({ chainId })
+
+  const router = useRouter()
 
   // const [tonConnectUI] = useTonConnectUI()
 
@@ -86,6 +91,17 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
   // }
 
   const handleBuy = async () => {
+    if (currentStatus === 'success') {
+      router.push({
+        pathname: AppRoutes.SaleState,
+        query: {
+          projectId,
+        },
+      })
+
+      return
+    }
+
     switch (activeChain) {
       case 'TON':
         if (!tonUserWalletAddress) {
@@ -310,6 +326,8 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         return 'Buy XTON'
       case currentStatus === 'join_waitlist':
         return 'Join Waitlist'
+      case currentStatus === 'success':
+        return 'Show Allocation'
       default:
         return 'Check next state'
     }
@@ -328,7 +346,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       title="Buy XTON"
     >
       {currentBuyPopupState}
-      {currentStatus !== 'success' && currentStatus !== 'loader' && (
+      {currentStatus !== 'loader' && (
         <MainButton
           onClick={handleBuy}
           progress={isLoading}

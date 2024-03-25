@@ -104,6 +104,8 @@ const Project: FC = () => {
     }, []),
   })
 
+  console.log(project)
+
   // const {
   //   data: participantState,
   //   isLoading: isParticipantStateLoading,
@@ -241,7 +243,12 @@ const Project: FC = () => {
                     )} */}
                       <Button
                         onClick={() => {
-                          router.push(AppRoutes.VestingDistribution)
+                          router.push({
+                            pathname: AppRoutes.SaleState,
+                            query: {
+                              projectId: project.id,
+                            },
+                          })
                         }}
                       >
                         Vesting Distiribution page
@@ -260,6 +267,7 @@ const Project: FC = () => {
                       <BuyPopup
                         onClose={toggleParticipateModal}
                         open={isParticipateModalOpen}
+                        projectId={project.id}
                         //TODO: убрать после демо
                         status={
                           project.name === 'NebulaNet'
