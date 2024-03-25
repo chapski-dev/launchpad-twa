@@ -3,7 +3,7 @@ import { SvgToncoinIcon, SvgWalletImg } from 'ui/icons'
 import * as S from './style'
 import { SwitchBtn } from '../SwitchBtn/SwitchBtn'
 
-const CHAIN = ['TON', 'ETH']
+const CHAIN: ['TON', 'ETH'] = ['TON', 'ETH']
 
 export const JoinWaitlist: FC = () => {
   const [activeChain, setActiveChain] = useState<string>('TON')
