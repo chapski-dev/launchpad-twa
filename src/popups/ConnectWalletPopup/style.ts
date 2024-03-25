@@ -9,7 +9,7 @@ export const Wrapper = styled.div`
   width: 100%;
 `
 
-export const ItemWrapper = styled.div`
+export const ItemWrapper = styled.div<{ isActive?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -18,7 +18,8 @@ export const ItemWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.bg};
   border: 1px solid ${({ theme }) => theme.color.bgSecondary};
   border-radius: 10px;
-  cursor: pointer;
+  cursor: ${({ isActive }) => (isActive ? 'pointer' : 'auto')};
+  padding-right: 12px;
 `
 
 export const LeftBlock = styled.div`
@@ -34,4 +35,21 @@ export const LeftBlock = styled.div`
 export const RightBlock = styled.div`
   display: flex;
   align-items: center;
+`
+
+export const DisconnectButton = styled.button`
+  border: none;
+  outline: none;
+  background: none;
+  border: 1px solid ${({ theme }) => theme.color.redAlert};
+  border-radius: 8px;
+  color: ${({ theme }) => theme.color.redAlert};
+  padding: 6px 24px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.color.redAlert};
+    color: #fff;
+  }
 `

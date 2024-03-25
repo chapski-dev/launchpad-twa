@@ -4,7 +4,7 @@ import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
 import { WagmiProvider, cookieStorage, createStorage } from 'wagmi'
 
-import { mainnet } from 'wagmi/chains'
+import { mainnet, baseSepolia } from 'wagmi/chains'
 
 import { FCWithChildren } from 'types/app'
 import { includeWallets } from './wallets'
@@ -24,7 +24,7 @@ const walletConnectMetadata = {
 }
 
 const walletConnectConfig = defaultWagmiConfig({
-  chains: [mainnet],
+  chains: [mainnet, baseSepolia],
   projectId: walletConnectProjectId,
   metadata: walletConnectMetadata,
   ssr: true,

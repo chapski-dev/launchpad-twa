@@ -6,7 +6,7 @@ export const AppRoutes = {
   Complete: '/complete',
   Referral: '/referral',
   Profile: '/profile',
-  VestingDistribution: '/vesting-distribution',
+  SaleState: '/sale-state',
 } as const
 
 export const tonAddressExplorerLink = 'https://testnet.ton.cx/address/'

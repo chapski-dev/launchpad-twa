@@ -1,16 +1,20 @@
-import { ChangeEvent, FC, useState } from 'react'
+import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from 'react'
 
 import * as S from './style'
 import { SwitchBtn } from '../SwitchBtn/SwitchBtn'
 
-const CHAIN_TABS = ['TON', 'ETH']
+const CHAIN_TABS: ['TON', 'ETH'] = ['TON', 'ETH']
 const BALANCE = 100
 const TON_PRICE = 0.02
 const MIN_TON = 20
 const MAX_TON = 50
 
-export const Buy: FC = () => {
-  const [activeChain, setActiveChain] = useState<string>('TON')
+type BuyProps = {
+  setActiveChain: Dispatch<SetStateAction<"TON" | "ETH">>;
+  activeChain: "TON" | "ETH"
+}
+export const Buy: FC<BuyProps> = (props) => {
+  const { setActiveChain, activeChain } = props;
 
   const [formState, setFormState] = useState({
     ton: 1,
@@ -86,7 +90,7 @@ export const Buy: FC = () => {
 
       <S.WellBlock>
         <S.WellItem children={`1 XTON = ${TON_PRICE} TON`} />
-        <S.WellItem children={`${0.02} TON = $0.1}`} />
+        <S.WellItem children={`${0.02} TON = $0.1`} />
       </S.WellBlock>
 
       <S.MinMaxBlock>
