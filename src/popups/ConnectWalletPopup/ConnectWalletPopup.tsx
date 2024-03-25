@@ -2,7 +2,7 @@ import { FC, ReactElement, useMemo } from 'react'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 // import { useAccount } from 'wagmi'
-import { useAccount, useDisconnect } from 'wagmi'
+import { useAccount } from 'wagmi'
 import { SvgRightArrow, SvgToncoinIcon, SvgWalleticon } from 'ui/icons'
 
 import { Modal } from 'ui/Modal/Modal'
@@ -44,8 +44,6 @@ export const ConnectWalletPopup: FC<ConnectWalletPopupProps> = (props) => {
 
   const { address: ethWalletAddress } = useAccount()
 
-  const { disconnect: ethWalletDisconenct } = useDisconnect()
-
   const { open: openWeb3Modal } = useWeb3Modal()
 
   const handleWalletClick = (walletType: WalletItemType) => {
@@ -65,7 +63,7 @@ export const ConnectWalletPopup: FC<ConnectWalletPopupProps> = (props) => {
       return
     }
 
-    ethWalletDisconenct()
+    openWeb3Modal()
   }
 
   const walletAddresses: Record<'eth' | 'ton', string> = useMemo(
