@@ -1,10 +1,12 @@
-import { FC, ReactElement } from 'react'
-import { useTonConnectUI } from '@tonconnect/ui-react'
+import { FC, ReactElement, useMemo } from 'react'
+import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 // import { useAccount } from 'wagmi'
+import { useAccount, useDisconnect } from 'wagmi'
 import { SvgRightArrow, SvgToncoinIcon, SvgWalleticon } from 'ui/icons'
 
 import { Modal } from 'ui/Modal/Modal'
+import { shortenAddress } from 'utils/shortenAddress'
 import * as S from './style'
 
 type ConnectWalletPopupProps = {
@@ -12,7 +14,7 @@ type ConnectWalletPopupProps = {
   open: boolean
 }
 
-type WalletItemType = 'ton' | 'wallet_connect'
+type WalletItemType = 'ton' | 'eth'
 
 type WalletItemsProps = {
   svg: ReactElement
@@ -29,7 +31,7 @@ const WALLET_ITEMS: WalletItemsProps[] = [
   {
     svg: <SvgWalleticon />,
     title: 'WalletConnect',
-    type: 'wallet_connect',
+    type: 'eth',
   },
 ]
 
@@ -38,7 +40,11 @@ export const ConnectWalletPopup: FC<ConnectWalletPopupProps> = (props) => {
 
   const [tonConnectUI] = useTonConnectUI()
 
-  // const { address: walletConnectAddress } = useAccount()
+  const tonWalletAddress = useTonAddress()
+
+  const { address: ethWalletAddress } = useAccount()
+
+  const { disconnect: ethWalletDisconenct } = useDisconnect()
 
   const { open: openWeb3Modal } = useWeb3Modal()
 
@@ -52,6 +58,24 @@ export const ConnectWalletPopup: FC<ConnectWalletPopupProps> = (props) => {
     openWeb3Modal()
   }
 
+  const handleDisconnectClick = (walletType: WalletItemType) => {
+    if (walletType === 'ton') {
+      tonConnectUI.disconnect()
+
+      return
+    }
+
+    ethWalletDisconenct()
+  }
+
+  const walletAddresses: Record<'eth' | 'ton', string> = useMemo(
+    () => ({
+      eth: ethWalletAddress as string,
+      ton: tonWalletAddress,
+    }),
+    [ethWalletAddress, tonWalletAddress]
+  )
+
   // useEffect(() => {
   //   if (open && walletConnectAddress) {
   //     onClose(false)
@@ -61,16 +85,39 @@ export const ConnectWalletPopup: FC<ConnectWalletPopupProps> = (props) => {
   return (
     <Modal onClose={onClose} open={open} title="Connect wallet">
       <S.Wrapper>
-        {WALLET_ITEMS.map(({ svg, title, type }, idx) => (
-          <S.ItemWrapper key={idx} onClick={() => handleWalletClick(type)}>
-            <S.LeftBlock>
-              {svg} {title}
-            </S.LeftBlock>
-            <S.RightBlock>
-              <SvgRightArrow />
-            </S.RightBlock>
-          </S.ItemWrapper>
-        ))}
+        {WALLET_ITEMS.map(({ svg, title, type }, idx) => {
+          const isConnected = Boolean(walletAddresses[type])
+
+          return (
+            <S.ItemWrapper
+              key={idx}
+              isActive={!isConnected}
+              onClick={!isConnected ? () => handleWalletClick(type) : undefined}
+            >
+              {!isConnected ? (
+                <>
+                  <S.LeftBlock>
+                    {svg} {title}
+                  </S.LeftBlock>
+                  <S.RightBlock>
+                    <SvgRightArrow />
+                  </S.RightBlock>
+                </>
+              ) : (
+                <>
+                  <S.LeftBlock>
+                    {shortenAddress(walletAddresses[type])}
+                  </S.LeftBlock>
+                  <S.DisconnectButton
+                    onClick={() => handleDisconnectClick(type)}
+                  >
+                    Disconnect
+                  </S.DisconnectButton>
+                </>
+              )}
+            </S.ItemWrapper>
+          )
+        })}
       </S.Wrapper>
     </Modal>
   )

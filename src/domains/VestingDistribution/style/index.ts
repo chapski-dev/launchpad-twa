@@ -122,6 +122,7 @@ export const ClaimedItem = styled.div`
   justify-content: space-between;
   padding: 12px;
   background-color: ${({ theme }) => theme.color.bg};
+  cursor: pointer;
 
   &:not(:last-child) {
     border-bottom: 1px solid ${({ theme }) => theme.color.bgSecondary};

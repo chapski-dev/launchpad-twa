@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
+
 import { BackButton } from 'features/BackButton'
 import { ProfileBlock } from 'features/Layout/components/Header/components/ProfileBlock/ProfileBlock'
 import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'

@@ -1,56 +1,56 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useTonAddress } from '@tonconnect/ui-react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useTonAddress } from '@tonconnect/ui-react'
 // import dayjs from 'dayjs'
-import { Inter } from 'next/font/google';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-// import { Address } from 'ton-core'
-import { getICOProjectById } from 'api';
-import { AppRoutes } from 'constants/app';
+
+import { Inter } from 'next/font/google'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { getICOProjectById } from 'api'
+import { AppRoutes } from 'constants/app'
 import {
   ProjectInfoHeader,
   // ParticipateModal,
-} from 'domains/Project/components';
-import * as S from 'domains/Project/style';
-import { BackButton } from 'features/BackButton';
-import { Layout } from 'features/Layout/Layout';
+} from 'domains/Project/components'
+import * as S from 'domains/Project/style'
+import { BackButton } from 'features/BackButton'
+import { Layout } from 'features/Layout/Layout'
 // import { MainButton } from 'features/MainButton'
 // import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
-import { MainButton } from 'features/MainButton';
-import { useProfileContext } from 'hooks/useProfileContext/useProfileContext';
-import { useTelegram } from 'hooks/useTelegram/useTelegram';
-import { BuyPopup } from 'popups/BuyPopup/BuyPopup';
-import { VerificationPopup } from 'popups/VerificationPopup/VerificationPopup';
-import { Button } from 'ui/Button/Button';
-import { Container } from 'ui/Container/Container';
-import { Line } from 'ui/Line/Line';
-import { Loader } from 'ui/Loader/Loader';
+import { MainButton } from 'features/MainButton'
+import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
 
-const inter = Inter({ subsets: ['latin'] });
+import { useTelegram } from 'hooks/useTelegram/useTelegram'
+import { BuyPopup } from 'popups/BuyPopup/BuyPopup'
+// import { VerificationPopup } from 'popups/VerificationPopup/VerificationPopup'
+import { Button } from 'ui/Button/Button'
+import { Container } from 'ui/Container/Container'
+import { Line } from 'ui/Line/Line'
+import { Loader } from 'ui/Loader/Loader'
+
+const inter = Inter({ subsets: ['latin'] })
 
 const Project: FC = () => {
-  const [isParticipateModalOpen, setIsParticipateModalOpen] = useState(false);
-  const [verificationPopupOpen, setVerificationPopupOpen] = useState(false);
+  const [isParticipateModalOpen, setIsParticipateModalOpen] = useState(false)
+  // const [verificationPopupOpen, setVerificationPopupOpen] = useState(false)
 
+  const router = useRouter()
 
-  const router = useRouter();
-
-  const userWalletAddress = useTonAddress();
+  const userWalletAddress = useTonAddress()
 
   // const [tonConnectUI] = useTonConnectUI()
 
   // const { sendTransaction } = useSendTransaction()
 
-  const { xapiProfileInfo } = useProfileContext();
+  const { xapiProfileInfo } = useProfileContext()
 
-  const { webApp } = useTelegram();
+  const { webApp } = useTelegram()
 
-  const { id } = router.query;
+  const { id } = router.query
 
   useEffect(() => {
-    webApp?.expand();
-  }, [webApp]);
+    webApp?.expand()
+  }, [webApp])
 
   const {
     data: project,
@@ -63,33 +63,33 @@ const Project: FC = () => {
     select: useCallback((data: any) => {
       const distributions: any[] =
         data.tokenomics.find(({ name }: any) => name === 'distribution')
-          ?.value || [];
+          ?.value || []
 
       const icoParams = data.tokenomics.find(
         ({ name }: any) => name === 'ico'
-      )?.value;
+      )?.value
 
       const icoFundDistributions =
         data.tokenomics.find(({ name }: any) => name === 'icoDistribution')
-          ?.value || [];
+          ?.value || []
 
       const getTotalSupply = () => {
         if (distributions) {
           const totalByDistributions = distributions.reduce<number>(
             (acc, curr) => Number(acc) + Number(curr.value),
             0
-          );
+          )
 
           if (icoParams) {
             const totalSupply =
-              totalByDistributions + Number(icoParams.jettonsAmount);
+              totalByDistributions + Number(icoParams.jettonsAmount)
 
-            return totalSupply;
+            return totalSupply
           }
 
-          return totalByDistributions;
+          return totalByDistributions
         }
-      };
+      }
 
       return {
         ...data,
@@ -100,9 +100,11 @@ const Project: FC = () => {
           : null,
         distributions,
         icoFundDistributions,
-      };
+      }
     }, []),
-  });
+  })
+
+  console.log(project)
 
   // const {
   //   data: participantState,
@@ -126,14 +128,15 @@ const Project: FC = () => {
   const toggleParticipateModal = () => {
     switch (xapiProfileInfo?.state) {
       case 'verified':
-        setIsParticipateModalOpen((prev) => !prev);
-        break;
+        setIsParticipateModalOpen((prev) => !prev)
+        break
 
       case 'unverified':
-        setVerificationPopupOpen((prev) => !prev);
-        break;
+        //TODO: temporary, delete after all tests
+        setIsParticipateModalOpen((prev) => !prev)
+        break
     }
-  };
+  }
 
   // const handleMainButtonClick = useCallback(() => {
   //   if (!userWalletAddress) {
@@ -167,18 +170,16 @@ const Project: FC = () => {
 
   const isLoading = useMemo(() => {
     if (userWalletAddress) {
-      return (
-        isProjectLoading
-      );
+      return isProjectLoading
     }
 
-    return isProjectLoading;
+    return isProjectLoading
   }, [
     // isCurrentIcoInfoLoading,
     // isParticipantStateLoading,
     isProjectLoading,
     userWalletAddress,
-  ]);
+  ])
 
   // const isEarlyClaimButtonDisplayed = useMemo(() => {
   //   if (!participantState || !participantState?.participated) {
@@ -209,7 +210,6 @@ const Project: FC = () => {
   //     alert('Early claim successfully submitted')
   //   }
   // }, [project, participantState, sendTransaction])
-
 
   return (
     <>
@@ -243,7 +243,12 @@ const Project: FC = () => {
                     )} */}
                       <Button
                         onClick={() => {
-                          router.push(AppRoutes.VestingDistribution);
+                          router.push({
+                            pathname: AppRoutes.SaleState,
+                            query: {
+                              projectId: project.id,
+                            },
+                          })
                         }}
                       >
                         Vesting Distiribution page
@@ -262,6 +267,7 @@ const Project: FC = () => {
                       <BuyPopup
                         onClose={toggleParticipateModal}
                         open={isParticipateModalOpen}
+                        projectId={project.id}
                         //TODO: убрать после демо
                         status={
                           project.name === 'NebulaNet'
@@ -269,10 +275,12 @@ const Project: FC = () => {
                             : undefined
                         }
                       />
-                      <VerificationPopup
+
+                      {/* <VerificationPopup
                         onClose={toggleParticipateModal}
                         open={verificationPopupOpen}
-                      />
+                      /> */}
+
                       {!isParticipateModalOpen && (
                         <MainButton
                           onClick={toggleParticipateModal}
@@ -323,7 +331,7 @@ const Project: FC = () => {
         )}
       </main>
     </>
-  );
-};
+  )
+}
 
-export default Project;
+export default Project
