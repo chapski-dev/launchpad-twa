@@ -1,5 +1,6 @@
 export const LAUNCHPAD_BASE_API_URL = 'https://tokenova.fi/'
-export const XAPI_LAUNCHPAD_BASE_API_URL = 'https://xapi.tokenova.fi/'
+// export const XAPI_LAUNCHPAD_BASE_API_URL = 'https://xapi.tokenova.fi/'
+export const XAPI_LAUNCHPAD_BASE_API_URL = 'https://community-app.xton.org/'
 
 export const ApiRoutes = {
   GetICOProjects: '/launchpad/projects',
@@ -12,6 +13,6 @@ export const ApiRoutes = {
 } as const
 
 export const XApiRoutes = {
-  LaunchpadProjects: '/launchpad/projects',
+  LaunchpadProjects: '/sale',
   UserProfile: '/user/profile',
 } as const

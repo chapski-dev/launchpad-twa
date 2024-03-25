@@ -18,7 +18,7 @@ export type GetICOJettonsRes = {
   description: string
   image: string
   symbol: string
-  id: string
+  saleId: string
 }
 //* -------------- GetICOProjectByIdRes --------------
 export type GetICOProjectByIdRes = {
@@ -27,12 +27,12 @@ export type GetICOProjectByIdRes = {
   description: string
   image: string
   symbol: string
-  page_data: string
+  pageData: string
   tokenomics: Tokenomic[]
 }
 export type Tokenomic = {
   name: string
-  amount: string
+  amount: number
 }
 
 //* -------------- GetXapiProfileResp --------------
