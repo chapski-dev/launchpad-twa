@@ -6,6 +6,14 @@ import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import { useRouter } from 'next/router'
 import { Address } from 'ton-core'
 import { Config, useAccount, useConnectorClient } from 'wagmi'
+import {
+  // checkTransaction,
+  estimateBuyAmount,
+  getUserContractAddress,
+  queryTONPrice,
+  queryUserSaleState,
+  queryWhitelist,
+} from 'api'
 import { AppRoutes } from 'constants/app'
 import { MainButton } from 'features/MainButton'
 import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
@@ -17,14 +25,6 @@ import {
   SuccessBuy,
   JoinWaitlist,
 } from './components'
-import {
-  checkTransaction,
-  estimateBuyAmount,
-  getUserContractAddress,
-  queryTONPrice,
-  queryUserSaleState,
-  queryWhitelist,
-} from 'api'
 
 type BuyStatus = 'buy' | 'loader' | 'waiting' | 'success' | 'join_waitlist'
 
@@ -44,7 +44,9 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
   const [activeChain, setActiveChain] = useState<'TON' | 'ETH'>('TON')
 
-  const [currentStatus, setCurrentStatus] = useState<BuyStatus>(status || 'buy')
+  const [currentStatus, setCurrentStatus] = useState<BuyStatus>(
+    status || 'loader'
+  )
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -70,8 +72,8 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         return (
           <Buy
             activeChain={activeChain}
-            setActiveChain={setActiveChain}
             project={project}
+            setActiveChain={setActiveChain}
           />
         )
       case 'loader':
@@ -86,30 +88,12 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         return (
           <Buy
             activeChain={activeChain}
-            setActiveChain={setActiveChain}
             project={project}
+            setActiveChain={setActiveChain}
           />
         )
     }
-  }, [activeChain, currentStatus])
-
-  // const handleClick = () => {
-  //   switch (currentStatus) {
-  //     case 'buy':
-  //       setCurrentStatus('loader')
-  //       break
-  //     case 'loader':
-  //       setCurrentStatus('waiting')
-  //       break
-  //     case 'waiting':
-  //       setCurrentStatus('success')
-  //       break
-  //     case 'join_waitlist':
-  //       alert('You have been successfully added to the waiting list.')
-  //       onClose(false)
-  //       break
-  //   }
-  // }
+  }, [activeChain, currentStatus, project])
 
   const handleBuy = async () => {
     if (currentStatus === 'success') {
@@ -165,15 +149,18 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
     try {
       setIsLoading(true)
       // Step 1:
-      let whitelist = await queryWhitelist('TON', project.saleId, 1)
+      const whitelist = await queryWhitelist('TON', project.saleId, 1)
       // const whitelist = await SaleV1FunC.queryWhitelist(
       //   Address.parse(tonUserWalletAddress)
       // )
 
-      let pools = project.allocationPools
-      let tonPool = pools.filter((x: any) => x.network == 'TON').pop()
+      const tonPool = project.allocationPools.pools
+        .filter((pool: any) => pool.network === 'TON')
+        .pop()
+
       console.log(whitelist)
       console.log(project)
+
       // Step 2
       const createUserMessage = await SaleV1FunC.createUserMessageR(
         Address.parse(tonPool.contract),
@@ -185,14 +172,18 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       )
 
       // Step: 3 | Let's check and see if user has a contract
-      let state = await queryUserSaleState(project.saleId, 'ton')
-      // let createUserBoc = "ff";
+      const userSaleState = await queryUserSaleState(project.saleId, 'ton')
+
       let createUserBoc = null
-      if (!state || state.state != 'bought') {
-        const { boc: bovx } = await sendTransaction(createUserMessage)
-        createUserBoc = bovx
-      } else if (state.state == 'bought') {
-        createUserBoc = 'true'
+
+      switch (true) {
+        case !userSaleState:
+        case userSaleState.state !== 'bought':
+          const { boc: bovx } = await sendTransaction(createUserMessage)
+          createUserBoc = bovx
+          break
+        case userSaleState.state === 'bought':
+          createUserBoc = 'true'
       }
       // We don't need to deploy user contract if the state is already there
 
@@ -211,8 +202,13 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
               )
             }
 
-            let st = await queryUserSaleState(project.saleId, 'ton')
-            isCreateUserTrxSigned = st && st.state == 'bought'
+            const userSaleState = await queryUserSaleState(
+              project.saleId,
+              'ton'
+            )
+
+            isCreateUserTrxSigned =
+              userSaleState && userSaleState.state === 'bought'
             // isCreateUserTrxSigned = !await checkTransaction(
             //   createUserBoc
             // )
@@ -221,18 +217,22 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
             if (!isCreateUserTrxSigned) {
               currentAttempts++
-              setTimeout(checkTransactionStatus, 5000) // Повторно проверить через 5 секунд
+              setTimeout(checkTransactionStatus, 5000)
 
               return
             }
 
             //Step 5  (if trx status true)
-            let uc = await getUserContractAddress(project.saleId)
-            console.log('uc', uc)
+            const userContractAddress = await getUserContractAddress(
+              project.saleId
+            )
+
+            console.log('userContractAddress', userContractAddress)
 
             // Step 6.0
-            let pi = await queryTONPrice()
-            let ba = await estimateBuyAmount(
+            const tonPrice = await queryTONPrice()
+
+            const buyAmount = await estimateBuyAmount(
               project.saleId,
               'TON',
               1,
@@ -241,15 +241,16 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
             //Step 6
             const buyUserMessage = await SaleV1FunC.buyUserMessageFull(
-              Address.parse(uc),
-              BigInt(ba.tokenAmount),
-              BigInt(ba.tonAmount) + BigInt(1e8),
-              pi
+              Address.parse(userContractAddress),
+              BigInt(buyAmount.tokenAmount),
+              BigInt(buyAmount.tonAmount) + BigInt(1e8),
+              tonPrice
             )
 
             //Step 7
             const { boc: buyUserBoc } = await sendTransaction(buyUserMessage)
             console.log({ buyUserBoc })
+
             //Step 8
             if (buyUserBoc) {
               let currentAttempts = 0
@@ -263,17 +264,19 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
                     )
                   }
 
-                  let st2 = await queryUserSaleState(project.saleId, 'ton')
+                  const userSaleStateAfterBuy = await queryUserSaleState(
+                    project.saleId,
+                    'ton'
+                  )
                   // detect state change between st and st2, if yes, the transaction is a success
                   isBuyUserTrxSigned =
-                    st2 && st2.state == 'bought' && st2.bought > st.bought // st2.bought > 0
-                  // isBuyUserTrxSigned = await checkTransaction(
-                  //   buyUserBoc
-                  // )
+                    userSaleStateAfterBuy &&
+                    userSaleStateAfterBuy.state === 'bought' &&
+                    userSaleStateAfterBuy.bought > 0
 
                   if (!isBuyUserTrxSigned) {
                     currentAttempts++
-                    setTimeout(checkBuyUserTrx, 5000) // Повторно проверить через 5 секунд
+                    setTimeout(checkBuyUserTrx, 5000)
 
                     return
                   }
@@ -385,7 +388,13 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       default:
         return 'Check next state'
     }
-  }, [activeChain, currentStatus, ethUserWalletAddress, tonUserWalletAddress])
+  }, [
+    activeChain,
+    currentStatus,
+    ethUserWalletAddress,
+    project.symbol,
+    tonUserWalletAddress,
+  ])
 
   return (
     <Modal

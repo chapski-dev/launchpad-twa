@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components'
+import { Button } from 'ui/Button/Button'
 
 export const Wrapper = styled.div`
   display: flex;
@@ -64,7 +65,6 @@ export const WalletAddress = styled.div`
 
 export const Description = styled.span`
   width: 100%;
-  padding: 12px 12px 12px 12px;
   line-height: 180%;
   font-size: 14px;
   color: ${({ theme }) => theme.color.text};
@@ -84,4 +84,17 @@ export const LoaderWaitList = styled.div`
   border-top: 4px solid #0098ea;
   border-radius: 50%;
   animation: ${spinAnimation} 2s linear infinite;
+`
+
+export const BottomBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+`
+
+export const ParticipateButton = styled(Button)`
+  width: 100%;
+  padding: 6px 12px;
+  font-size: 14px;
 `

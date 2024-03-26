@@ -1,31 +1,17 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTonAddress } from '@tonconnect/ui-react'
-// import dayjs from 'dayjs'
-
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { getICOProjectById } from 'api'
-import { AppRoutes } from 'constants/app'
-import {
-  InfoBlock,
-  ProjectInfoHeader,
-  Tokenomics,
-  // ParticipateModal,
-} from 'domains/Project/components'
+import { getICOProjectById, queryUserSaleState } from 'api'
+import { InfoBlock, ProjectInfoHeader } from 'domains/Project/components'
 import * as S from 'domains/Project/style'
 import { BackButton } from 'features/BackButton'
 import { Layout } from 'features/Layout/Layout'
-// import { MainButton } from 'features/MainButton'
-// import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
 import { MainButton } from 'features/MainButton'
-import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
-
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { BuyPopup } from 'popups/BuyPopup/BuyPopup'
-// import { VerificationPopup } from 'popups/VerificationPopup/VerificationPopup'
-import { Button } from 'ui/Button/Button'
 import { Container } from 'ui/Container/Container'
 import { Line } from 'ui/Line/Line'
 import { Loader } from 'ui/Loader/Loader'
@@ -34,17 +20,10 @@ const inter = Inter({ subsets: ['latin'] })
 
 const Project: FC = () => {
   const [isParticipateModalOpen, setIsParticipateModalOpen] = useState(false)
-  // const [verificationPopupOpen, setVerificationPopupOpen] = useState(false)
 
   const router = useRouter()
 
   const userWalletAddress = useTonAddress()
-
-  // const [tonConnectUI] = useTonConnectUI()
-
-  // const { sendTransaction } = useSendTransaction()
-
-  const { xapiProfileInfo } = useProfileContext()
 
   const { webApp } = useTelegram()
 
@@ -106,26 +85,13 @@ const Project: FC = () => {
     }, []),
   })
 
+  const { data: currentUserSaleState } = useQuery({
+    queryKey: ['current-sale-state', project],
+    queryFn: () => queryUserSaleState(project!.id as string, 'ton'),
+    enabled: !!project?.id,
+  })
+
   console.log(project)
-
-  // const {
-  //   data: participantState,
-  //   isLoading: isParticipantStateLoading,
-  //   // refetch: refetchProjectParticipantInfo,
-  // } = useQuery({
-  //   queryKey: ['participantState'],
-  //   queryFn: () =>
-  //     TnC.getParticipantState(userWalletAddress, project?.icoMasterAddress),
-  //   enabled: Boolean(userWalletAddress) && Boolean(project?.icoMasterAddress),
-  // })
-
-  // const { data: currentIcoInfo, isLoading: isCurrentIcoInfoLoading } = useQuery(
-  //   {
-  //     queryKey: ['currentIcoInfo'],
-  //     queryFn: () => TnC.icoInfo(project?.icoMasterAddress),
-  //     enabled: Boolean(project?.icoMasterAddress),
-  //   }
-  // )
 
   const toggleParticipateModal = () => {
     setIsParticipateModalOpen((prev) => !prev)
@@ -141,36 +107,6 @@ const Project: FC = () => {
     // }
   }
 
-  // const handleMainButtonClick = useCallback(() => {
-  //   if (!userWalletAddress) {
-  //     if (!webApp) {
-  //       return
-  //     }
-
-  //     webApp?.expand()
-
-  //     tonConnectUI.connectWallet()
-
-  //     return
-  //   }
-
-  //   if (participantState?.participated) {
-  //     alert('You have already participated in this project')
-
-  //     return
-  //   }
-
-  //   if (!isParticipateModalOpen) {
-  //     toggleParticipateModal()
-  //   }
-  // }, [
-  //   isParticipateModalOpen,
-  //   participantState?.participated,
-  //   tonConnectUI,
-  //   userWalletAddress,
-  //   webApp,
-  // ])
-
   const isLoading = useMemo(() => {
     if (userWalletAddress) {
       return isProjectLoading
@@ -183,36 +119,6 @@ const Project: FC = () => {
     isProjectLoading,
     userWalletAddress,
   ])
-
-  // const isEarlyClaimButtonDisplayed = useMemo(() => {
-  //   if (!participantState || !participantState?.participated) {
-  //     return false
-  //   }
-
-  //   return (
-  //     participantState.sale_state.state === 'can-end' &&
-  //     participantState.distribution_mode !== 2 &&
-  //     participantState.unlock_transactions.length === 0 &&
-  //     dayjs().isBefore(participantState.sale_state.endTime * 1000)
-  //   )
-  // }, [participantState])
-
-  // const handleEarlyClaimButtonClick = useCallback(async () => {
-  //   if (!project) {
-  //     return
-  //   }
-
-  //   const trxMessage = TnC.pingRequest(
-  //     Address.parse(project.icoMasterAddress),
-  //     (participantState as any)?.user_id
-  //   )
-
-  //   const trx = await sendTransaction(trxMessage)
-
-  //   if (trx.boc) {
-  //     alert('Early claim successfully submitted')
-  //   }
-  // }, [project, participantState, sendTransaction])
 
   return (
     <>
@@ -233,21 +139,14 @@ const Project: FC = () => {
                       <ProjectInfoHeader
                         description={project.description}
                         image={project.image}
+                        isParticipated={currentUserSaleState?.bought}
+                        projectId={project.saleId}
                         // network={project.network}
                         title={project.name}
                       />
                       <Line />
-                      {/* {userWalletAddress && participantState?.participated && (
-                      <ParticipatedInfo
-                        icoMasterAddress={project.icoMasterAddress}
-                        participantState={participantState}
-                        symbol={project.symbol}
-                      />
-                    )} */}
-                      <div
-                      // style={{ display: 'none' }}
-                      >
-                        <Button
+                      <div>
+                        {/* <Button
                           onClick={() => {
                             router.push({
                               pathname: AppRoutes.SaleState,
@@ -258,7 +157,7 @@ const Project: FC = () => {
                           }}
                         >
                           Vesting Distiribution page
-                        </Button>
+                        </Button> */}
                       </div>
                       {/* // TODO: У project появился ключ tokenomics. Полагаю из него надо будет парсить инфу */}
                       {/* <Tokenomics
@@ -274,16 +173,11 @@ const Project: FC = () => {
                       <BuyPopup
                         onClose={toggleParticipateModal}
                         open={isParticipateModalOpen}
-                        projectId={project.saleId}
                         project={project}
+                        projectId={project.saleId}
                         //TODO: убрать после демо
                         status={'buy'}
                       />
-
-                      {/* <VerificationPopup
-                        onClose={toggleParticipateModal}
-                        open={verificationPopupOpen}
-                      /> */}
 
                       {!isParticipateModalOpen && (
                         <MainButton
@@ -296,39 +190,8 @@ const Project: FC = () => {
                           }
                         />
                       )}
-                      {/* {!participantState?.participated &&
-                      !isParticipateModalOpen && (
-                        <MainButton
-                          onClick={handleMainButtonClick}
-                          text={
-                            userWalletAddress
-                              ? 'Buy ' + project?.metadata.symbol
-                              : 'Connect Wallet'
-                          }
-                        />
-                      )}
-                    {isEarlyClaimButtonDisplayed && (
-                      <MainButton
-                        onClick={handleEarlyClaimButtonClick}
-                        text="Early Claim"
-                      />
-                    )} */}
                     </Container>
                   </S.Wrapper>
-                  {/* {currentIcoInfo && (
-                    <ParticipateModal
-                      icoInfo={currentIcoInfo!}
-                      icoMasterAddress={project?.icoMasterAddress}
-                      jettonImage={project?.metadata.image}
-                      onClose={setIsParticipateModakOpen}
-                      open={!!(participantState && isParticipateModalOpen)}
-                      participantState={participantState}
-                      refetchProjectParticipantInfo={
-                        refetchProjectParticipantInfo
-                      }
-                      symbol={project?.metadata.symbol}
-                    />
-                  )} */}
                 </>
               )
             )}

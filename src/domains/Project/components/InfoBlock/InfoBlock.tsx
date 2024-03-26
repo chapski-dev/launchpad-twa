@@ -1,4 +1,4 @@
-import { FC, useState, useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import { ICOInfo } from '@ton-and-company/sdk/dist/core/sdk'
 import { MarkdownRenderer } from 'features/MarkdownRenderer'
 import { Container } from 'ui/Container/Container'
@@ -7,16 +7,16 @@ import { Container } from 'ui/Container/Container'
 // import { DealTerms } from './components'
 import * as S from './style'
 
-const tabs = [
-  {
-    label: 'About',
-    value: 'about',
-  },
-  {
-    label: 'Deal terms',
-    value: 'deal_tearms',
-  },
-]
+// const tabs = [
+//   {
+//     label: 'About',
+//     value: 'about',
+//   },
+//   {
+//     label: 'Deal terms',
+//     value: 'deal_tearms',
+//   },
+// ]
 
 type InfoBlockProps = {
   mdContent?: string
@@ -24,9 +24,9 @@ type InfoBlockProps = {
 }
 
 export const InfoBlock: FC<InfoBlockProps> = (props) => {
-  const { mdContent, icoInfo } = props
+  const { mdContent } = props
 
-  const [activeTab, setActiveTab] = useState(tabs[0])
+  // const [activeTab] = useState(tabs[0])
 
   const infoContent = useMemo(() => {
     // switch (activeTab.value) {
@@ -35,7 +35,7 @@ export const InfoBlock: FC<InfoBlockProps> = (props) => {
     // case 'deal_tearms':
     // return icoInfo && <DealTerms icoInfo={icoInfo} />
     // }
-  }, [activeTab.value, mdContent, icoInfo])
+  }, [mdContent])
 
   return (
     <S.Wrapper>

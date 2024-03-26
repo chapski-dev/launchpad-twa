@@ -1,10 +1,12 @@
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from 'react'
 
+import { useQuery } from '@tanstack/react-query'
+import { useTonAddress } from '@tonconnect/ui-react'
+import { getBalance } from 'utils/getBalance'
 import * as S from './style'
 import { SwitchBtn } from '../SwitchBtn/SwitchBtn'
 
 const CHAIN_TABS: ['TON', 'ETH'] = ['TON', 'ETH']
-const BALANCE = 100
 const TON_PRICE = 0.02
 const MIN_TON = 20
 const MAX_TON = 50
@@ -20,6 +22,13 @@ export const Buy: FC<BuyProps> = (props) => {
   const [formState, setFormState] = useState({
     ton: 1,
     xton: 4.5,
+  })
+
+  const userWalletAddress = useTonAddress()
+
+  const { data: userBalance } = useQuery({
+    queryKey: ['user-balance'],
+    queryFn: () => getBalance(userWalletAddress, 'testnet'),
   })
 
   const handleSetValue =
@@ -44,9 +53,13 @@ export const Buy: FC<BuyProps> = (props) => {
     }
 
   const handleSetMax = () => {
+    if (!userBalance) {
+      return
+    }
+
     setFormState({
-      xton: Number((Number(MAX_TON) * (1 / TON_PRICE)).toFixed(2)),
-      ton: MAX_TON,
+      xton: Number((Number(userBalance) * (1 / TON_PRICE)).toFixed(2)),
+      ton: Number(userBalance.toFixed(2)),
     })
   }
 
@@ -63,7 +76,11 @@ export const Buy: FC<BuyProps> = (props) => {
       <S.AmountBlock>
         <S.Title children="Amount" />
         <S.Balance>
-          Balance: <S.Count>{BALANCE} TON</S.Count>{' '}
+          {!userBalance ? (
+            '-.--'
+          ) : (
+            <S.Count>{userBalance.toFixed(2)} TON</S.Count>
+          )}{' '}
           <S.MaxLink children="Max" onClick={handleSetMax} />
         </S.Balance>
       </S.AmountBlock>
@@ -72,7 +89,7 @@ export const Buy: FC<BuyProps> = (props) => {
         <S.Input
           actionElement={<S.Chain children={project.symbol} />}
           className="ton-input"
-          max={Number(BALANCE) * (1 / TON_PRICE)}
+          max={Number(userBalance) * (1 / TON_PRICE)}
           onChange={handleSetValue('xton')}
           type="number"
           value={formState.xton}

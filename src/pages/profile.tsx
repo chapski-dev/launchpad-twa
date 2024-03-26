@@ -9,7 +9,7 @@ import { ProfileBlock } from 'features/Layout/components/Header/components/Profi
 import { useProfileContext } from 'hooks/useProfileContext/useProfileContext'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { ConnectWalletPopup } from 'popups/ConnectWalletPopup/ConnectWalletPopup'
-import { Button } from 'ui/Button/Button'
+
 import { Container } from 'ui/Container/Container'
 import { Task } from 'ui/Task/Task'
 import * as S from '../domains/Profile/style/index'
@@ -30,7 +30,9 @@ const Profile: FC = () => {
 
   const { user } = useTelegram()
 
-  const { xapiProfileInfo, setXapiProfileFlag } = useProfileContext()
+  const { xapiProfileInfo } = useProfileContext()
+
+  console.log(xapiProfileInfo)
 
   const loadBlockpassWidget = useCallback(() => {
     const blockpass = new window.BlockpassKYCConnect(
@@ -61,19 +63,6 @@ const Profile: FC = () => {
         <S.Wrapper>
           <Container>
             <ProfileBlock />
-            <Button children="new" onClick={() => setXapiProfileFlag('new')} />
-            <Button
-              children="pending-kyc"
-              onClick={() => setXapiProfileFlag('pending-kyc')}
-            />
-            <Button
-              children="done"
-              onClick={() => setXapiProfileFlag('done')}
-            />
-            <Button
-              children="done2"
-              onClick={() => setXapiProfileFlag('done2')}
-            />
             <S.CompletingInfoBlock>
               <S.InfoTitle>Completing the profile creation</S.InfoTitle>
               <S.DescriptionInfo>

@@ -1,8 +1,8 @@
 import { createContext, useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
-import { getProfile, getXapiProfile, createUser, connectWallet } from 'api'
-import { GetXapiProfileResp, ProfileInfoType } from 'api/types'
+import { getXapiProfile, createUser, connectWallet } from 'api'
+import { GetXapiProfileResp } from 'api/types'
 import { Chains } from 'constants/blockchain'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { FCWithChildren } from 'types/app'
@@ -15,8 +15,8 @@ export type ProfileContextType = {
     username: string
   } | null
   refetchProfileBalance?: () => void
-  xapiProfileInfo?: GetXapiProfileResp;
-  setXapiProfileFlag: (flag: 'pending-kyc' | 'new' | 'done' | 'done2') => void;
+  xapiProfileInfo?: GetXapiProfileResp
+  setXapiProfileFlag: (flag: 'pending-kyc' | 'new' | 'done' | 'done2') => void
 }
 
 export const ProfileContext = createContext<ProfileContextType>({
@@ -32,32 +32,21 @@ export const ProfileProvider: FCWithChildren = (props) => {
 
   const { webApp, user } = useTelegram()
 
-  const { data: profileInfo, isLoading: isProfileInfoLoading } = useQuery({
-    queryKey: ['profileInfo'],
-    queryFn: () => getProfile({ telegram: user?.username }),
-    enabled: Boolean(user?.username),
-  })
-
-  const { data: invitedByProfileInfo } = useQuery({
-    queryKey: ['referralProfileInfo'],
-    queryFn: () => getProfile({ referral_code: profileInfo?.referral_id }),
-    enabled: Boolean(profileInfo?.referral_id),
-  })
-
   const { data: balance, refetch: refetchProfileBalance } = useQuery({
     queryKey: ['userBalance'],
     queryFn: () => getBalance(userWalletAddress, 'testnet'),
     enabled: !!userWalletAddress,
   })
 
-  const [flag, setFlag] = useState<"pending-kyc" | "new" | "done" | "done2">('new')
+  const [flag, setFlag] = useState<'pending-kyc' | 'new' | 'done' | 'done2'>(
+    'new'
+  )
 
-  const { data: xapiProfileInfo, } = useQuery({
+  const { data: xapiProfileInfo } = useQuery({
     queryKey: ['xapiProfile', flag],
     queryFn: () => getXapiProfile({ flag: flag }),
     enabled: Boolean(user?.username),
   })
-
 
   // const { data: userData, mutate: createUserI } = useMutation({
   //   mutationKey: ['createUser'],
@@ -69,7 +58,7 @@ export const ProfileProvider: FCWithChildren = (props) => {
   //   mutationFn: (profileData: ProfileInfoType) => saveProfile(profileData),
   // })
 
-  const { data: userData, } = useQuery({
+  const { data: userData } = useQuery({
     queryKey: ['createUser'],
     queryFn: () => createUser(),
     enabled: Boolean(user?.id),
@@ -77,10 +66,8 @@ export const ProfileProvider: FCWithChildren = (props) => {
 
   const { mutate: connectWalletI } = useMutation({
     mutationKey: ['connectWallet'],
-    mutationFn: (x:{n: string; a: string}) => connectWallet(x.n, x.a),
+    mutationFn: (x: { n: string; a: string }) => connectWallet(x.n, x.a),
   })
-
-
 
   useEffect(() => {
     if (webApp && userData) {
@@ -113,18 +100,14 @@ export const ProfileProvider: FCWithChildren = (props) => {
         }
         connectWalletI({
           a: wallet.account.address,
-          n: "TON"
+          n: 'TON',
         })
       }
     })
-  }, [connectWalletI, profileInfo, tonConnectUI])
+  }, [connectWalletI, tonConnectUI])
 
   const value = {
-    profileInfo,
     balance,
-    invitedBy: {
-      username: invitedByProfileInfo?.telegram,
-    },
     xapiProfileInfo,
     refetchProfileBalance,
     setXapiProfileFlag: setFlag,
