@@ -17,7 +17,14 @@ import {
   SuccessBuy,
   JoinWaitlist,
 } from './components'
-import { checkTransaction, estimateBuyAmount, getUserContractAddress, queryTONPrice, queryUserSaleState, queryWhitelist } from 'api';
+import {
+  checkTransaction,
+  estimateBuyAmount,
+  getUserContractAddress,
+  queryTONPrice,
+  queryUserSaleState,
+  queryWhitelist,
+} from 'api'
 
 type BuyStatus = 'buy' | 'loader' | 'waiting' | 'success' | 'join_waitlist'
 
@@ -158,13 +165,13 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
     try {
       setIsLoading(true)
       // Step 1:
-      let whitelist = await queryWhitelist("TON", project.saleId, 1);
+      let whitelist = await queryWhitelist('TON', project.saleId, 1)
       // const whitelist = await SaleV1FunC.queryWhitelist(
       //   Address.parse(tonUserWalletAddress)
       // )
 
-      let pools = project.allocationPools;
-      let tonPool = pools.filter((x: any) => x.network == "TON").pop();
+      let pools = project.allocationPools
+      let tonPool = pools.filter((x: any) => x.network == 'TON').pop()
       console.log(whitelist)
       console.log(project)
       // Step 2
@@ -173,19 +180,22 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         '0.25',
         {
           payload: whitelist.payload!,
-          signature: whitelist.signature
-        })
-      
+          signature: whitelist.signature,
+        }
+      )
+
       // Step: 3 | Let's check and see if user has a contract
-      let state = await queryUserSaleState(project.saleId, "ton");
+      let state = await queryUserSaleState(project.saleId, 'ton')
       // let createUserBoc = "ff";
-      let createUserBoc = null;
+      let createUserBoc = null
       if (!state || state.state != 'bought') {
         const { boc: bovx } = await sendTransaction(createUserMessage)
-        createUserBoc = bovx;
+        createUserBoc = bovx
       } else if (state.state == 'bought') {
-        createUserBoc = "true";
+        createUserBoc = 'true'
       }
+      // We don't need to deploy user contract if the state is already there
+
       // Step: 4
       if (createUserBoc) {
         setCurrentStatus('loader')
@@ -201,12 +211,12 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
               )
             }
 
-            let st = await queryUserSaleState(project.saleId, "ton");
-            isCreateUserTrxSigned = st && st.state == 'bought';
+            let st = await queryUserSaleState(project.saleId, 'ton')
+            isCreateUserTrxSigned = st && st.state == 'bought'
             // isCreateUserTrxSigned = !await checkTransaction(
             //   createUserBoc
             // )
-            
+
             // isCreateUserTrxSigned = true;
 
             if (!isCreateUserTrxSigned) {
@@ -217,14 +227,17 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
             }
 
             //Step 5  (if trx status true)
-            let uc = await getUserContractAddress(
-              project.saleId
-            )
-            console.log('uc',uc)
+            let uc = await getUserContractAddress(project.saleId)
+            console.log('uc', uc)
 
-            // Step 6.0 
-            let pi = await queryTONPrice();
-            let ba = await estimateBuyAmount(project.saleId, "TON", 1, BigInt(1e9))
+            // Step 6.0
+            let pi = await queryTONPrice()
+            let ba = await estimateBuyAmount(
+              project.saleId,
+              'TON',
+              1,
+              BigInt(1e9)
+            )
 
             //Step 6
             const buyUserMessage = await SaleV1FunC.buyUserMessageFull(
@@ -236,7 +249,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
             //Step 7
             const { boc: buyUserBoc } = await sendTransaction(buyUserMessage)
-            console.log({buyUserBoc})
+            console.log({ buyUserBoc })
             //Step 8
             if (buyUserBoc) {
               let currentAttempts = 0
@@ -250,8 +263,10 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
                     )
                   }
 
-                  let st2 = await queryUserSaleState(project.saleId, "ton");
-                  isBuyUserTrxSigned = st2 && st2.state == 'bought' && st2.bought > st.bought;
+                  let st2 = await queryUserSaleState(project.saleId, 'ton')
+                  // detect state change between st and st2, if yes, the transaction is a success
+                  isBuyUserTrxSigned =
+                    st2 && st2.state == 'bought' && st2.bought > st.bought // st2.bought > 0
                   // isBuyUserTrxSigned = await checkTransaction(
                   //   buyUserBoc
                   // )
