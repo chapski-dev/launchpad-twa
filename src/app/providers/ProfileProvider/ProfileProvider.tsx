@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
-import { getProfile, getXapiProfile, saveProfile } from 'api'
+import { getProfile, getXapiProfile, createUser, connectWallet } from 'api'
 import { GetXapiProfileResp, ProfileInfoType } from 'api/types'
 import { Chains } from 'constants/blockchain'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
@@ -59,38 +59,47 @@ export const ProfileProvider: FCWithChildren = (props) => {
   })
 
 
-  const { data: savedProfileData, mutate: saveProfileInfo } = useMutation({
-    mutationKey: ['saveProfile'],
-    mutationFn: (profileData: ProfileInfoType) => saveProfile(profileData),
+  // const { data: userData, mutate: createUserI } = useMutation({
+  //   mutationKey: ['createUser'],
+  //   mutationFn: () => createUser(),
+  // })
+
+  // const { data: savedProfileData, mutate: saveProfileInfo } = useMutation({
+  //   mutationKey: ['saveProfile'],
+  //   mutationFn: (profileData: ProfileInfoType) => saveProfile(profileData),
+  // })
+
+  const { data: userData, } = useQuery({
+    queryKey: ['createUser'],
+    queryFn: () => createUser(),
+    enabled: Boolean(user?.id),
   })
 
+  const { mutate: connectWalletI } = useMutation({
+    mutationKey: ['connectWallet'],
+    mutationFn: (x:{n: string; a: string}) => connectWallet(x.n, x.a),
+  })
+
+
+
   useEffect(() => {
-    if (webApp && savedProfileData) {
+    if (webApp && userData) {
       webApp.CloudStorage.setItem('isAlreadyAuthorized', 'true')
     }
-  }, [savedProfileData, webApp])
+  }, [userData, webApp])
 
-  useEffect(() => {
-    if (webApp && user) {
-      const initData = new URLSearchParams(webApp.initData)
+  // useEffect(() => {
+  //   if (webApp && user) {
+  //     // const initData = new URLSearchParams(webApp.initData)
+  //     // const referrer_id = initData.get('start_param')
 
-      const referrer_id = initData.get('start_param')
+  //     if (!userData) {
+  //       createUserI()
 
-      if (!isProfileInfoLoading && !profileInfo) {
-        saveProfileInfo({
-          email: '',
-          name: user.first_name + user.last_name,
-          referrer_id: referrer_id || '',
-          telegram: user.username,
-          walletAddress: '',
-          image: '',
-          telegramInitData: webApp.initData,
-        })
-
-        return
-      }
-    }
-  }, [isProfileInfoLoading, profileInfo, saveProfileInfo, user, webApp])
+  //       return
+  //     }
+  //   }
+  // }, [userData, createUser, user, webApp])
 
   useEffect(() => {
     tonConnectUI.onStatusChange((wallet) => {
@@ -102,9 +111,13 @@ export const ProfileProvider: FCWithChildren = (props) => {
 
           return
         }
+        connectWalletI({
+          a: wallet.account.address,
+          n: "TON"
+        })
       }
     })
-  }, [profileInfo, tonConnectUI])
+  }, [connectWalletI, profileInfo, tonConnectUI])
 
   const value = {
     profileInfo,

@@ -9,7 +9,10 @@ export const ApiRoutes = {
   GetBlogPostByFilename: '/api/blog/getPostByFilename',
   GetProfile: '/api/profile/getProfile',
   UserProfile: '/user/profile',
-  SaveProfile: '/api/profile/saveProfile',
+  CreateUser: '/user/tma',
+  ConnectWallet: '/user/tma/connectWallet2',
+  Sale: '/sale',
+  Chain: '/chain',
 } as const
 
 export const XApiRoutes = {

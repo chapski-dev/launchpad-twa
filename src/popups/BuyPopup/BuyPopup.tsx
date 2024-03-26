@@ -17,7 +17,7 @@ import {
   SuccessBuy,
   JoinWaitlist,
 } from './components'
-import { p } from '@tanstack/query-core/build/legacy/queryClient-p98HhdxQ'
+import { checkTransaction, estimateBuyAmount, getUserContractAddress, queryTONPrice, queryUserSaleState, queryWhitelist } from 'api';
 
 type BuyStatus = 'buy' | 'loader' | 'waiting' | 'success' | 'join_waitlist'
 
@@ -158,21 +158,34 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
     try {
       setIsLoading(true)
       // Step 1:
-      const whitelist = await SaleV1FunC.queryWhitelist(
-        Address.parse(tonUserWalletAddress)
-      )
+      let whitelist = await queryWhitelist("TON", project.saleId, 1);
+      // const whitelist = await SaleV1FunC.queryWhitelist(
+      //   Address.parse(tonUserWalletAddress)
+      // )
 
+      let pools = project.allocationPools;
+      let tonPool = pools.filter((x: any) => x.network == "TON").pop();
       console.log(whitelist)
+      console.log(project)
       // Step 2
-      const createUserMessage = await SaleV1FunC.createUserMessage(
-        Address.parse(tonUserWalletAddress),
-        '0.01',
-        whitelist
-      )
-
-      // Step: 3
-      const { boc: createUserBoc } = await sendTransaction(createUserMessage)
-
+      const createUserMessage = await SaleV1FunC.createUserMessageR(
+        Address.parse(tonPool.contract),
+        '0.25',
+        {
+          payload: whitelist.payload!,
+          signature: whitelist.signature
+        })
+      
+      // Step: 3 | Let's check and see if user has a contract
+      let state = await queryUserSaleState(project.saleId, "ton");
+      // let createUserBoc = "ff";
+      let createUserBoc = null;
+      if (!state || state.state != 'bought') {
+        const { boc: bovx } = await sendTransaction(createUserMessage)
+        createUserBoc = bovx;
+      } else if (state.state == 'bought') {
+        createUserBoc = "true";
+      }
       // Step: 4
       if (createUserBoc) {
         setCurrentStatus('loader')
@@ -182,15 +195,19 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
         const checkTransactionStatus = async () => {
           try {
-            if (currentAttempts >= 5) {
+            if (currentAttempts >= 8) {
               throw new Error(
                 'Exceeded maximum number of attempts to check your transaction.'
               )
             }
 
-            isCreateUserTrxSigned = await SaleV1FunC.checkTransaction(
-              createUserBoc
-            )
+            let st = await queryUserSaleState(project.saleId, "ton");
+            isCreateUserTrxSigned = st && st.state == 'bought';
+            // isCreateUserTrxSigned = !await checkTransaction(
+            //   createUserBoc
+            // )
+            
+            // isCreateUserTrxSigned = true;
 
             if (!isCreateUserTrxSigned) {
               currentAttempts++
@@ -200,20 +217,26 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
             }
 
             //Step 5  (if trx status true)
-            await SaleV1FunC.getUserSaleAddress(
-              Address.parse(tonUserWalletAddress),
-              Address.parse(tonUserWalletAddress)
+            let uc = await getUserContractAddress(
+              project.saleId
             )
+            console.log('uc',uc)
+
+            // Step 6.0 
+            let pi = await queryTONPrice();
+            let ba = await estimateBuyAmount(project.saleId, "TON", 1, BigInt(1e9))
 
             //Step 6
-            const buyUserMessage = await SaleV1FunC.buyUserMessage(
-              Address.parse(tonUserWalletAddress),
-              BigInt(10000000)
+            const buyUserMessage = await SaleV1FunC.buyUserMessageFull(
+              Address.parse(uc),
+              BigInt(ba.tokenAmount),
+              BigInt(ba.tonAmount) + BigInt(1e8),
+              pi
             )
 
             //Step 7
             const { boc: buyUserBoc } = await sendTransaction(buyUserMessage)
-
+            console.log({buyUserBoc})
             //Step 8
             if (buyUserBoc) {
               let currentAttempts = 0
@@ -221,15 +244,17 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
               const checkBuyUserTrx = async () => {
                 try {
-                  if (currentAttempts >= 5) {
+                  if (currentAttempts >= 8) {
                     throw new Error(
                       'Exceeded maximum number of attempts to check your transaction.'
                     )
                   }
 
-                  isBuyUserTrxSigned = await SaleV1FunC.checkTransaction(
-                    buyUserBoc
-                  )
+                  let st2 = await queryUserSaleState(project.saleId, "ton");
+                  isBuyUserTrxSigned = st2 && st2.state == 'bought' && st2.bought > st.bought;
+                  // isBuyUserTrxSigned = await checkTransaction(
+                  //   buyUserBoc
+                  // )
 
                   if (!isBuyUserTrxSigned) {
                     currentAttempts++

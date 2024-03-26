@@ -16,6 +16,7 @@ import {
   SvgWarningCircle,
 } from 'ui/icons'
 import * as S from '../domains/VestingDistribution/style/index'
+import { queryUserSaleState } from 'api';
 
 const SaleState: FC = () => {
   const { webApp } = useTelegramContext()
@@ -31,10 +32,9 @@ const SaleState: FC = () => {
   const { data: currentUserSaleState } = useQuery({
     queryKey: ['current-sale-state'],
     queryFn: () =>
-      XTONUserSDK.queryUserSaleState(
+      queryUserSaleState(
         projectId as string,
-        'ton',
-        tonUserWalletAddress
+        'ton'
       ),
     enabled: !!projectId,
   })
@@ -64,12 +64,12 @@ const SaleState: FC = () => {
             <S.BalanceBlock>
               <S.TitleBalance>Balance</S.TitleBalance>
               <S.Balance>
-                {currentUserSaleState?.currentBalance.toFixed(2)} XTON
+                {currentUserSaleState?.currentBalance?.toFixed(2)} {currentUserSaleState?.availableClaim.symbol}
               </S.Balance>
               {currentUserSaleState?.lockedBalance && (
                 <S.BalanceLocked>
                   <SvgLockmini /> Locked Balance:{' '}
-                  {currentUserSaleState.lockedBalance.toFixed(2)} XTON
+                  {currentUserSaleState?.lockedBalance?.toFixed(2)} {currentUserSaleState?.availableClaim.symbol}
                 </S.BalanceLocked>
               )}
             </S.BalanceBlock>
@@ -98,8 +98,10 @@ const SaleState: FC = () => {
               </S.UnlockScheduleBlock>
             )}
           </Container>
-
+          
+          
           <S.ClaimedItemsWrapper>
+          {currentUserSaleState?.previousClaims?.length > 0 ? 
             <S.ClaimedItemsWrapperInner>
               {currentUserSaleState?.previousClaims?.map(
                 ({ amount, symbol, time, txLink }, idx) => (
@@ -125,7 +127,7 @@ const SaleState: FC = () => {
                 )
               )}
             </S.ClaimedItemsWrapperInner>
-
+              : null}
             {currentUserSaleState?.availableClaim && (
               <S.ClaimedItemsWrapperInner>
                 <S.ClaimedItem>

@@ -80,3 +80,14 @@ export type Social = {
   optional: boolean
   title?: string
 }
+
+export type WhitelistResponse = {
+  signature: string;
+  payload?: string;
+  poolId?: number;
+  salt?: string;
+}
+export type TONPriceResponse = {
+  signature: string;
+  payload: string;
+}
