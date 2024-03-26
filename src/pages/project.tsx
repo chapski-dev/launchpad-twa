@@ -9,7 +9,9 @@ import { useRouter } from 'next/router'
 import { getICOProjectById } from 'api'
 import { AppRoutes } from 'constants/app'
 import {
+  InfoBlock,
   ProjectInfoHeader,
+  Tokenomics,
   // ParticipateModal,
 } from 'domains/Project/components'
 import * as S from 'domains/Project/style'
@@ -126,16 +128,17 @@ const Project: FC = () => {
   // )
 
   const toggleParticipateModal = () => {
-    switch (xapiProfileInfo?.state) {
-      case 'verified':
-        setIsParticipateModalOpen((prev) => !prev)
-        break
+    setIsParticipateModalOpen((prev) => !prev)
+    // switch (xapiProfileInfo?.state) {
+    //   case 'verified':
+    //     setIsParticipateModalOpen((prev) => !prev)
+    //     break
 
-      case 'unverified':
-        //TODO: temporary, delete after all tests
-        setIsParticipateModalOpen((prev) => !prev)
-        break
-    }
+    //   case 'unverified':
+    //     //TODO: temporary, delete after all tests
+    //     setIsParticipateModalOpen((prev) => !prev)
+    //     break
+    // }
   }
 
   // const handleMainButtonClick = useCallback(() => {
@@ -241,39 +244,40 @@ const Project: FC = () => {
                         symbol={project.symbol}
                       />
                     )} */}
-                      <Button
-                        onClick={() => {
-                          router.push({
-                            pathname: AppRoutes.SaleState,
-                            query: {
-                              projectId: project.id,
-                            },
-                          })
-                        }}
+                      <div
+                      // style={{ display: 'none' }}
                       >
-                        Vesting Distiribution page
-                      </Button>
+                        <Button
+                          onClick={() => {
+                            router.push({
+                              pathname: AppRoutes.SaleState,
+                              query: {
+                                projectId: project.saleId,
+                              },
+                            })
+                          }}
+                        >
+                          Vesting Distiribution page
+                        </Button>
+                      </div>
                       {/* // TODO: У project появился ключ tokenomics. Полагаю из него надо будет парсить инфу */}
                       {/* <Tokenomics
-                      distributions={project.distributions}
-                      icoFundDistributions={project.icoFundDistributions}
-                      icoParams={project.icoParams}
-                      totalSupply={project.totalSupply}
-                    /> */}
-                      {/* <InfoBlock
-                      icoInfo={currentIcoInfo!}
-                      mdContent={project.markdownInfo?.content}
-                    /> */}
+                        distributions={project.distributions}
+                        icoFundDistributions={project.icoFundDistributions}
+                        icoParams={project.icoParams}
+                        totalSupply={project.totalSupply}
+                      /> */}
+                      <InfoBlock
+                        icoInfo={undefined}
+                        mdContent={project.pageData}
+                      />
                       <BuyPopup
                         onClose={toggleParticipateModal}
                         open={isParticipateModalOpen}
-                        projectId={project.id}
+                        projectId={project.saleId}
+                        project={project}
                         //TODO: убрать после демо
-                        status={
-                          project.name === 'NebulaNet'
-                            ? 'join_waitlist'
-                            : undefined
-                        }
+                        status={'buy'}
                       />
 
                       {/* <VerificationPopup
@@ -285,9 +289,10 @@ const Project: FC = () => {
                         <MainButton
                           onClick={toggleParticipateModal}
                           text={
-                            project.name === 'NebulaNet'
-                              ? 'Join Waitlist'
-                              : 'Buy XTON'
+                            `Buy ${project.symbol}`
+                            // project.name === 'NebulaNet'
+                            // ? 'Join Waitlist'
+                            // : 'Buy XTON'
                           }
                         />
                       )}

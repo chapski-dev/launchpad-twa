@@ -10,11 +10,12 @@ const MIN_TON = 20
 const MAX_TON = 50
 
 type BuyProps = {
-  setActiveChain: Dispatch<SetStateAction<"TON" | "ETH">>;
-  activeChain: "TON" | "ETH"
+  setActiveChain: Dispatch<SetStateAction<'TON' | 'ETH'>>
+  activeChain: 'TON' | 'ETH'
+  project: any
 }
 export const Buy: FC<BuyProps> = (props) => {
-  const { setActiveChain, activeChain } = props;
+  const { setActiveChain, activeChain, project } = props
 
   const [formState, setFormState] = useState({
     ton: 1,
@@ -24,7 +25,7 @@ export const Buy: FC<BuyProps> = (props) => {
   const handleSetValue =
     (type: 'ton' | 'xton') => (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value
-
+      console.log(type, value)
       switch (type) {
         case 'xton':
           setFormState({
@@ -44,7 +45,7 @@ export const Buy: FC<BuyProps> = (props) => {
 
   const handleSetMax = () => {
     setFormState({
-      xton: Number((Number(MAX_TON) * TON_PRICE).toFixed(2)),
+      xton: Number((Number(MAX_TON) * (1 / TON_PRICE)).toFixed(2)),
       ton: MAX_TON,
     })
   }
@@ -69,8 +70,16 @@ export const Buy: FC<BuyProps> = (props) => {
 
       <S.RecountBlock>
         <S.Input
-          actionElement={<S.Chain children="TON" />}
+          actionElement={<S.Chain children={project.symbol} />}
           className="ton-input"
+          max={Number(BALANCE) * (1 / TON_PRICE)}
+          onChange={handleSetValue('xton')}
+          type="number"
+          value={formState.xton}
+        />
+
+        <S.Input
+          actionElement={<S.Chain children="TON" />}
           max={MAX_TON}
           min={MIN_TON}
           onChange={handleSetValue('ton')}
@@ -78,25 +87,27 @@ export const Buy: FC<BuyProps> = (props) => {
           value={formState.ton}
         />
 
-        <S.Input
-          actionElement={<S.Chain children="XTON" />}
-          max={Number(BALANCE) * TON_PRICE}
-          onChange={handleSetValue('xton')}
-          type="number"
-          value={formState.xton}
-        />
         <S.Triangle />
       </S.RecountBlock>
 
       <S.WellBlock>
-        <S.WellItem children={`1 XTON = ${TON_PRICE} TON`} />
-        <S.WellItem children={`${0.02} TON = $0.1`} />
+        <S.WellItem children={`1 ${project.symbol} = ${TON_PRICE} TON`} />
+        <S.WellItem
+          children={`${formState.ton} TON = $${(formState.ton * 5.55).toFixed(
+            2
+          )}`}
+        />
       </S.WellBlock>
 
       <S.MinMaxBlock>
         <S.MinMaxItem children={`Min ${MIN_TON} TON, Max ${MAX_TON} TON`} />
       </S.MinMaxBlock>
-      <S.TotalCost children="Estimated Total Cost: 20.8 USDT + 0.03 ETH" />
+      <S.TotalCost
+        children={`Estimated Total Cost: ${formState.ton + 0.1} TON = $${(
+          (formState.ton + 0.1) *
+          5.55
+        ).toFixed(2)}`}
+      />
     </S.Wrapper>
   )
 }

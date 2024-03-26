@@ -2,9 +2,9 @@ import { FC, useState, useMemo } from 'react'
 import { ICOInfo } from '@ton-and-company/sdk/dist/core/sdk'
 import { MarkdownRenderer } from 'features/MarkdownRenderer'
 import { Container } from 'ui/Container/Container'
-import { Line } from 'ui/Line/Line'
-import { Tabs } from 'ui/Tabs/Tabs'
-import { DealTerms } from './components'
+// import { Line } from 'ui/Line/Line'
+// import { Tabs } from 'ui/Tabs/Tabs'
+// import { DealTerms } from './components'
 import * as S from './style'
 
 const tabs = [
@@ -20,7 +20,7 @@ const tabs = [
 
 type InfoBlockProps = {
   mdContent?: string
-  icoInfo: ICOInfo
+  icoInfo?: ICOInfo
 }
 
 export const InfoBlock: FC<InfoBlockProps> = (props) => {
@@ -29,20 +29,20 @@ export const InfoBlock: FC<InfoBlockProps> = (props) => {
   const [activeTab, setActiveTab] = useState(tabs[0])
 
   const infoContent = useMemo(() => {
-    switch (activeTab.value) {
-      case 'about':
-        return mdContent && <MarkdownRenderer mdContent={mdContent} />
-      case 'deal_tearms':
-        return icoInfo && <DealTerms icoInfo={icoInfo} />
-    }
+    // switch (activeTab.value) {
+    // case 'about':
+    return mdContent && <MarkdownRenderer mdContent={mdContent} />
+    // case 'deal_tearms':
+    // return icoInfo && <DealTerms icoInfo={icoInfo} />
+    // }
   }, [activeTab.value, mdContent, icoInfo])
 
   return (
     <S.Wrapper>
-      <Container>
-        <Tabs activeTab={activeTab} onChange={setActiveTab} tabs={tabs} />
-      </Container>
-      <Line />
+      {/* <Container> */}
+      {/* <Tabs activeTab={activeTab} onChange={setActiveTab} tabs={tabs} /> */}
+      {/* </Container> */}
+      {/* <Line /> */}
       <Container>{infoContent}</Container>
     </S.Wrapper>
   )

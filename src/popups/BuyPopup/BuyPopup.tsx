@@ -17,6 +17,7 @@ import {
   SuccessBuy,
   JoinWaitlist,
 } from './components'
+import { p } from '@tanstack/query-core/build/legacy/queryClient-p98HhdxQ'
 
 type BuyStatus = 'buy' | 'loader' | 'waiting' | 'success' | 'join_waitlist'
 
@@ -25,13 +26,14 @@ type BuyPopupProps = {
   open: boolean
   status?: BuyStatus
   projectId: string
+  project: any
 }
 
 const ETH_TEST_CONTRACT_ADDRESS = '0xdA158609D4B56C1850d76156EB914060F0b68e44'
 const ERC_20_CONTRACT_ADDRESS = '0x90f325c5f5F05AD6a17daf4fA5BF8F9d2AAccc2B'
 
 export const BuyPopup: FC<BuyPopupProps> = (props) => {
-  const { onClose, open, status, projectId } = props
+  const { onClose, open, status, projectId, project } = props
 
   const [activeChain, setActiveChain] = useState<'TON' | 'ETH'>('TON')
 
@@ -58,7 +60,13 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
   const currentBuyPopupState = useMemo(() => {
     switch (currentStatus) {
       case 'buy':
-        return <Buy activeChain={activeChain} setActiveChain={setActiveChain} />
+        return (
+          <Buy
+            activeChain={activeChain}
+            setActiveChain={setActiveChain}
+            project={project}
+          />
+        )
       case 'loader':
         return <Loader />
       case 'waiting':
@@ -68,7 +76,13 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       case 'join_waitlist':
         return <JoinWaitlist />
       default:
-        return <Buy activeChain={activeChain} setActiveChain={setActiveChain} />
+        return (
+          <Buy
+            activeChain={activeChain}
+            setActiveChain={setActiveChain}
+            project={project}
+          />
+        )
     }
   }, [activeChain, currentStatus])
 
@@ -323,7 +337,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       case activeChain === 'ETH' && !ethUserWalletAddress:
         return 'Connect Wallet'
       case currentStatus === 'buy':
-        return 'Buy XTON'
+        return `Buy ${project.symbol}`
       case currentStatus === 'join_waitlist':
         return 'Join Waitlist'
       case currentStatus === 'success':
@@ -343,7 +357,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         }
       }}
       open={open}
-      title="Buy XTON"
+      title={`Buy ${project.name}`}
     >
       {currentBuyPopupState}
       {currentStatus !== 'loader' && (
