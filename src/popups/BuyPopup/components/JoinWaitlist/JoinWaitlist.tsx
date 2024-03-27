@@ -15,7 +15,7 @@ export const JoinWaitlist: FC = () => {
         <SwitchBtn
           activeChain={activeChain}
           onChange={setActiveChain}
-          tabs={CHAIN}
+          tabs={CHAIN as any}
         />
       </S.Chain>
       <S.WalletBlock>
