@@ -82,12 +82,23 @@ export type Social = {
 }
 
 export type WhitelistResponse = {
-  signature: string;
-  payload?: string;
-  poolId?: number;
-  salt?: string;
+  signature: string
+  payload?: string
+  poolId?: number
+  salt?: string
 }
 export type TONPriceResponse = {
-  signature: string;
-  payload: string;
+  signature: string
+  payload: string
+}
+
+export type ProjectSaleState = {
+  bridgePublicKey: string
+  endTime: number
+  maxBuy: string
+  price: string
+  saleId: string
+  saleType: string
+  startTime: number
+  tokenDecimal: string
 }

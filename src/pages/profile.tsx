@@ -1,4 +1,5 @@
 import { FC, useCallback, useState } from 'react'
+import { useTonAddress } from '@tonconnect/ui-react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -22,15 +23,20 @@ const Profile: FC = () => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState<boolean>(false)
 
-  const toggleConnectWalletPopup = useCallback(() => {
-    setIsConnectWalletPopupOpen((prev) => !prev)
-  }, [])
-
   const router = useRouter()
 
   const { user } = useTelegram()
 
   const { xapiProfileInfo } = useProfileContext()
+
+  const tonUserWalletAddress = useTonAddress()
+
+  const toggleConnectWalletPopup = useCallback(() => {
+    // if (Boolean(tonUserWalletAddress)) {
+    // }
+
+    setIsConnectWalletPopupOpen((prev) => !prev)
+  }, [])
 
   console.log(xapiProfileInfo)
 
@@ -71,7 +77,7 @@ const Profile: FC = () => {
               </S.DescriptionInfo>
             </S.CompletingInfoBlock>
             <S.TaskWrapper>
-              <Task
+              {/* <Task
                 description={xapiProfileInfo?.wallets?.task?.description}
                 done={xapiProfileInfo?.wallets?.task?.done}
                 onClick={toggleConnectWalletPopup}
@@ -81,14 +87,32 @@ const Profile: FC = () => {
                 }
                 title={xapiProfileInfo?.wallets?.task?.title}
                 type="wallet"
+              /> */}
+
+              <Task
+                description={'Connect your crypto wallet!'}
+                done={Boolean(tonUserWalletAddress)}
+                onClick={toggleConnectWalletPopup}
+                optional={xapiProfileInfo?.wallets?.task?.optional}
+                status={Boolean(tonUserWalletAddress) ? 'done' : 'not-started'}
+                title="Connect Wallet"
+                type="wallet"
               />
-              <div id="blockpass-kyc-connect">
+              {/* TODO: remove s when kyc needed */}
+              <div id="blockpass-kyc-connect s">
                 {' '}
                 {/** этот айди является обязательным тк либа тригерится на onClick по нему, удалять нелья!  */}
-                <Task
+                {/* <Task
                   description={xapiProfileInfo?.kyc?.task?.description}
                   status={xapiProfileInfo?.kyc?.task?.state}
                   title={xapiProfileInfo?.kyc?.task?.title}
+                  type="kyc"
+                /> */}
+                <Task
+                  description={'KYC to verify your account'}
+                  disabled
+                  status={xapiProfileInfo?.kyc?.task?.state}
+                  title={'Pass KYC'}
                   type="kyc"
                 />
               </div>

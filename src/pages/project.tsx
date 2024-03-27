@@ -1,10 +1,12 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTonAddress } from '@tonconnect/ui-react'
+import dayjs from 'dayjs'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { getICOProjectById, queryUserSaleState } from 'api'
+
+import { getICOProjectById, getProjectSaleState, queryUserSaleState } from 'api'
 import { InfoBlock, ProjectInfoHeader } from 'domains/Project/components'
 import * as S from 'domains/Project/style'
 import { BackButton } from 'features/BackButton'
@@ -91,7 +93,14 @@ const Project: FC = () => {
     enabled: !!project?.id,
   })
 
-  console.log(project)
+  const { data: projectSaleState, isSuccess: isProjectStateLoaded } = useQuery({
+    queryKey: ['project-sale-state', project],
+    queryFn: () => getProjectSaleState(project!.saleId as string, 'ton'),
+    enabled: !!project?.saleId,
+  })
+
+  // console.log(fromNano(projectSaleState?.price || 0))
+  console.log(projectSaleState)
 
   const toggleParticipateModal = () => {
     setIsParticipateModalOpen((prev) => !prev)
@@ -120,6 +129,20 @@ const Project: FC = () => {
     userWalletAddress,
   ])
 
+  const isTokenSaleStarted = useMemo(() => {
+    if (projectSaleState) {
+      return dayjs().isBefore(projectSaleState.startTime * 1000, 'day')
+    }
+
+    return false
+  }, [projectSaleState])
+
+  const isTokenSaleEnded = useMemo(() => {
+    if (projectSaleState) {
+      return dayjs().isAfter(projectSaleState.endTime * 1000, 'day')
+    }
+  }, [projectSaleState])
+
   return (
     <>
       <Head>
@@ -132,7 +155,8 @@ const Project: FC = () => {
             {isLoading ? (
               <Loader type="projectPage" />
             ) : (
-              isProjectLoaded && (
+              isProjectLoaded &&
+              isProjectStateLoaded && (
                 <>
                   <S.Wrapper>
                     <Container>
@@ -145,20 +169,7 @@ const Project: FC = () => {
                         title={project.name}
                       />
                       <Line />
-                      <div>
-                        {/* <Button
-                          onClick={() => {
-                            router.push({
-                              pathname: AppRoutes.SaleState,
-                              query: {
-                                projectId: project.saleId,
-                              },
-                            })
-                          }}
-                        >
-                          Vesting Distiribution page
-                        </Button> */}
-                      </div>
+
                       {/* // TODO: У project появился ключ tokenomics. Полагаю из него надо будет парсить инфу */}
                       {/* <Tokenomics
                         distributions={project.distributions}
@@ -175,11 +186,12 @@ const Project: FC = () => {
                         open={isParticipateModalOpen}
                         project={project}
                         projectId={project.saleId}
+                        projectSaleState={projectSaleState}
                         //TODO: убрать после демо
-                        status={'buy'}
+                        status={isTokenSaleStarted ? 'join_waitlist' : 'buy'}
                       />
 
-                      {!isParticipateModalOpen && (
+                      {!isParticipateModalOpen && !isTokenSaleEnded && (
                         <MainButton
                           onClick={toggleParticipateModal}
                           text={

@@ -14,6 +14,7 @@ import {
   queryUserSaleState,
   queryWhitelist,
 } from 'api'
+import { ProjectSaleState } from 'api/types'
 import { AppRoutes } from 'constants/app'
 import { MainButton } from 'features/MainButton'
 import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
@@ -34,13 +35,14 @@ type BuyPopupProps = {
   status?: BuyStatus
   projectId: string
   project: any
+  projectSaleState: ProjectSaleState
 }
 
 const ETH_TEST_CONTRACT_ADDRESS = '0xdA158609D4B56C1850d76156EB914060F0b68e44'
 const ERC_20_CONTRACT_ADDRESS = '0x90f325c5f5F05AD6a17daf4fA5BF8F9d2AAccc2B'
 
 export const BuyPopup: FC<BuyPopupProps> = (props) => {
-  const { onClose, open, status, projectId, project } = props
+  const { onClose, open, status, projectId, project, projectSaleState } = props
 
   const [activeChain, setActiveChain] = useState<'TON' | 'ETH'>('TON')
 
@@ -73,6 +75,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
           <Buy
             activeChain={activeChain}
             project={project}
+            projectSaleState={projectSaleState}
             setActiveChain={setActiveChain}
           />
         )
@@ -89,11 +92,12 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
           <Buy
             activeChain={activeChain}
             project={project}
+            projectSaleState={projectSaleState}
             setActiveChain={setActiveChain}
           />
         )
     }
-  }, [activeChain, currentStatus, project])
+  }, [activeChain, currentStatus, project, projectSaleState])
 
   const handleBuy = async () => {
     if (currentStatus === 'success') {
@@ -103,6 +107,12 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
           projectId,
         },
       })
+
+      return
+    }
+
+    if (currentStatus === 'join_waitlist') {
+      alert('You are sucessfully joined to the Wait List!')
 
       return
     }

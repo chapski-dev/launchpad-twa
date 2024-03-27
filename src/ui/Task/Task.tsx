@@ -19,6 +19,7 @@ export type TaskProps = {
   className?: string
   optional?: boolean
   done?: boolean
+  disabled?: boolean
 }
 
 export const Task: FC<TaskProps> = (props) => {
@@ -31,6 +32,7 @@ export const Task: FC<TaskProps> = (props) => {
     className,
     optional,
     done,
+    disabled,
   } = props
 
   const renderStatusIcon = useMemo(() => {
@@ -66,7 +68,12 @@ export const Task: FC<TaskProps> = (props) => {
   }, [])
 
   return (
-    <S.Wrapper $status={status} className={className} onClick={onClick}>
+    <S.Wrapper
+      $status={status}
+      className={className}
+      disabled={disabled}
+      onClick={onClick}
+    >
       <S.LeftBlock>
         <S.Icon $status={status}>{renderItemIcon(type)}</S.Icon>
         <S.Info>

@@ -1,7 +1,10 @@
 import { styled } from 'styled-components'
-import { TaskProps } from './Task';
+import { TaskProps } from './Task'
 
-export const Wrapper = styled.div<{ $status?: TaskProps['status'] }>`
+export const Wrapper = styled.div<{
+  $status?: TaskProps['status']
+  disabled?: boolean
+}>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -10,7 +13,9 @@ export const Wrapper = styled.div<{ $status?: TaskProps['status'] }>`
   height: 64px;
   background: ${({ theme, $status }) =>
     $status === 'done' ? theme.gradient.g2 : theme.color.bg};
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+
+  opacity: ${({ disabled }) => disabled && 0.6};
 `
 
 export const LeftBlock = styled.div`

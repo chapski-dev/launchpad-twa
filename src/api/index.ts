@@ -14,6 +14,7 @@ import {
   GetICOJettonsRes,
   GetICOProjectByIdRes,
   GetXapiProfileResp,
+  ProjectSaleState,
   TONPriceResponse,
   WhitelistResponse,
 } from './types'
@@ -201,6 +202,14 @@ export const getXapiProfile = async (params: {
     {
       params,
     }
+  )
+
+  return data
+}
+
+export const getProjectSaleState = async (saleId: string, network: string) => {
+  const { data } = await AXIOS_XAPI_LAUNCHPAD_INSTANCE.get<ProjectSaleState>(
+    `${ApiRoutes.ProjectSaleState}/${saleId}/${network}`
   )
 
   return data

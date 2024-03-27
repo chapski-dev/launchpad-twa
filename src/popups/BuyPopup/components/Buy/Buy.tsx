@@ -1,27 +1,37 @@
-import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from 'react'
+import {
+  ChangeEvent,
+  Dispatch,
+  FC,
+  SetStateAction,
+  useMemo,
+  useState,
+} from 'react'
 
 import { useQuery } from '@tanstack/react-query'
 import { useTonAddress } from '@tonconnect/ui-react'
+import { fromNano } from 'ton-core'
+import { ProjectSaleState } from 'api/types'
 import { getBalance } from 'utils/getBalance'
 import * as S from './style'
 import { SwitchBtn } from '../SwitchBtn/SwitchBtn'
 
 const CHAIN_TABS: ['TON', 'ETH'] = ['TON', 'ETH']
-const TON_PRICE = 0.02
-const MIN_TON = 20
-const MAX_TON = 50
+const MIN_TON = 1
 
 type BuyProps = {
   setActiveChain: Dispatch<SetStateAction<'TON' | 'ETH'>>
   activeChain: 'TON' | 'ETH'
   project: any
+  projectSaleState: ProjectSaleState
 }
 export const Buy: FC<BuyProps> = (props) => {
-  const { setActiveChain, activeChain, project } = props
+  const { setActiveChain, activeChain, project, projectSaleState } = props
+
+  console.log(projectSaleState)
 
   const [formState, setFormState] = useState({
-    ton: 1,
-    xton: 4.5,
+    ton: Number(fromNano(projectSaleState.price)),
+    xton: 1,
   })
 
   const userWalletAddress = useTonAddress()
@@ -31,6 +41,11 @@ export const Buy: FC<BuyProps> = (props) => {
     queryFn: () => getBalance(userWalletAddress, 'testnet'),
   })
 
+  const currentTokenPrice = useMemo(
+    () => Number(fromNano(projectSaleState.price)),
+    [projectSaleState.price]
+  )
+
   const handleSetValue =
     (type: 'ton' | 'xton') => (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value
@@ -38,7 +53,7 @@ export const Buy: FC<BuyProps> = (props) => {
       switch (type) {
         case 'xton':
           setFormState({
-            ton: Number((Number(value) * TON_PRICE).toFixed(2)),
+            ton: Number((Number(value) * currentTokenPrice).toFixed(2)),
             xton: Number(value),
           })
           break
@@ -46,7 +61,7 @@ export const Buy: FC<BuyProps> = (props) => {
         case 'ton':
           setFormState({
             ton: Number(value),
-            xton: Number((Number(value) / TON_PRICE).toFixed(2)),
+            xton: Number((Number(value) / currentTokenPrice).toFixed(2)),
           })
           break
       }
@@ -58,7 +73,7 @@ export const Buy: FC<BuyProps> = (props) => {
     }
 
     setFormState({
-      xton: Number((Number(userBalance) * (1 / TON_PRICE)).toFixed(2)),
+      xton: Number((Number(userBalance) / currentTokenPrice).toFixed(2)),
       ton: Number(userBalance.toFixed(2)),
     })
   }
@@ -89,7 +104,10 @@ export const Buy: FC<BuyProps> = (props) => {
         <S.Input
           actionElement={<S.Chain children={project.symbol} />}
           className="ton-input"
-          max={Number(userBalance) * (1 / TON_PRICE)}
+          max={
+            +fromNano(projectSaleState.maxBuy) /
+            +fromNano(projectSaleState.price)
+          }
           onChange={handleSetValue('xton')}
           type="number"
           value={formState.xton}
@@ -97,7 +115,7 @@ export const Buy: FC<BuyProps> = (props) => {
 
         <S.Input
           actionElement={<S.Chain children="TON" />}
-          max={MAX_TON}
+          max={+fromNano(projectSaleState.maxBuy)}
           min={MIN_TON}
           onChange={handleSetValue('ton')}
           type="number"
@@ -108,7 +126,11 @@ export const Buy: FC<BuyProps> = (props) => {
       </S.RecountBlock>
 
       <S.WellBlock>
-        <S.WellItem children={`1 ${project.symbol} = ${TON_PRICE} TON`} />
+        <S.WellItem
+          children={`1 ${project.symbol} = ${fromNano(
+            projectSaleState.price
+          )} TON`}
+        />
         <S.WellItem
           children={`${formState.ton} TON = $${(formState.ton * 5.55).toFixed(
             2
@@ -117,7 +139,11 @@ export const Buy: FC<BuyProps> = (props) => {
       </S.WellBlock>
 
       <S.MinMaxBlock>
-        <S.MinMaxItem children={`Min ${MIN_TON} TON, Max ${MAX_TON} TON`} />
+        <S.MinMaxItem
+          children={`Min ${MIN_TON} TON, Max ${fromNano(
+            projectSaleState.maxBuy
+          )} TON`}
+        />
       </S.MinMaxBlock>
       <S.TotalCost
         children={`Estimated Total Cost: ${formState.ton + 0.1} TON = $${(

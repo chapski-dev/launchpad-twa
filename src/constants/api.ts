@@ -13,6 +13,7 @@ export const ApiRoutes = {
   ConnectWallet: '/user/tma/connectWallet2',
   Sale: '/sale',
   Chain: '/chain',
+  ProjectSaleState: '/sale/state',
 } as const
 
 export const XApiRoutes = {
