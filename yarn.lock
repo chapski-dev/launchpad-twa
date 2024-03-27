@@ -2673,6 +2673,11 @@
   dependencies:
     "@tanstack/query-core" "5.24.8"
 
+"@tma.js/sdk@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@tma.js/sdk/-/sdk-1.5.0.tgz#e1502eebfb7c444ab2cab6633751e8bdf29bcc35"
+  integrity sha512-sqbHOiPYZ6mHvP14akCqfAatUTsVbba+dozE10zZYRaRlzgPTmmaDGjRJnnJtPVVjeCNPzt6MaSwOPKyZDYvRg==
+
 "@ton-and-company/sdk@git+https://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@github.com/tokenova-fi/ton-contracts-sdk":
   version "0.0.38"
   resolved "git+https://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@github.com/tokenova-fi/ton-contracts-sdk#34add6e301158a16304c39f26203b6bb2584357a"
@@ -2684,6 +2689,13 @@
   version "0.56.2"
   resolved "https://registry.yarnpkg.com/@ton/core/-/core-0.56.2.tgz#02f82dd71faa4719710844135eb288133cba3269"
   integrity sha512-URILQzi7qnVxidcJBRMx8ChS0TKiVRbi0CDe+ZWpVNOQyBpwkcYX+OeRVop3hb3GjtyHnOmoP+EAulSAhkX4rw==
+  dependencies:
+    symbol.inspect "1.0.1"
+
+"@ton/core@^0.56.3":
+  version "0.56.3"
+  resolved "https://registry.yarnpkg.com/@ton/core/-/core-0.56.3.tgz#1162764573abb76032eba70f8497e5cb2ea532ee"
+  integrity sha512-HVkalfqw8zqLLPehtq0CNhu5KjVzc7IrbDwDHPjGoOSXmnqSobiWj8a5F+YuWnZnEbQKtrnMGNOOjVw4LG37rg==
   dependencies:
     symbol.inspect "1.0.1"
 
@@ -3650,11 +3662,12 @@
     zod "3.22.4"
 
 "@xton/user-sdk@git+https://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@github.com/tokenova-fi/user-sdk":
-  version "0.0.7"
-  resolved "git+https://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@github.com/tokenova-fi/user-sdk#417dc98a8ec01673e3f04a04ba5f90c68f5e0fe0"
+  version "0.0.14"
+  resolved "git+https://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@github.com/tokenova-fi/user-sdk#b4dde6cee2c7754674f802074f3618eb1d61d901"
   dependencies:
     "@orbs-network/ton-access" "^2.3.3"
     "@ton/core" "^0.56.2"
+    "@ton/crypto" "^3.2.0"
     "@ton/ton" "^13.11.1"
     "@tonconnect/ui-react" "^2.0.0"
     ethers "^6.11.1"

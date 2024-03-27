@@ -1,18 +1,24 @@
-import { FC } from 'react';
+import { FC } from 'react'
 // import { Chains } from 'constants/blockchain'
-import { WaitList } from 'domains/Project/components/ProjectInfoHeader/components/WaitList/WaitList';
-import { Chip } from './components/Chip/Chip';
-import * as S from './style';
+import { useTonAddress } from '@tonconnect/ui-react'
+import { Chip } from './components/Chip/Chip'
+import { ParticipateBlock } from './components/ParticipateBlock/ParticipateBlock'
+import * as S from './style'
 
 type ProjectInfoHeaderProps = {
-  image: string;
-  title: string;
-  description: string;
+  image: string
+  title: string
+  description: string
   // network: keyof typeof Chains
-};
+  isParticipated: boolean
+  projectId: string
+}
 
 export const ProjectInfoHeader: FC<ProjectInfoHeaderProps> = (props) => {
-  const { image, title, description } = props;
+  const { image, title, description, isParticipated, projectId } = props
+
+  //TODO: temporary added, will be removeded later
+  const tonUserWalletAddress = useTonAddress()
 
   return (
     <S.Wrapper>
@@ -21,11 +27,17 @@ export const ProjectInfoHeader: FC<ProjectInfoHeaderProps> = (props) => {
         <S.Title>{title}</S.Title>
         <S.Description>{description}</S.Description>
         <S.TagsWrapper>
-          <Chip text="DEMO PROJECT" />
+          <Chip text="Generative AI" />
+          <Chip text="NFT" />
           {/* <Chip text={Chains[network].toUpperCase()} /> */}
         </S.TagsWrapper>
       </S.InfoWrapper>
-      <WaitList address="FG4Y...FW42" />
+
+      <ParticipateBlock
+        address={tonUserWalletAddress}
+        isParticipated={isParticipated}
+        projectId={projectId}
+      />
     </S.Wrapper>
-  );
-};
+  )
+}

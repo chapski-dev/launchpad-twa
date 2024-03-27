@@ -6,6 +6,14 @@ import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import { useRouter } from 'next/router'
 import { Address } from 'ton-core'
 import { Config, useAccount, useConnectorClient } from 'wagmi'
+import {
+  // checkTransaction,
+  estimateBuyAmount,
+  getUserContractAddress,
+  queryTONPrice,
+  queryUserSaleState,
+  queryWhitelist,
+} from 'api'
 import { AppRoutes } from 'constants/app'
 import { MainButton } from 'features/MainButton'
 import { useSendTransaction } from 'hooks/useSendTransaction/useSendTransaction'
@@ -25,17 +33,20 @@ type BuyPopupProps = {
   open: boolean
   status?: BuyStatus
   projectId: string
+  project: any
 }
 
 const ETH_TEST_CONTRACT_ADDRESS = '0xdA158609D4B56C1850d76156EB914060F0b68e44'
 const ERC_20_CONTRACT_ADDRESS = '0x90f325c5f5F05AD6a17daf4fA5BF8F9d2AAccc2B'
 
 export const BuyPopup: FC<BuyPopupProps> = (props) => {
-  const { onClose, open, status, projectId } = props
+  const { onClose, open, status, projectId, project } = props
 
   const [activeChain, setActiveChain] = useState<'TON' | 'ETH'>('TON')
 
-  const [currentStatus, setCurrentStatus] = useState<BuyStatus>(status || 'buy')
+  const [currentStatus, setCurrentStatus] = useState<BuyStatus>(
+    status || 'loader'
+  )
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -58,7 +69,13 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
   const currentBuyPopupState = useMemo(() => {
     switch (currentStatus) {
       case 'buy':
-        return <Buy activeChain={activeChain} setActiveChain={setActiveChain} />
+        return (
+          <Buy
+            activeChain={activeChain}
+            project={project}
+            setActiveChain={setActiveChain}
+          />
+        )
       case 'loader':
         return <Loader />
       case 'waiting':
@@ -68,27 +85,15 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       case 'join_waitlist':
         return <JoinWaitlist />
       default:
-        return <Buy activeChain={activeChain} setActiveChain={setActiveChain} />
+        return (
+          <Buy
+            activeChain={activeChain}
+            project={project}
+            setActiveChain={setActiveChain}
+          />
+        )
     }
-  }, [activeChain, currentStatus])
-
-  // const handleClick = () => {
-  //   switch (currentStatus) {
-  //     case 'buy':
-  //       setCurrentStatus('loader')
-  //       break
-  //     case 'loader':
-  //       setCurrentStatus('waiting')
-  //       break
-  //     case 'waiting':
-  //       setCurrentStatus('success')
-  //       break
-  //     case 'join_waitlist':
-  //       alert('You have been successfully added to the waiting list.')
-  //       onClose(false)
-  //       break
-  //   }
-  // }
+  }, [activeChain, currentStatus, project])
 
   const handleBuy = async () => {
     if (currentStatus === 'success') {
@@ -144,20 +149,43 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
     try {
       setIsLoading(true)
       // Step 1:
-      const whitelist = await SaleV1FunC.queryWhitelist(
-        Address.parse(tonUserWalletAddress)
-      )
+      const whitelist = await queryWhitelist('TON', project.saleId, 1)
+      // const whitelist = await SaleV1FunC.queryWhitelist(
+      //   Address.parse(tonUserWalletAddress)
+      // )
+
+      const tonPool = project.allocationPools.pools
+        .filter((pool: any) => pool.network === 'TON')
+        .pop()
 
       console.log(whitelist)
+      console.log(project)
+
       // Step 2
-      const createUserMessage = await SaleV1FunC.createUserMessage(
-        Address.parse(tonUserWalletAddress),
-        '0.01',
-        whitelist
+      const createUserMessage = await SaleV1FunC.createUserMessageR(
+        Address.parse(tonPool.contract),
+        '0.25',
+        {
+          payload: whitelist.payload!,
+          signature: whitelist.signature,
+        }
       )
 
-      // Step: 3
-      const { boc: createUserBoc } = await sendTransaction(createUserMessage)
+      // Step: 3 | Let's check and see if user has a contract
+      const userSaleState = await queryUserSaleState(project.saleId, 'ton')
+
+      let createUserBoc = null
+
+      switch (true) {
+        case !userSaleState:
+        case userSaleState.state !== 'bought':
+          const { boc: bovx } = await sendTransaction(createUserMessage)
+          createUserBoc = bovx
+          break
+        case userSaleState.state === 'bought':
+          createUserBoc = 'true'
+      }
+      // We don't need to deploy user contract if the state is already there
 
       // Step: 4
       if (createUserBoc) {
@@ -168,37 +196,60 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
         const checkTransactionStatus = async () => {
           try {
-            if (currentAttempts >= 5) {
+            if (currentAttempts >= 8) {
               throw new Error(
                 'Exceeded maximum number of attempts to check your transaction.'
               )
             }
 
-            isCreateUserTrxSigned = await SaleV1FunC.checkTransaction(
-              createUserBoc
+            const userSaleState = await queryUserSaleState(
+              project.saleId,
+              'ton'
             )
+
+            isCreateUserTrxSigned =
+              userSaleState && userSaleState.state === 'bought'
+            // isCreateUserTrxSigned = !await checkTransaction(
+            //   createUserBoc
+            // )
+
+            // isCreateUserTrxSigned = true;
 
             if (!isCreateUserTrxSigned) {
               currentAttempts++
-              setTimeout(checkTransactionStatus, 5000) // Повторно проверить через 5 секунд
+              setTimeout(checkTransactionStatus, 5000)
 
               return
             }
 
             //Step 5  (if trx status true)
-            await SaleV1FunC.getUserSaleAddress(
-              Address.parse(tonUserWalletAddress),
-              Address.parse(tonUserWalletAddress)
+            const userContractAddress = await getUserContractAddress(
+              project.saleId
+            )
+
+            console.log('userContractAddress', userContractAddress)
+
+            // Step 6.0
+            const tonPrice = await queryTONPrice()
+
+            const buyAmount = await estimateBuyAmount(
+              project.saleId,
+              'TON',
+              1,
+              BigInt(1e9)
             )
 
             //Step 6
-            const buyUserMessage = await SaleV1FunC.buyUserMessage(
-              Address.parse(tonUserWalletAddress),
-              BigInt(10000000)
+            const buyUserMessage = await SaleV1FunC.buyUserMessageFull(
+              Address.parse(userContractAddress),
+              BigInt(buyAmount.tokenAmount),
+              BigInt(buyAmount.tonAmount) + BigInt(1e8),
+              tonPrice
             )
 
             //Step 7
             const { boc: buyUserBoc } = await sendTransaction(buyUserMessage)
+            console.log({ buyUserBoc })
 
             //Step 8
             if (buyUserBoc) {
@@ -207,19 +258,25 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
               const checkBuyUserTrx = async () => {
                 try {
-                  if (currentAttempts >= 5) {
+                  if (currentAttempts >= 8) {
                     throw new Error(
                       'Exceeded maximum number of attempts to check your transaction.'
                     )
                   }
 
-                  isBuyUserTrxSigned = await SaleV1FunC.checkTransaction(
-                    buyUserBoc
+                  const userSaleStateAfterBuy = await queryUserSaleState(
+                    project.saleId,
+                    'ton'
                   )
+                  // detect state change between st and st2, if yes, the transaction is a success
+                  isBuyUserTrxSigned =
+                    userSaleStateAfterBuy &&
+                    userSaleStateAfterBuy.state === 'bought' &&
+                    userSaleStateAfterBuy.bought > 0
 
                   if (!isBuyUserTrxSigned) {
                     currentAttempts++
-                    setTimeout(checkBuyUserTrx, 5000) // Повторно проверить через 5 секунд
+                    setTimeout(checkBuyUserTrx, 5000)
 
                     return
                   }
@@ -323,7 +380,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       case activeChain === 'ETH' && !ethUserWalletAddress:
         return 'Connect Wallet'
       case currentStatus === 'buy':
-        return 'Buy XTON'
+        return `Buy ${project.symbol}`
       case currentStatus === 'join_waitlist':
         return 'Join Waitlist'
       case currentStatus === 'success':
@@ -331,7 +388,13 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       default:
         return 'Check next state'
     }
-  }, [activeChain, currentStatus, ethUserWalletAddress, tonUserWalletAddress])
+  }, [
+    activeChain,
+    currentStatus,
+    ethUserWalletAddress,
+    project.symbol,
+    tonUserWalletAddress,
+  ])
 
   return (
     <Modal
@@ -343,7 +406,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         }
       }}
       open={open}
-      title="Buy XTON"
+      title={`Buy ${project.name}`}
     >
       {currentBuyPopupState}
       {currentStatus !== 'loader' && (

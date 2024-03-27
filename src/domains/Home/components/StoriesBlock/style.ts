@@ -36,7 +36,7 @@ export const WrapInside = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 12px;
+  gap: 24px;
 `
 
 export const Top = styled.div``
@@ -74,7 +74,14 @@ export const Bot = styled.div`
 `
 
 export const StroiesBlockWrapper = styled.div`
+  padding-top: 10px;
+`
+
+export const StoriesBgWrapper = styled.div`
+  top: -70px;
   position: absolute;
   z-index: 9999999;
-  top: -58px;
+  background-color: ${({ theme }) => theme.color.bg};
+  width: 100vw;
+  height: 100vh;
 `

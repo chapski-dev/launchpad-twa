@@ -22,13 +22,12 @@ export const boxx = keyframes`
 `
 export const Box = styled.div`
   display: flex;
-  top: 15%;
-  left: 22%;
+  top: 10%;
+  /* left: 22%; */
   align-items: center;
   position: relative;
   transform: translate(-50%, -50%);
-  height: 88px;
-  width: 155px;
+  height: 95px;
   border-radius: 50%;
   animation: 10s ${boxx} infinite linear;
 `
@@ -37,7 +36,7 @@ export const igl = keyframes`
   0% {
     width: 15px;
     height: 4px;
-    border-radius: 5px;
+    border-radius: 12px;
   }
   50% {
     width: 5px;
@@ -67,7 +66,7 @@ export const SpanS = styled.span<SpanProps>`
     position: absolute;
     top: 0;
     left: 0;
-    height: 10px;
+    /* height: 10px; */
     width: 100%;
     background: rgb(200, 197, 200);
     animation: 2s ${igl} infinite;

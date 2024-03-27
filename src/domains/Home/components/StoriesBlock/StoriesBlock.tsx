@@ -47,12 +47,14 @@ export const StoriesBlock: FC<StoriesBlockProps> = () => {
     <>
       <S.MainWrapper>
         {isStoriesOpen && (
-          <S.StroiesBlockWrapper>
-            <StoriesViewer
-              onClose={handleStoryClick}
-              stories={STORIES_MOCK[currentStoryBlockId]}
-            />
-          </S.StroiesBlockWrapper>
+          <S.StoriesBgWrapper>
+            <S.StroiesBlockWrapper>
+              <StoriesViewer
+                onClose={handleStoryClick}
+                stories={STORIES_MOCK[currentStoryBlockId]}
+              />
+            </S.StroiesBlockWrapper>
+          </S.StoriesBgWrapper>
         )}
         {storiesBlocksMock.map(({ label, name, id, isDescription }) => (
           <S.Wrapper

@@ -1,5 +1,6 @@
 export const LAUNCHPAD_BASE_API_URL = 'https://tokenova.fi/'
-export const XAPI_LAUNCHPAD_BASE_API_URL = 'https://xapi.tokenova.fi/'
+// export const XAPI_LAUNCHPAD_BASE_API_URL = 'https://xapi.tokenova.fi/'
+export const XAPI_LAUNCHPAD_BASE_API_URL = 'https://community-app.xton.org/'
 
 export const ApiRoutes = {
   GetICOProjects: '/launchpad/projects',
@@ -8,10 +9,13 @@ export const ApiRoutes = {
   GetBlogPostByFilename: '/api/blog/getPostByFilename',
   GetProfile: '/api/profile/getProfile',
   UserProfile: '/user/profile',
-  SaveProfile: '/api/profile/saveProfile',
+  CreateUser: '/user/tma',
+  ConnectWallet: '/user/tma/connectWallet2',
+  Sale: '/sale',
+  Chain: '/chain',
 } as const
 
 export const XApiRoutes = {
-  LaunchpadProjects: '/launchpad/projects',
+  LaunchpadProjects: '/sale',
   UserProfile: '/user/profile',
 } as const

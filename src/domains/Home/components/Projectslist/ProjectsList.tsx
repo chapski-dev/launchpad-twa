@@ -1,15 +1,15 @@
-import { FC } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { getICOJettons } from 'api';
-import { ProjectCard } from './components';
-import * as S from './style';
+import { FC } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getICOJettons } from 'api'
+import { ProjectCard } from './components'
+import * as S from './style'
 
 type ProjectListProps = {
-  search: string;
-};
+  search: string
+}
 
 export const ProjectList: FC<ProjectListProps> = (props) => {
-  const { search } = props;
+  const { search } = props
 
   const {
     data: projects,
@@ -18,10 +18,10 @@ export const ProjectList: FC<ProjectListProps> = (props) => {
   } = useQuery({
     queryKey: ['icoProjects', search],
     queryFn: () => getICOJettons({ q: search }),
-  });
-  
+  })
+
   if (isProjectsLoading) {
-    return <S.Loader type="projectCard" />;
+    return <S.Loader type="projectCard" />
   }
 
   if (isProjectsLoaded) {
@@ -33,7 +33,7 @@ export const ProjectList: FC<ProjectListProps> = (props) => {
               key={idx}
               description={project.description}
               icoMasterAddress={project.icoMasterAddress}
-              id={project.id}
+              id={project.saleId}
               image={project.image}
               title={project.name}
             />
@@ -44,8 +44,8 @@ export const ProjectList: FC<ProjectListProps> = (props) => {
           </S.NotFoundBlock>
         )}
       </S.Wrapper>
-    );
+    )
   }
 
-  return null;
-};
+  return null
+}
