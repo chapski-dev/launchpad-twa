@@ -164,6 +164,9 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       //   Address.parse(tonUserWalletAddress)
       // )
 
+      console.log(whitelist)
+      console.log(project)
+
       const tonPool = project.allocationPools.pools
         .filter((pool: any) => pool.network === 'TON')
         .pop()
