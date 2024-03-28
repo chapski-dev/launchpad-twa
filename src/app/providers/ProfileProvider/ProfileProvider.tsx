@@ -91,8 +91,8 @@ export const ProfileProvider: FCWithChildren = (props) => {
   useEffect(() => {
     tonConnectUI.onStatusChange((wallet) => {
       if (wallet !== null) {
-        if (Chains[wallet.account.chain] === 'mainnet') {
-          alert('Please, connect testnet wallet')
+        if (Chains[wallet.account.chain] === 'testnet') {
+          alert('Please, connect mainnet wallet')
 
           tonConnectUI.disconnect()
 
