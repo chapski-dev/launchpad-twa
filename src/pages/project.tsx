@@ -120,9 +120,11 @@ const Project: FC = () => {
                       <ProjectInfoHeader
                         description={project.description}
                         image={project.image}
-                        isParticipated={currentUserSaleState?.bought}
+                        isParticipated={
+                          currentUserSaleState.state === 'bought' ||
+                          currentUserSaleState?.bought > 0
+                        }
                         projectId={project.saleId}
-                        // network={project.network}
                         title={project.name}
                       />
                       <Line />

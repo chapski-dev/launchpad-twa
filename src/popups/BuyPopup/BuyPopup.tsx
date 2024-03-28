@@ -84,7 +84,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       case 'waiting':
         return <WaitingForApproval />
       case 'success':
-        return <SuccessBuy count={'42.214'} />
+        return <SuccessBuy amount={'42.214'} symbol={project.symbol} />
       case 'join_waitlist':
         return <JoinWaitlist />
       default:

@@ -3,14 +3,19 @@ import { SvgSuccessBig } from 'ui/icons'
 import * as S from './style'
 
 type SuccessBuyProps = {
-  count: string
+  amount: string
+  symbol: string
 }
 
-export const SuccessBuy: FC<SuccessBuyProps> = ({ count }) => {
+export const SuccessBuy: FC<SuccessBuyProps> = (props) => {
+  const { amount, symbol } = props
+
   return (
     <S.Wrapper>
       <SvgSuccessBig />
-      <S.SuccessTitle>Purchased {count} XTON Successfully!</S.SuccessTitle>
+      <S.SuccessTitle>
+        Purchased {amount} {symbol} Successfully!
+      </S.SuccessTitle>
     </S.Wrapper>
   )
 }

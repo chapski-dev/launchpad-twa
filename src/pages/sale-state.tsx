@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { fromNano } from 'ton-core'
 import { queryUserSaleState } from 'api'
 import { useTelegramContext } from 'app/providers/TelegramProvider'
 import { BackButton } from 'features/BackButton'
@@ -112,7 +113,8 @@ const SaleState: FC = () => {
                         </S.IconUnLock>
                         <S.InfoClaimed>
                           <S.Count>
-                            {amount.toFixed(2)} {symbol} <span>Claimed</span>
+                            {Number(fromNano(amount)).toFixed(2)} {symbol}{' '}
+                            <span>Claimed</span>
                           </S.Count>
                           <S.Date>{dayjs(time).toString()}</S.Date>
                         </S.InfoClaimed>
@@ -135,7 +137,9 @@ const SaleState: FC = () => {
                     <S.InfoClaimed>
                       <S.Count>
                         Claimable:{' '}
-                        {currentUserSaleState?.availableClaim.amount.toFixed(2)}{' '}
+                        {Number(
+                          fromNano(currentUserSaleState?.availableClaim.amount)
+                        ).toFixed(2)}{' '}
                         {currentUserSaleState?.availableClaim.symbol}{' '}
                       </S.Count>
                     </S.InfoClaimed>
