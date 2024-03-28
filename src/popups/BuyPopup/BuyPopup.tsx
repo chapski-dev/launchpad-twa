@@ -256,7 +256,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
             const buyUserMessage = await SaleV1FunC.buyUserMessageFull(
               Address.parse(userContractAddress),
               BigInt(buyAmount.tokenAmount),
-              BigInt(buyAmount.tonAmount) + BigInt(1e8),
+              BigInt(buyAmount.tonAmount) + BigInt(2e8),
               tonPrice
             )
 
