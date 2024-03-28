@@ -167,7 +167,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       console.log(whitelist)
       console.log(project)
 
-      const tonPool = project.allocationPools.pools
+      const tonPool = project.allocationPools
         .filter((pool: any) => pool.network === 'TON')
         .pop()
 
