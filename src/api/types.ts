@@ -22,14 +22,20 @@ export type GetICOJettonsRes = {
 }
 //* -------------- GetICOProjectByIdRes --------------
 export type GetICOProjectByIdRes = {
-  id: string
-  name: string
+  symbol: string
   description: string
   image: string
-  symbol: string
+  name: string
   pageData: string
+  saleId: string
+  allocationPools: {
+    contract: string
+    network: string
+    poolId: number
+  }[]
   tokenomics: Tokenomic[]
 }
+
 export type Tokenomic = {
   name: string
   amount: number
@@ -96,6 +102,7 @@ export type ProjectSaleState = {
   bridgePublicKey: string
   endTime: number
   maxBuy: string
+  minBuy: string
   price: string
   saleId: string
   saleType: string

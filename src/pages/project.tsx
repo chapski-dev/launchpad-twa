@@ -1,13 +1,17 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useTonAddress } from '@tonconnect/ui-react'
+import { useTonAddress, useTonConnectModal } from '@tonconnect/ui-react'
 import dayjs from 'dayjs'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { getICOProjectById, getProjectSaleState, queryUserSaleState } from 'api'
-import { InfoBlock, ProjectInfoHeader } from 'domains/Project/components'
+import {
+  InfoBlock,
+  ProjectInfoHeader,
+  Tokenomics,
+} from 'domains/Project/components'
 import * as S from 'domains/Project/style'
 import { BackButton } from 'features/BackButton'
 import { Layout } from 'features/Layout/Layout'
@@ -27,6 +31,8 @@ const Project: FC = () => {
 
   const userWalletAddress = useTonAddress()
 
+  const { open: openTonConnectModal } = useTonConnectModal()
+
   const { webApp } = useTelegram()
 
   const { id } = router.query
@@ -43,54 +49,12 @@ const Project: FC = () => {
     queryKey: ['icoProject', id],
     queryFn: () => getICOProjectById(id as string),
     enabled: Boolean(id),
-    select: useCallback((data: any) => {
-      const distributions: any[] =
-        data.tokenomics.find(({ name }: any) => name === 'distribution')
-          ?.value || []
-
-      const icoParams = data.tokenomics.find(
-        ({ name }: any) => name === 'ico'
-      )?.value
-
-      const icoFundDistributions =
-        data.tokenomics.find(({ name }: any) => name === 'icoDistribution')
-          ?.value || []
-
-      const getTotalSupply = () => {
-        if (distributions) {
-          const totalByDistributions = distributions.reduce<number>(
-            (acc, curr) => Number(acc) + Number(curr.value),
-            0
-          )
-
-          if (icoParams) {
-            const totalSupply =
-              totalByDistributions + Number(icoParams.jettonsAmount)
-
-            return totalSupply
-          }
-
-          return totalByDistributions
-        }
-      }
-
-      return {
-        ...data,
-        totalSupply: getTotalSupply(),
-        icoParams: icoParams || null,
-        markdownInfo: data.markdownDocument
-          ? JSON.parse(data.markdownDocument)
-          : null,
-        distributions,
-        icoFundDistributions,
-      }
-    }, []),
   })
 
   const { data: currentUserSaleState } = useQuery({
     queryKey: ['current-sale-state', project],
-    queryFn: () => queryUserSaleState(project!.id as string, 'ton'),
-    enabled: !!project?.id,
+    queryFn: () => queryUserSaleState(project!.saleId as string, 'ton'),
+    enabled: !!project?.saleId,
   })
 
   const { data: projectSaleState, isSuccess: isProjectStateLoaded } = useQuery({
@@ -103,7 +67,13 @@ const Project: FC = () => {
   console.log(projectSaleState)
 
   const toggleParticipateModal = () => {
+    if (!userWalletAddress) {
+      openTonConnectModal()
+
+      return
+    }
     setIsParticipateModalOpen((prev) => !prev)
+
     // switch (xapiProfileInfo?.state) {
     //   case 'verified':
     //     setIsParticipateModalOpen((prev) => !prev)
@@ -115,19 +85,6 @@ const Project: FC = () => {
     //     break
     // }
   }
-
-  const isLoading = useMemo(() => {
-    if (userWalletAddress) {
-      return isProjectLoading
-    }
-
-    return isProjectLoading
-  }, [
-    // isCurrentIcoInfoLoading,
-    // isParticipantStateLoading,
-    isProjectLoading,
-    userWalletAddress,
-  ])
 
   const isTokenSaleStarted = useMemo(() => {
     if (projectSaleState) {
@@ -152,7 +109,7 @@ const Project: FC = () => {
         <BackButton onClick={() => router.back()} />
         {webApp && (
           <Layout>
-            {isLoading ? (
+            {isProjectLoading ? (
               <Loader type="projectPage" />
             ) : (
               isProjectLoaded &&
@@ -171,15 +128,10 @@ const Project: FC = () => {
                       <Line />
 
                       {/* // TODO: У project появился ключ tokenomics. Полагаю из него надо будет парсить инфу */}
-                      {/* <Tokenomics
-                        distributions={project.distributions}
-                        icoFundDistributions={project.icoFundDistributions}
-                        icoParams={project.icoParams}
-                        totalSupply={project.totalSupply}
-                      /> */}
+                      <Tokenomics tokenomics={project.tokenomics} />
                       <InfoBlock
-                        icoInfo={undefined}
                         mdContent={project.pageData}
+                        saleStateData={projectSaleState}
                       />
                       <BuyPopup
                         onClose={toggleParticipateModal}
@@ -195,10 +147,9 @@ const Project: FC = () => {
                         <MainButton
                           onClick={toggleParticipateModal}
                           text={
-                            `Buy ${project.symbol}`
-                            // project.name === 'NebulaNet'
-                            // ? 'Join Waitlist'
-                            // : 'Buy XTON'
+                            userWalletAddress
+                              ? `Buy ${project.symbol}`
+                              : 'Connect Wallet'
                           }
                         />
                       )}

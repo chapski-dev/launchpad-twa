@@ -1,51 +1,48 @@
-import { FC, useMemo } from 'react'
-import { ICOInfo } from '@ton-and-company/sdk/dist/core/sdk'
+import { FC } from 'react'
 import dayjs from 'dayjs'
+import { fromNano } from 'ton-core'
+import { ProjectSaleState } from 'api/types'
 import { Line } from 'ui/Line/Line'
-import { getTonPriceFromBigInt } from 'utils/getTonPriceFromBigInt'
 import * as S from './style'
 
 type DealTermsProps = {
-  icoInfo: ICOInfo
+  saleStateData: ProjectSaleState
 }
 
 export const DealTerms: FC<DealTermsProps> = (props) => {
-  const { icoInfo } = props
-
-  const { softCap, totalSupply, tonPerJetton } = icoInfo
-
-  const transformedSoftCapAmount = useMemo(() => {
-    return getTonPriceFromBigInt(softCap, tonPerJetton)
-  }, [softCap, tonPerJetton])
-
-  const transformedTotalSupplyAmount = useMemo(() => {
-    return getTonPriceFromBigInt(totalSupply, tonPerJetton)
-  }, [totalSupply, tonPerJetton])
+  const { saleStateData } = props
 
   return (
     <S.Wrapper>
       <S.InfoWrapper>
-        <S.Title>{icoInfo.users}</S.Title>
-        <S.Label className="text-gray-light">Participants</S.Label>
+        <S.Title>{dayjs(saleStateData.startTime * 1000).toString()}</S.Title>
+        <S.Label className="text-gray-light">Sale Start date</S.Label>
+      </S.InfoWrapper>
+      <Line />
+      <S.InfoWrapper>
+        <S.Title>{dayjs(saleStateData.endTime * 1000).toString()}</S.Title>
+        <S.Label className="text-gray-light">Sale End date</S.Label>
       </S.InfoWrapper>
       <Line />
       <S.InfoWrapper>
         <S.Title>
-          {transformedSoftCapAmount === transformedTotalSupplyAmount
-            ? `${transformedTotalSupplyAmount} TON`
-            : `${transformedSoftCapAmount} TON - ${transformedTotalSupplyAmount} TON`}
+          {Number(fromNano(saleStateData.minBuy)).toFixed(2)} TON
         </S.Title>
-        <S.Label className="text-gray-light">Funding goal</S.Label>
+        <S.Label className="text-gray-light">Min buy amount (in TON)</S.Label>
       </S.InfoWrapper>
       <Line />
       <S.InfoWrapper>
-        <S.Title>{dayjs(icoInfo.endTime * 1000).toString()}</S.Title>
-        <S.Label className="text-gray-light">Deadline</S.Label>
+        <S.Title>
+          {Number(fromNano(saleStateData.maxBuy)).toFixed(2)} TON
+        </S.Title>
+        <S.Label className="text-gray-light">Max buy amount (in TON)</S.Label>
       </S.InfoWrapper>
       <Line />
       <S.InfoWrapper>
-        <S.Title>{tonPerJetton} TON</S.Title>
-        <S.Label className="text-gray-light">Price per token</S.Label>
+        <S.Title>
+          {Number(fromNano(saleStateData.price)).toFixed(2)} TON
+        </S.Title>
+        <S.Label className="text-gray-light">Price per token (in TON)</S.Label>
       </S.InfoWrapper>
     </S.Wrapper>
   )

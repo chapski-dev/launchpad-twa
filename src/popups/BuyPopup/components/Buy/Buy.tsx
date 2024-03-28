@@ -8,7 +8,7 @@ import {
 } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
-import { useTonAddress } from '@tonconnect/ui-react'
+import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { fromNano } from 'ton-core'
 import { ProjectSaleState } from 'api/types'
 import { getBalance } from 'utils/getBalance'
@@ -36,10 +36,18 @@ export const Buy: FC<BuyProps> = (props) => {
 
   const userWalletAddress = useTonAddress()
 
+  const [tonConenctUI] = useTonConnectUI()
+
   const { data: userBalance } = useQuery({
-    queryKey: ['user-balance'],
-    queryFn: () => getBalance(userWalletAddress, 'testnet'),
+    queryKey: ['user-balance', userWalletAddress, tonConenctUI],
+    queryFn: () =>
+      getBalance(
+        userWalletAddress,
+        tonConenctUI.account?.chain === '-239' ? 'mainnet' : 'testnet'
+      ),
   })
+
+  console.log(userBalance)
 
   const currentTokenPrice = useMemo(
     () => Number(fromNano(projectSaleState.price)),
@@ -91,7 +99,7 @@ export const Buy: FC<BuyProps> = (props) => {
       <S.AmountBlock>
         <S.Title children="Amount" />
         <S.Balance>
-          {!userBalance ? (
+          {typeof userBalance === 'undefined' ? (
             '-.--'
           ) : (
             <S.Count>{userBalance.toFixed(2)} TON</S.Count>
@@ -140,9 +148,9 @@ export const Buy: FC<BuyProps> = (props) => {
 
       <S.MinMaxBlock>
         <S.MinMaxItem
-          children={`Min ${MIN_TON} TON, Max ${fromNano(
+          children={`Min ${MIN_TON} ${project.symbol}, Max ${fromNano(
             projectSaleState.maxBuy
-          )} TON`}
+          )} ${project.symbol}`}
         />
       </S.MinMaxBlock>
       <S.TotalCost

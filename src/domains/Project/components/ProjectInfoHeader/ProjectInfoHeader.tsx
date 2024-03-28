@@ -33,11 +33,13 @@ export const ProjectInfoHeader: FC<ProjectInfoHeaderProps> = (props) => {
         </S.TagsWrapper>
       </S.InfoWrapper>
 
-      <ParticipateBlock
-        address={tonUserWalletAddress}
-        isParticipated={isParticipated}
-        projectId={projectId}
-      />
+      {Boolean(tonUserWalletAddress) && (
+        <ParticipateBlock
+          address={tonUserWalletAddress}
+          isParticipated={isParticipated}
+          projectId={projectId}
+        />
+      )}
     </S.Wrapper>
   )
 }
