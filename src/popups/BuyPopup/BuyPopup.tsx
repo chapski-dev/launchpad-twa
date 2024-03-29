@@ -41,16 +41,30 @@ type BuyPopupProps = {
 const ETH_TEST_CONTRACT_ADDRESS = '0xdA158609D4B56C1850d76156EB914060F0b68e44'
 const ERC_20_CONTRACT_ADDRESS = '0x90f325c5f5F05AD6a17daf4fA5BF8F9d2AAccc2B'
 
+const initialWaitingApprovalItems = [
+  {
+    title: 'Waiting for user creating',
+    description: 'Waiting for user creating...',
+    status: 'pending',
+  },
+  {
+    title: 'Waiting for Buy Transaction',
+    description: 'Waiting for Buy Transaction...',
+    status: 'in_order',
+  },
+]
+
 export const BuyPopup: FC<BuyPopupProps> = (props) => {
   const { onClose, open, status, projectId, project, projectSaleState } = props
 
   const [activeChain, setActiveChain] = useState<'TON' | 'ETH'>('TON')
 
-  const [currentStatus, setCurrentStatus] = useState<BuyStatus>(
-    status || 'loader'
-  )
+  const [currentStatus, setCurrentStatus] = useState<BuyStatus>(status || 'buy')
 
   const [isLoading, setIsLoading] = useState(false)
+
+  const [currentWaitingApprovalItems, setCurrentWaitingApprovalItems] =
+    useState(initialWaitingApprovalItems)
 
   const [tonConnectUI] = useTonConnectUI()
 
@@ -82,7 +96,11 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       case 'loader':
         return <Loader />
       case 'waiting':
-        return <WaitingForApproval />
+        return (
+          <WaitingForApproval
+            waitingApprovalItems={currentWaitingApprovalItems}
+          />
+        )
       case 'success':
         return <SuccessBuy amount={'42.214'} symbol={project.symbol} />
       case 'join_waitlist':
@@ -97,7 +115,13 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
           />
         )
     }
-  }, [activeChain, currentStatus, project, projectSaleState])
+  }, [
+    activeChain,
+    currentStatus,
+    currentWaitingApprovalItems,
+    project,
+    projectSaleState,
+  ])
 
   const handleBuy = async () => {
     if (currentStatus === 'success') {
@@ -138,6 +162,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         break
     }
   }
+
   const handleBuyByTon = async () => {
     /** 
      * First part of flow (this is only for TON):
@@ -203,8 +228,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
       // Step: 4
       if (createUserBoc) {
-        //TODO-CHAPSKI: вот с момента подписи этой транзы запускаем лоадер на первый степ
-        setCurrentStatus('loader')
+        setCurrentStatus('waiting')
 
         let currentAttempts = 0
         let isCreateUserTrxSigned = false
@@ -238,6 +262,32 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
             }
 
             //Step 5  (if trx status true)
+            setCurrentWaitingApprovalItems((prev) =>
+              prev.map((approvalItem) => {
+                if (approvalItem.status === 'pending') {
+                  return {
+                    ...approvalItem,
+                    status: 'completed',
+                  }
+                }
+
+                switch (approvalItem.status) {
+                  case 'pending':
+                    return {
+                      ...approvalItem,
+                      status: 'completed',
+                    }
+                  case 'in_order':
+                    return {
+                      ...approvalItem,
+                      status: 'pending',
+                    }
+                }
+
+                return approvalItem
+              })
+            )
+
             const userContractAddress = await getUserContractAddress(
               project.saleId
             )
@@ -263,10 +313,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
             )
 
             //Step 7
-            //TODO-CHAPSKI: тут скорее всего будет переход на второй степ в степпере
-            //крутим соотвественно до момента пока не получим true от бека
             const { boc: buyUserBoc } = await sendTransaction(buyUserMessage)
-            console.log({ buyUserBoc })
 
             //Step 8
             if (buyUserBoc) {
@@ -308,7 +355,6 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
               checkBuyUserTrx()
 
-              //TODO-CHAPSKI: собственно на этом моменте мы и свитчим на попап success
               if (isBuyUserTrxSigned) {
                 setCurrentStatus('success')
               }

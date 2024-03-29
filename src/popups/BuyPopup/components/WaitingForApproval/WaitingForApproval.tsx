@@ -1,7 +1,17 @@
 import React, { FC } from 'react'
 import * as S from './style'
 
-export const WaitingForApproval: FC = () => {
+type WaitingForApprovalProps = {
+  waitingApprovalItems: {
+    title: string
+    description: string
+    status: string
+  }[]
+}
+
+export const WaitingForApproval: FC<WaitingForApprovalProps> = (props) => {
+  const { waitingApprovalItems } = props
+
   return (
     <>
       <S.Header>
@@ -20,7 +30,7 @@ export const WaitingForApproval: FC = () => {
         </div>
       </S.Header>
       <S.DetailsWrapper>
-        {data.map((el) => (
+        {waitingApprovalItems.map((el) => (
           <S.StatusItem className={el.status}>
             <StatusIcon type={el.status as StatusIconProps['type']} />
             <S.StatusInfoWrapper>
@@ -35,13 +45,13 @@ export const WaitingForApproval: FC = () => {
 }
 
 type StatusIconProps = {
-  type: "completed" | "pending" | "in_order"
+  type: 'completed' | 'pending' | 'in_order'
 }
 
 const StatusIcon: FC<StatusIconProps> = (props) => {
-  const { type } = props;
+  const { type } = props
   switch (type) {
-    case "completed":
+    case 'completed':
       return (
         <>
           <S.StatusIconWrapper className={type}>
@@ -70,32 +80,3 @@ const StatusIcon: FC<StatusIconProps> = (props) => {
       )
   }
 }
-
-
-const data = [
-  {
-    title: 'Waiting for Buy Transaction ',
-    description: 'Waiting for Buy Transaction ',
-    status: 'completed',
-  },
-  {
-    title: 'Waiting for Oracle To Confirm Tx...',
-    description: 'Waiting for Oracle To Confirm Tx...',
-    status: 'pending',
-  },
-  {
-    title: 'Deploying TON Wallet and Creating Sale User...',
-    description: 'Deploying TON Wallet and Creating Sale User... Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, culpa. Quidem voluptates blanditiis ipsa eligendi labore, fugiat tempore nisi ab temporibus nam nemo voluptate, laudantium dicta. Repudiandae doloremque rem veniam?',
-    status: 'in_order',
-  },
-  {
-    title: 'Claiming Cross Chain Funds...',
-    description: 'Claiming Cross Chain Funds...',
-    status: 'in_order',
-  },
-  {
-    title: 'Deploying TON Wallet and Creating Sale User...',
-    description: 'Deploying TON Wallet and Creating Sale User... Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, culpa. Quidem voluptates blanditiis ipsa eligendi labore, fugiat tempore nisi ab temporibus nam nemo voluptate, laudantium dicta. Repudiandae doloremque rem veniam?',
-    status: 'in_order',
-  },
-]
