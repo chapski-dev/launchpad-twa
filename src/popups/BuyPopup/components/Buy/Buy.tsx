@@ -1,16 +1,10 @@
-import {
-  ChangeEvent,
-  Dispatch,
-  FC,
-  SetStateAction,
-  useMemo,
-  useState,
-} from 'react'
+import { ChangeEvent, Dispatch, FC, SetStateAction, useMemo } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { fromNano } from 'ton-core'
 import { ProjectSaleState } from 'api/types'
+import { BuyFormValues } from 'popups/BuyPopup/BuyPopup'
 import { getBalance } from 'utils/getBalance'
 import * as S from './style'
 import { SwitchBtn } from '../SwitchBtn/SwitchBtn'
@@ -23,16 +17,20 @@ type BuyProps = {
   activeChain: 'TON' | 'ETH'
   project: any
   projectSaleState: ProjectSaleState
+  buyFormState: BuyFormValues
+  updateBuyFormState: (formState: BuyFormValues) => void
 }
 export const Buy: FC<BuyProps> = (props) => {
-  const { setActiveChain, activeChain, project, projectSaleState } = props
+  const {
+    setActiveChain,
+    activeChain,
+    project,
+    projectSaleState,
+    buyFormState,
+    updateBuyFormState,
+  } = props
 
   console.log(projectSaleState)
-
-  const [formState, setFormState] = useState({
-    ton: Number(fromNano(projectSaleState.price)) + 0.1,
-    xton: 1,
-  })
 
   const userWalletAddress = useTonAddress()
 
@@ -60,16 +58,20 @@ export const Buy: FC<BuyProps> = (props) => {
       console.log(type, value)
       switch (type) {
         case 'xton':
-          setFormState({
-            ton: Number((Number(value) * currentTokenPrice).toFixed(2)) + 0.1,
-            xton: Number(value),
+          updateBuyFormState({
+            ton: (
+              Number((Number(value) * currentTokenPrice).toFixed(2)) + 0.1
+            ).toString(),
+            token: value,
           })
           break
 
         case 'ton':
-          setFormState({
-            ton: Number(value) + 0.1,
-            xton: Number((Number(value) / currentTokenPrice).toFixed(2)),
+          updateBuyFormState({
+            ton: (Number(value) + 0.1).toString(),
+            token: Number(
+              (Number(value) / currentTokenPrice).toFixed(2)
+            ).toString(),
           })
           break
       }
@@ -80,9 +82,11 @@ export const Buy: FC<BuyProps> = (props) => {
       return
     }
 
-    setFormState({
-      xton: Number((Number(userBalance) / currentTokenPrice).toFixed(2)),
-      ton: Number(userBalance.toFixed(2)) + 0.1,
+    updateBuyFormState({
+      token: Number(
+        (Number(userBalance) / currentTokenPrice).toFixed(2)
+      ).toString(),
+      ton: (Number(userBalance.toFixed(2)) + 0.1).toString(),
     })
   }
 
@@ -115,18 +119,18 @@ export const Buy: FC<BuyProps> = (props) => {
           max={+fromNano(projectSaleState.maxBuy)}
           onChange={handleSetValue('xton')}
           type="number"
-          value={formState.xton}
+          value={buyFormState.token}
         />
         <S.Input
           actionElement={<S.Chain children="TON" />}
           max={
-            +fromNano(projectSaleState.maxBuy) /
+            +fromNano(projectSaleState.maxBuy) *
             +fromNano(projectSaleState.price)
           }
-          min={MIN_TON}
+          // min={MIN_TON}
           onChange={handleSetValue('ton')}
           type="number"
-          value={formState.ton}
+          value={buyFormState.ton}
         />
 
         <S.Triangle />
@@ -139,9 +143,9 @@ export const Buy: FC<BuyProps> = (props) => {
           )} TON`}
         />
         <S.WellItem
-          children={`${formState.ton} TON = $${(formState.ton * 5.55).toFixed(
-            2
-          )}`}
+          children={`${buyFormState.ton} TON = $${(
+            Number(buyFormState.ton) * 5.55
+          ).toFixed(2)}`}
         />
       </S.WellBlock>
 
@@ -153,10 +157,9 @@ export const Buy: FC<BuyProps> = (props) => {
         />
       </S.MinMaxBlock>
       <S.TotalCost
-        children={`Estimated Total Cost: ${formState.ton + 0.1} TON = $${(
-          (formState.ton + 0.1) *
-          5.55
-        ).toFixed(2)}`}
+        children={`Estimated Total Cost: ${
+          Number(buyFormState.ton) + 0.1
+        } TON = $${((Number(buyFormState.ton) + 0.1) * 5.55).toFixed(2)}`}
       />
     </S.Wrapper>
   )

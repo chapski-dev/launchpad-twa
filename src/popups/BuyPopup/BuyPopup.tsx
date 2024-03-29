@@ -1,10 +1,10 @@
-import { FC, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { useWeb3Modal } from '@web3modal/scaffold-react'
 import { SaleV1FunC, SaleV1Solidity, ERC20 } from '@xton/user-sdk'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import { useRouter } from 'next/router'
-import { Address } from 'ton-core'
+import { Address, fromNano } from 'ton-core'
 import { Config, useAccount, useConnectorClient } from 'wagmi'
 import {
   // checkTransaction,
@@ -38,6 +38,11 @@ type BuyPopupProps = {
   projectSaleState: ProjectSaleState
 }
 
+export type BuyFormValues = {
+  ton: string
+  token: string
+}
+
 const ETH_TEST_CONTRACT_ADDRESS = '0xdA158609D4B56C1850d76156EB914060F0b68e44'
 const ERC_20_CONTRACT_ADDRESS = '0x90f325c5f5F05AD6a17daf4fA5BF8F9d2AAccc2B'
 
@@ -66,6 +71,11 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
   const [currentWaitingApprovalItems, setCurrentWaitingApprovalItems] =
     useState(initialWaitingApprovalItems)
 
+  const [buyFormState, setBuyFormState] = useState<BuyFormValues>({
+    ton: fromNano(projectSaleState.price),
+    token: '1',
+  })
+
   const [tonConnectUI] = useTonConnectUI()
 
   const tonUserWalletAddress = useTonAddress()
@@ -82,15 +92,21 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
   // const [tonConnectUI] = useTonConnectUI()
 
+  const updateBuyFormState = useCallback((formState: BuyFormValues) => {
+    setBuyFormState(formState)
+  }, [])
+
   const currentBuyPopupState = useMemo(() => {
     switch (currentStatus) {
       case 'buy':
         return (
           <Buy
             activeChain={activeChain}
+            buyFormState={buyFormState}
             project={project}
             projectSaleState={projectSaleState}
             setActiveChain={setActiveChain}
+            updateBuyFormState={updateBuyFormState}
           />
         )
       case 'loader':
@@ -109,18 +125,22 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         return (
           <Buy
             activeChain={activeChain}
+            buyFormState={buyFormState}
             project={project}
             projectSaleState={projectSaleState}
             setActiveChain={setActiveChain}
+            updateBuyFormState={updateBuyFormState}
           />
         )
     }
   }, [
     activeChain,
+    buyFormState,
     currentStatus,
     currentWaitingApprovalItems,
     project,
     projectSaleState,
+    updateBuyFormState,
   ])
 
   const handleBuy = async () => {
@@ -300,7 +320,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
             const buyAmount = await estimateBuyAmount(
               project.saleId,
               'TON',
-              1,
+              Number(buyFormState.ton),
               BigInt(1e9)
             )
 

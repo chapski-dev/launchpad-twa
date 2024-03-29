@@ -5,6 +5,7 @@ import {
   ReactNode,
   forwardRef,
 } from 'react'
+import isNaN from 'lodash/isNaN'
 import * as S from './style'
 
 //TODO: props refactoring
@@ -69,6 +70,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   return (
     <S.InputWrapper className={className}>
       {icon}
+
       <S.Input
         ref={ref}
         disabled={disabled}
@@ -81,6 +83,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         value={value}
         {...otherInputProps}
       />
+
       {actionElement}
     </S.InputWrapper>
   )
