@@ -1,25 +1,25 @@
-import { ChangeEvent, Dispatch, FC, SetStateAction, useMemo } from 'react'
+import { ChangeEvent, Dispatch, FC, SetStateAction, useMemo, useState } from 'react';
 
-import { useQuery } from '@tanstack/react-query'
-import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
-import { fromNano } from 'ton-core'
-import { ProjectSaleState } from 'api/types'
-import { BuyFormValues } from 'popups/BuyPopup/BuyPopup'
-import { getBalance } from 'utils/getBalance'
-import * as S from './style'
-import { SwitchBtn } from '../SwitchBtn/SwitchBtn'
+import { useQuery } from '@tanstack/react-query';
+import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react';
+import { fromNano } from 'ton-core';
+import { ProjectSaleState } from 'api/types';
+import { BuyFormValues } from 'popups/BuyPopup/BuyPopup';
+import { getBalance } from 'utils/getBalance';
+import * as S from './style';
+import { SwitchBtn } from '../SwitchBtn/SwitchBtn';
 
-const CHAIN_TABS: ['TON', 'ETH'] = ['TON', 'ETH']
-const MIN_TON = 1
+const CHAIN_TABS: ['TON', 'ETH'] = ['TON', 'ETH'];
+const MIN_TON = 1;
 
 type BuyProps = {
-  setActiveChain: Dispatch<SetStateAction<'TON' | 'ETH'>>
-  activeChain: 'TON' | 'ETH'
-  project: any
-  projectSaleState: ProjectSaleState
-  buyFormState: BuyFormValues
-  updateBuyFormState: (formState: BuyFormValues) => void
-}
+  setActiveChain: Dispatch<SetStateAction<'TON' | 'ETH'>>;
+  activeChain: 'TON' | 'ETH';
+  project: any;
+  projectSaleState: ProjectSaleState;
+  buyFormState: BuyFormValues;
+  updateBuyFormState: (formState: BuyFormValues) => void;
+};
 export const Buy: FC<BuyProps> = (props) => {
   const {
     setActiveChain,
@@ -28,13 +28,26 @@ export const Buy: FC<BuyProps> = (props) => {
     projectSaleState,
     buyFormState,
     updateBuyFormState,
-  } = props
+  } = props;
 
-  console.log(projectSaleState)
+  const [tonStrValue, setTonStrValue] = useState('0.1');
+  const [tokenStrValue, setTokenStrValue] = useState('');
 
-  const userWalletAddress = useTonAddress()
+  const handleSetTonStrValue = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const cleanedValue = cleanStringValue(value);
+    setTonStrValue(cleanedValue);
+  };
 
-  const [tonConenctUI] = useTonConnectUI()
+  const handleSetTokenStrValue = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const cleanedValue = cleanStringValue(value);
+    setTokenStrValue(cleanedValue);
+  };
+
+  const userWalletAddress = useTonAddress();
+
+  const [tonConenctUI] = useTonConnectUI();
 
   const { data: userBalance } = useQuery({
     queryKey: ['user-balance', userWalletAddress, tonConenctUI],
@@ -43,52 +56,54 @@ export const Buy: FC<BuyProps> = (props) => {
         userWalletAddress,
         tonConenctUI.account?.chain === '-239' ? 'mainnet' : 'testnet'
       ),
-  })
-
-  console.log(userBalance)
+  });
 
   const currentTokenPrice = useMemo(
     () => Number(fromNano(projectSaleState.price)),
     [projectSaleState.price]
-  )
+  );
 
   const handleSetValue =
     (type: 'ton' | 'xton') => (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      console.log(type, value)
       switch (type) {
         case 'xton':
           updateBuyFormState({
             ton: (
-              Number((Number(value) * currentTokenPrice).toFixed(2)) + 0.1
+              Number((Number(tokenStrValue) * currentTokenPrice).toFixed(2)) + 0.1
             ).toString(),
-            token: value,
-          })
-          break
+            token: tokenStrValue,
+          });
+          break;
 
         case 'ton':
           updateBuyFormState({
-            ton: (Number(value) + 0.1).toString(),
+            ton: (Number(tonStrValue) + 0.1).toString(),
             token: Number(
-              (Number(value) / currentTokenPrice).toFixed(2)
+              (Number(tonStrValue) / currentTokenPrice).toFixed(2)
             ).toString(),
-          })
-          break
+          });
+          break;
       }
-    }
+    };
 
   const handleSetMax = () => {
     if (!userBalance) {
-      return
+      return;
     }
+
+    setTokenStrValue(Number(
+      (Number(userBalance) / currentTokenPrice).toFixed(2)
+    ).toString())
+
+    setTonStrValue((Number(userBalance.toFixed(2)) + 0.1).toString())
 
     updateBuyFormState({
       token: Number(
         (Number(userBalance) / currentTokenPrice).toFixed(2)
       ).toString(),
       ton: (Number(userBalance.toFixed(2)) + 0.1).toString(),
-    })
-  }
+    });
+  };
 
   return (
     <S.Wrapper>
@@ -116,23 +131,25 @@ export const Buy: FC<BuyProps> = (props) => {
         <S.Input
           actionElement={<S.Chain children={project.symbol} />}
           className="ton-input"
-          max={+fromNano(projectSaleState.maxBuy)}
-          onChange={handleSetValue('xton')}
+          onBlur={handleSetValue('xton')}
+          onChange={handleSetTokenStrValue}
           type="number"
-          value={buyFormState.token}
+          value={tokenStrValue}
         />
+        {+buyFormState.token > +fromNano(projectSaleState.maxBuy) && (
+            <span style={{ color: 'red' }}>превышена макс сумма</span>
+          )}
         <S.Input
           actionElement={<S.Chain children="TON" />}
-          max={
-            +fromNano(projectSaleState.maxBuy) *
-            +fromNano(projectSaleState.price)
-          }
-          // min={MIN_TON}
-          onChange={handleSetValue('ton')}
-          type="number"
-          value={buyFormState.ton}
+          onBlur={handleSetValue('ton')}
+          onChange={handleSetTonStrValue}
+          type="text"
+          value={tonStrValue}
         />
-
+        {+buyFormState.ton > (+fromNano(projectSaleState.maxBuy) *
+          +fromNano(projectSaleState.price)) && (
+            <span style={{ color: 'red' }}>превышена макс сумма</span>
+          )}
         <S.Triangle />
       </S.RecountBlock>
 
@@ -157,10 +174,63 @@ export const Buy: FC<BuyProps> = (props) => {
         />
       </S.MinMaxBlock>
       <S.TotalCost
-        children={`Estimated Total Cost: ${
-          Number(buyFormState.ton) + 0.1
-        } TON = $${((Number(buyFormState.ton) + 0.1) * 5.55).toFixed(2)}`}
+        children={`Estimated Total Cost: ${Number(buyFormState.ton) + 0.1
+          } TON = $${((Number(buyFormState.ton) + 0.1) * 5.55).toFixed(2)}`}
       />
     </S.Wrapper>
-  )
-}
+  );
+};
+
+export const convertStrToNumber = (str: string, minValue?: number) => {
+  let cleanedStr = str;
+
+  cleanedStr = cleanedStr.replace(/^0\.$/, '0.');
+  cleanedStr = cleanedStr.replace(/\.$/, '');
+
+  if (cleanedStr.startsWith('.')) {
+    cleanedStr = '0' + cleanedStr;
+  }
+
+  // проверяет, если задано минимальное значение minValue и
+  // очищенеё форма cleanedStr меньше минимального значения,
+  // то устанавливает cleanedStr в минимальное значение.
+
+  if (minValue !== undefined && +cleanedStr < minValue) {
+    cleanedStr = minValue.toString();
+  }
+
+  return Number(cleanedStr.replace(/\s/g, ''));
+};
+
+export const cleanStringValue = (str: string): string => {
+  let cleanedStr = str;
+
+  cleanedStr = cleanedStr.replace(/,/g, '.');
+  cleanedStr = cleanedStr.replace(/[^\d.]/g, ''); // удаляет все символы, кроме цифр и точек.
+
+  // Заменяет только "0." на "0", сохраняя точку, если она присутствует.
+  // Например, "0." заменяется на "0", а "0.96" остается без изменений.
+  cleanedStr = cleanedStr.replace(/^0(\.)/, '0$1');
+
+  // Удаляет ведущий ноль, если следующий символ не является нулем.
+  // Например, "09" заменяется на "9", но "01" остается без изменений.
+  cleanedStr = cleanedStr.replace(/^0(\d+)/, '$1');
+
+  // Заменяет только "0." на "0", сохраняя точку, если она присутствует.
+  // Например, "0." заменяется на "0", но "0.9" остается без изменений.
+  cleanedStr = cleanedStr.replace(/^0\.$/, '0.');
+
+  // Заменяет строку, состоящую только из нуля, на одиночный ноль.
+  // Например, "00" заменяется на "0"
+  cleanedStr = cleanedStr.replace(/^0$/, '0');
+
+  // Удалить все точки, кроме первой
+  const dotIndex = cleanedStr.indexOf('.');
+  if (dotIndex !== -1) {
+    cleanedStr = cleanedStr.slice(0, dotIndex + 1) + cleanedStr.slice(dotIndex + 1).replace(/\./g, '');
+  }
+
+  // cleanedStr = cleanedStr.replace(/\B(?=(\d{3})+(?!\d))/g, '');
+
+  return cleanedStr; // пример возвращаемого числа 1900000.
+};
