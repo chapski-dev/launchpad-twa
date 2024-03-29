@@ -42,19 +42,25 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   } = props
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    if (max && Number(evt.target.value) > max) {
-      evt.target.value = max.toString()
+    if (type === 'number') {
+      if (max && Number(evt.target.value) > max) {
+        evt.target.value = max.toString()
 
-      return
-    }
+        return
+      }
 
-    if (
-      type === 'number' &&
-      min &&
-      isNaN(Number(evt.target.value)) &&
-      evt.target.value !== ''
-    ) {
-      evt.target.value = min.toString()
+      if (
+        type === 'number' &&
+        min &&
+        isNaN(Number(evt.target.value)) &&
+        evt.target.value !== ''
+      ) {
+        evt.target.value = min.toString()
+      }
+
+      if (isNaN(Number(evt.target.value))) {
+        return
+      }
     }
 
     onChange?.(evt)

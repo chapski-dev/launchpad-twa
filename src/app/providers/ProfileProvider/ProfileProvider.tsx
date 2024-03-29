@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { getXapiProfile, createUser, connectWallet } from 'api'
 import { GetXapiProfileResp } from 'api/types'
-import { Chains } from 'constants/blockchain'
+// import { Chains } from 'constants/blockchain'
 import { useTelegram } from 'hooks/useTelegram/useTelegram'
 import { FCWithChildren } from 'types/app'
 import { getBalance } from 'utils/getBalance'
@@ -91,13 +91,13 @@ export const ProfileProvider: FCWithChildren = (props) => {
   useEffect(() => {
     tonConnectUI.onStatusChange((wallet) => {
       if (wallet !== null) {
-        if (Chains[wallet.account.chain] === 'testnet') {
-          alert('Please, connect mainnet wallet')
+        // if (Chains[wallet.account.chain] === 'testnet') {
+        //   alert('Please, connect mainnet wallet')
 
-          tonConnectUI.disconnect()
+        //   tonConnectUI.disconnect()
 
-          return
-        }
+        //   return
+        // }
         connectWalletI({
           a: wallet.account.address,
           n: 'TON',

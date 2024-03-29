@@ -30,7 +30,7 @@ export const Buy: FC<BuyProps> = (props) => {
   console.log(projectSaleState)
 
   const [formState, setFormState] = useState({
-    ton: Number(fromNano(projectSaleState.price)),
+    ton: Number(fromNano(projectSaleState.price)) + 0.1,
     xton: 1,
   })
 
@@ -61,14 +61,14 @@ export const Buy: FC<BuyProps> = (props) => {
       switch (type) {
         case 'xton':
           setFormState({
-            ton: Number((Number(value) * currentTokenPrice).toFixed(2)),
+            ton: Number((Number(value) * currentTokenPrice).toFixed(2)) + 0.1,
             xton: Number(value),
           })
           break
 
         case 'ton':
           setFormState({
-            ton: Number(value),
+            ton: Number(value) + 0.1,
             xton: Number((Number(value) / currentTokenPrice).toFixed(2)),
           })
           break
@@ -82,7 +82,7 @@ export const Buy: FC<BuyProps> = (props) => {
 
     setFormState({
       xton: Number((Number(userBalance) / currentTokenPrice).toFixed(2)),
-      ton: Number(userBalance.toFixed(2)),
+      ton: Number(userBalance.toFixed(2)) + 0.1,
     })
   }
 
@@ -112,18 +112,17 @@ export const Buy: FC<BuyProps> = (props) => {
         <S.Input
           actionElement={<S.Chain children={project.symbol} />}
           className="ton-input"
-          max={
-            +fromNano(projectSaleState.maxBuy) /
-            +fromNano(projectSaleState.price)
-          }
+          max={+fromNano(projectSaleState.maxBuy)}
           onChange={handleSetValue('xton')}
           type="number"
           value={formState.xton}
         />
-
         <S.Input
           actionElement={<S.Chain children="TON" />}
-          max={+fromNano(projectSaleState.maxBuy)}
+          max={
+            +fromNano(projectSaleState.maxBuy) /
+            +fromNano(projectSaleState.price)
+          }
           min={MIN_TON}
           onChange={handleSetValue('ton')}
           type="number"

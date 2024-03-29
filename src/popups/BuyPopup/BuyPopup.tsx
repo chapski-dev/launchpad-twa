@@ -175,6 +175,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       console.log(project)
 
       // Step 2
+
       const createUserMessage = await SaleV1FunC.createUserMessageR(
         Address.parse(tonPool.contract),
         '0.25',
@@ -202,6 +203,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
       // Step: 4
       if (createUserBoc) {
+        //TODO-CHAPSKI: вот с момента подписи этой транзы запускаем лоадер на первый степ
         setCurrentStatus('loader')
 
         let currentAttempts = 0
@@ -261,6 +263,8 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
             )
 
             //Step 7
+            //TODO-CHAPSKI: тут скорее всего будет переход на второй степ в степпере
+            //крутим соотвественно до момента пока не получим true от бека
             const { boc: buyUserBoc } = await sendTransaction(buyUserMessage)
             console.log({ buyUserBoc })
 
@@ -304,6 +308,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
               checkBuyUserTrx()
 
+              //TODO-CHAPSKI: собственно на этом моменте мы и свитчим на попап success
               if (isBuyUserTrxSigned) {
                 setCurrentStatus('success')
               }
