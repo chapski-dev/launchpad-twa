@@ -76,6 +76,8 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
     token: '1',
   })
 
+  const [errorMessage, setErrorMessage] = useState<string>('')
+
   const [tonConnectUI] = useTonConnectUI()
 
   const tonUserWalletAddress = useTonAddress()
@@ -108,6 +110,8 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
             projectSaleState={projectSaleState}
             setActiveChain={setActiveChain}
             updateBuyFormState={updateBuyFormState}
+            errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
           />
         )
       case 'loader':
@@ -131,6 +135,8 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
             projectSaleState={projectSaleState}
             setActiveChain={setActiveChain}
             updateBuyFormState={updateBuyFormState}
+            errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
           />
         )
     }
@@ -142,6 +148,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
     project,
     projectSaleState,
     updateBuyFormState,
+    errorMessage
   ])
 
   const handleBuy = async () => {
@@ -233,21 +240,15 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         }
       )
 
-      console.log('buyFormState.ton: ', buyFormState.ton)
-      // console.log('createUserMessage: ', createUserMessage)
-
       // Step: 3 | Let's check and see if user has a contract
       const userSaleState = await queryUserSaleState(project.saleId, 'ton')
 
-
-      // console.log('userSaleState: ', userSaleState)
 
       let createUserBoc = null
 
       switch (true) {
         case !userSaleState:
         case userSaleState.state !== 'bought':
-          // console.log("INSIDE FIRST CASE, HEYYYY")
           const { boc: bovx } = await sendTransaction(createUserMessage)
           createUserBoc = bovx
           break
@@ -326,20 +327,15 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
               project.saleId
             )
 
-            console.log('userContractAddress: ', userContractAddress)
-
             // Step 6.0
             const tonPrice = await queryTONPrice()
 
             const buyAmount = await estimateBuyAmount(
               project.saleId,
               'TON',
-              BigInt(1e9),
-              Number(buyFormState.ton),
+              BigInt(1),
+              Number(buyFormState.token),
             )
-
-
-            console.log('buyAmount: ', buyAmount)
 
             
 
@@ -417,7 +413,6 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         checkTransactionStatus()
       }
     } catch (error) {
-      console.log('LOL 1')
       alert(error)
     } finally {
       setIsLoading(false)
@@ -470,7 +465,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
       const trx = await signer.sendTransaction(ercApproveMessage)
 
-      // console.log(trx)
+      console.log(trx)
 
       try {
         setIsLoading(true)
@@ -524,6 +519,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
           onClick={handleBuy}
           progress={isLoading}
           text={currentMainBuutonText}
+          disabled={!!errorMessage}
         />
       )}
     </Modal>

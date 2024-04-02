@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getICOJettons } from 'api'
 import { ProjectCard } from './components'

@@ -1,12 +1,12 @@
 import { TonConnectUIProvider } from '@tonconnect/ui-react'
 import { createWeb3Modal } from '@web3modal/wagmi/react'
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
-import { metaMask } from 'wagmi/connectors'
 
 
 import { WagmiProvider, cookieStorage, createStorage } from 'wagmi'
 
 import { mainnet, baseSepolia } from 'wagmi/chains'
+import { metaMask } from 'wagmi/connectors'
 
 import { FCWithChildren } from 'types/app'
 import { includeWallets } from './wallets'

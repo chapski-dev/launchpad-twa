@@ -73,7 +73,7 @@ export const Chain = styled.div`
 
 export const Triangle = styled.div`
   position: absolute;
-  top: 50%;
+  top: 0;
   right: 50%;
   border-left: 15px solid transparent;
   border-right: 15px solid transparent;
@@ -107,4 +107,7 @@ export const TotalCost = styled.span`
   font-size: 14px;
   color: ${({ theme }) => theme.color.hint};
   padding-bottom: 10px;
+`
+export const InputWrapper = styled.div`
+  position: relative;
 `
