@@ -28,7 +28,7 @@ const SaleState: FC = () => {
 
   // const tonUserWalletAddress = useTonAddress()
 
-  console.log(projectId)
+  // console.log(projectId)
 
   const { data: currentUserSaleState } = useQuery({
     queryKey: ['current-sale-state'],
@@ -36,7 +36,7 @@ const SaleState: FC = () => {
     enabled: !!projectId,
   })
 
-  console.log(currentUserSaleState)
+  // console.log(currentUserSaleState)
 
   const scheduleDifference = useMemo(() => {
     return dayjs(currentUserSaleState?.schedule?.end).diff(

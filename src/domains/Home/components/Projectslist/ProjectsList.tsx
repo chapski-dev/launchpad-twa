@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getICOJettons } from 'api'
 import { ProjectCard } from './components'
@@ -19,7 +19,7 @@ export const ProjectList: FC<ProjectListProps> = (props) => {
     queryKey: ['icoProjects', search],
     queryFn: () => getICOJettons({ q: search }),
   })
-
+    
   if (isProjectsLoading) {
     return <S.Loader type="projectCard" />
   }

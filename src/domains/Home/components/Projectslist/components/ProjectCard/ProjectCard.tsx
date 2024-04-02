@@ -25,6 +25,8 @@ export const ProjectCard: FC<ProjectCardProps> = (props) => {
     queryFn: () => TnC.icoInfo(icoMasterAddress),
   })
 
+
+  
   const handleProjectCardClick = () => {
     router.push({
       pathname: AppRoutes.Project,

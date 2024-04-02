@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, FC, SetStateAction, useMemo, useState } from 'react';
+import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useMemo, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react';
@@ -30,19 +30,26 @@ export const Buy: FC<BuyProps> = (props) => {
     updateBuyFormState,
   } = props;
 
-  const [tonStrValue, setTonStrValue] = useState('0.1');
-  const [tokenStrValue, setTokenStrValue] = useState('');
+  const [tonStrValue, setTonStrValue] = useState(buyFormState.ton);
+  const [tokenStrValue, setTokenStrValue] = useState(buyFormState.token);
+
 
   const handleSetTonStrValue = (e: ChangeEvent<HTMLInputElement>) => {
+    // TON
     const value = e.target.value;
     const cleanedValue = cleanStringValue(value);
+
     setTonStrValue(cleanedValue);
+    handleSetValue('ton')(cleanedValue)
   };
 
   const handleSetTokenStrValue = (e: ChangeEvent<HTMLInputElement>) => {
+    // XTON
     const value = e.target.value;
     const cleanedValue = cleanStringValue(value);
+
     setTokenStrValue(cleanedValue);
+    handleSetValue('xton')(cleanedValue)
   };
 
   const userWalletAddress = useTonAddress();
@@ -64,24 +71,31 @@ export const Buy: FC<BuyProps> = (props) => {
   );
 
   const handleSetValue =
-    (type: 'ton' | 'xton') => (e: ChangeEvent<HTMLInputElement>) => {
+    (type: 'ton' | 'xton') => (newValue: string) => {
       switch (type) {
         case 'xton':
+          const ton = newValue ? (
+            Number((Number(newValue) * currentTokenPrice).toFixed(2)) + 0.1
+          ).toString() : '';
+
           updateBuyFormState({
-            ton: (
-              Number((Number(tokenStrValue) * currentTokenPrice).toFixed(2)) + 0.1
-            ).toString(),
-            token: tokenStrValue,
+            ton,
+            token: newValue,
           });
+          setTonStrValue(ton)
           break;
 
         case 'ton':
+          const token = newValue ? Number(
+            (Number(newValue) / currentTokenPrice).toFixed(2)
+            ).toString() : '';
+
           updateBuyFormState({
-            ton: (Number(tonStrValue) + 0.1).toString(),
-            token: Number(
-              (Number(tonStrValue) / currentTokenPrice).toFixed(2)
-            ).toString(),
-          });
+            ton: (Number(newValue) + 0.1).toString(),
+            token,
+            });
+
+          setTokenStrValue(token)
           break;
       }
     };
@@ -131,7 +145,7 @@ export const Buy: FC<BuyProps> = (props) => {
         <S.Input
           actionElement={<S.Chain children={project.symbol} />}
           className="ton-input"
-          onBlur={handleSetValue('xton')}
+          // onBlur={handleSetValue('xton')}
           onChange={handleSetTokenStrValue}
           type="number"
           value={tokenStrValue}
@@ -141,7 +155,7 @@ export const Buy: FC<BuyProps> = (props) => {
           )}
         <S.Input
           actionElement={<S.Chain children="TON" />}
-          onBlur={handleSetValue('ton')}
+          // onBlur={handleSetValue('ton')}
           onChange={handleSetTonStrValue}
           type="text"
           value={tonStrValue}

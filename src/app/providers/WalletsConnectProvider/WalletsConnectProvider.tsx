@@ -1,6 +1,8 @@
 import { TonConnectUIProvider } from '@tonconnect/ui-react'
 import { createWeb3Modal } from '@web3modal/wagmi/react'
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+import { metaMask } from 'wagmi/connectors'
+
 
 import { WagmiProvider, cookieStorage, createStorage } from 'wagmi'
 
@@ -33,7 +35,14 @@ const walletConnectConfig = defaultWagmiConfig({
   }),
   enableWalletConnect: true,
   enableInjected: true,
-})
+  connectors: [
+    metaMask({
+      useDeeplink: false,
+    
+    })
+  ]
+}) 
+
 
 createWeb3Modal({
   wagmiConfig: walletConnectConfig,

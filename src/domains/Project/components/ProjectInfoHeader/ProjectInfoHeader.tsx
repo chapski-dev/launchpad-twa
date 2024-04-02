@@ -12,10 +12,11 @@ type ProjectInfoHeaderProps = {
   // network: keyof typeof Chains
   isParticipated: boolean
   projectId: string
+  isTokenSaleActive: boolean
 }
 
 export const ProjectInfoHeader: FC<ProjectInfoHeaderProps> = (props) => {
-  const { image, title, description, isParticipated, projectId } = props
+  const { image, title, description, isParticipated, projectId, isTokenSaleActive } = props
 
   //TODO: temporary added, will be removeded later
   const tonUserWalletAddress = useTonAddress()
@@ -33,7 +34,7 @@ export const ProjectInfoHeader: FC<ProjectInfoHeaderProps> = (props) => {
         </S.TagsWrapper>
       </S.InfoWrapper>
 
-      {Boolean(tonUserWalletAddress) && (
+      {Boolean(tonUserWalletAddress) && isTokenSaleActive && !isParticipated && (
         <ParticipateBlock
           address={tonUserWalletAddress}
           isParticipated={isParticipated}

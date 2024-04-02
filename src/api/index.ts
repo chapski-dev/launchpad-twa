@@ -115,8 +115,8 @@ export const queryTONPrice = async () => {
 export const estimateBuyAmount = async (
   saleId: string,
   network: string,
-  pool: number,
-  amount: bigint
+  pool: BigInt,
+  amount: number
 ) => {
   let params = retrieveLaunchParams()
   let initData = params.initData
@@ -125,7 +125,7 @@ export const estimateBuyAmount = async (
     tonAmount: string
     tokenAmount: string
   }>(
-    `${ApiRoutes.Sale}/estimate/${saleId}/${network}/${pool}/${initData?.user?.id}/${amount}`,
+    `${ApiRoutes.Sale}/estimate/${saleId}/${network}/${pool}/${initData?.user?.id}/${BigInt(Math.floor(amount * 1e9))}`,
     {
       headers: {
         // Authorization: `Bearer ${btoa(r!)}`,

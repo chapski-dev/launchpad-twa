@@ -64,7 +64,6 @@ const Project: FC = () => {
   })
 
   // console.log(fromNano(projectSaleState?.price || 0))
-  console.log(projectSaleState)
 
   const toggleParticipateModal = () => {
     if (!userWalletAddress) {
@@ -94,12 +93,18 @@ const Project: FC = () => {
     return false
   }, [projectSaleState])
 
-  const isTokenSaleEnded = useMemo(() => {
+  const isTokenSaleActive = useMemo(() => {
     if (projectSaleState) {
-      return dayjs().isAfter(projectSaleState.endTime * 1000, 'day')
+      return dayjs().isAfter(projectSaleState.startTime * 1000) && dayjs().isBefore(projectSaleState.endTime * 1000)
     }
+
+    return false 
   }, [projectSaleState])
 
+  if (!currentUserSaleState) {
+    return <h1>Loading...</h1>
+  }
+  
   return (
     <>
       <Head>
@@ -121,11 +126,12 @@ const Project: FC = () => {
                         description={project.description}
                         image={project.image}
                         isParticipated={
-                          currentUserSaleState.state === 'bought' ||
-                          currentUserSaleState?.bought > 0
+                          currentUserSaleState.state === 'bought' &&
+                          currentUserSaleState?.bought > 0 
                         }
                         projectId={project.saleId}
                         title={project.name}
+                        isTokenSaleActive={isTokenSaleActive}
                       />
                       <Line />
 
@@ -145,7 +151,7 @@ const Project: FC = () => {
                         status={isTokenSaleStarted ? 'join_waitlist' : 'buy'}
                       />
 
-                      {!isParticipateModalOpen && !isTokenSaleEnded && (
+                      {!isParticipateModalOpen && isTokenSaleActive && (
                         <MainButton
                           onClick={toggleParticipateModal}
                           text={

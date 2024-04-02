@@ -97,6 +97,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
   }, [])
 
   const currentBuyPopupState = useMemo(() => {
+    // console.log('currentStatus: ', currentStatus)
     switch (currentStatus) {
       case 'buy':
         return (
@@ -209,18 +210,20 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
       //   Address.parse(tonUserWalletAddress)
       // )
 
-      console.log(whitelist)
-      console.log(project)
+      console.log('whitelist: ', whitelist)
+      // console.log('project: ', project)
 
       const tonPool = project.allocationPools
         .filter((pool: any) => pool.network === 'TON')
         .pop()
 
-      console.log(whitelist)
-      console.log(project)
+
+      // console.log('tonPool: ', tonPool)
 
       // Step 2
 
+
+      console.log('Number(buyFormState.ton): ', Number(buyFormState.ton))
       const createUserMessage = await SaleV1FunC.createUserMessageR(
         Address.parse(tonPool.contract),
         '0.25',
@@ -230,25 +233,36 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         }
       )
 
+      console.log('buyFormState.ton: ', buyFormState.ton)
+      // console.log('createUserMessage: ', createUserMessage)
+
       // Step: 3 | Let's check and see if user has a contract
       const userSaleState = await queryUserSaleState(project.saleId, 'ton')
+
+
+      // console.log('userSaleState: ', userSaleState)
 
       let createUserBoc = null
 
       switch (true) {
         case !userSaleState:
         case userSaleState.state !== 'bought':
+          // console.log("INSIDE FIRST CASE, HEYYYY")
           const { boc: bovx } = await sendTransaction(createUserMessage)
           createUserBoc = bovx
           break
         case userSaleState.state === 'bought':
           createUserBoc = 'true'
       }
+
+
+      // console.log('createUserBoc: ', createUserBoc)
       // We don't need to deploy user contract if the state is already there
 
       // Step: 4
       if (createUserBoc) {
         setCurrentStatus('waiting')
+
 
         let currentAttempts = 0
         let isCreateUserTrxSigned = false
@@ -312,7 +326,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
               project.saleId
             )
 
-            console.log('userContractAddress', userContractAddress)
+            console.log('userContractAddress: ', userContractAddress)
 
             // Step 6.0
             const tonPrice = await queryTONPrice()
@@ -320,9 +334,14 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
             const buyAmount = await estimateBuyAmount(
               project.saleId,
               'TON',
+              BigInt(1e9),
               Number(buyFormState.ton),
-              BigInt(1e9)
             )
+
+
+            console.log('buyAmount: ', buyAmount)
+
+            
 
             //Step 6
             const buyUserMessage = await SaleV1FunC.buyUserMessageFull(
@@ -332,10 +351,16 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
               tonPrice
             )
 
-            //Step 7
+
+            console.log('buyUserMessage: ', buyUserMessage)
+
+            // //Step 7
             const { boc: buyUserBoc } = await sendTransaction(buyUserMessage)
 
-            //Step 8
+
+            console.log('buyUserBoc: ', buyUserBoc)
+
+            // //Step 8
             if (buyUserBoc) {
               let currentAttempts = 0
               let isBuyUserTrxSigned = false
@@ -392,6 +417,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
         checkTransactionStatus()
       }
     } catch (error) {
+      console.log('LOL 1')
       alert(error)
     } finally {
       setIsLoading(false)
@@ -444,7 +470,7 @@ export const BuyPopup: FC<BuyPopupProps> = (props) => {
 
       const trx = await signer.sendTransaction(ercApproveMessage)
 
-      console.log(trx)
+      // console.log(trx)
 
       try {
         setIsLoading(true)
